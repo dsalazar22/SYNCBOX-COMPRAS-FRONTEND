@@ -1,0 +1,70 @@
+{
+    "start_production_orders": [
+        {"key":"priority", "sortable": true, "label":"Prioridad"},
+        {"key":"consecutive_order", "sortable": true, "label":"# Orden"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"programed_amount", "sortable": true, "label":"Programado"},
+        {"key":"produced_amount", "sortable": true, "label":"Producido"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        
+        {"key":"edit", "label":"Seleccione"}
+    ],
+    
+    "columns_drump_totals": [
+        {"key":"consume_buffer", "sortable": true, "label":"Buffer"},
+        {"key":"priority", "sortable": true, "label":"Prioridad"},
+        {"key":"consecutive_order", "sortable": true, "label":"# Orden"},
+        {"key":"status_modules_code", "sortable": true, "label":"Estado"},
+        {"key":"customer_order_id", "sortable": true, "label":"# Pedido"},
+        {"key":"name", "sortable": true, "label":"Cliente"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"requested_date", "sortable": true, "label":"Fecha Comprometida"},
+        {"key":"deadline", "sortable": true, "label":"Fecha Planeada"},
+        {"key":"programed_amount", "sortable": true, "label":"Programada"},
+        {"key":"produced_amount", "sortable": true, "label":"Producido"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"}
+    ],
+
+    "columns_drump_totals_process": [
+        {"key":"consume_buffer", "sortable": true, "label":"Buffer"},
+        {"key":"priority", "sortable": true, "label":"Prioridad"},
+        {"key":"consecutive_order", "sortable": true, "label":"# Orden"},
+        {"key":"customer_order_id", "sortable": true, "label":"# Pedido"},
+        {"key":"name", "sortable": true, "label":"Cliente"},
+        {"key":"status_modules_code", "sortable": true, "label":"Estado"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"sequence", "sortable": true, "label":"Secuencia"},
+        {"key":"activity_description", "sortable": true, "label":"Actividad"},
+        {"key":"deadline", "sortable": true, "label":"Fecha Comprometida"},
+        {"key":"planning_date", "sortable": true, "label":"Fecha Planeada"},
+        {"key":"projected_date", "sortable": true, "label":"Fecha Proyectada"},
+        {"key":"programed_amount", "sortable": true, "label":"Programada"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        {"key":"workstation_groups", "sortable": true, "label":"Grupos"},
+        {"key":"edit", "sortable": true, "label":"Editar"}
+    ],
+
+    "columns_drump_totals_workstation": [
+        {"key":"edit", "sortable": true, "label":"Editar"},
+        {"key":"consume_buffer", "sortable": true, "label":"Buffer"},
+        {"key":"priority", "sortable": true, "label":"Prioridad"},
+        {"key":"status_modules_code", "sortable": true, "label":"Estado"},
+        {"key":"consecutive_order", "sortable": true, "label":"# Orden"},
+        {"key":"customer_order_id", "sortable": true, "label":"# Pedido"},
+        {"key":"name", "sortable": true, "label":"Cliente"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"activity_description", "sortable": true, "label":"Actividad"},
+        {"key":"requested_date", "sortable": true, "label":"Fecha Planeada"},
+        {"key":"deadline", "sortable": true, "label":"Fecha Comprometida"},
+        {"key":"projected_date", "sortable": true, "label":"Fecha Proyectada"},
+        {"key":"programed_amount", "sortable": true, "label":"Programada"},
+        {"key":"produced_amount", "sortable": true, "label":"Producido"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        {"key":"percentaje", "sortable": true, "label":"Avance"},
+        {"key":"hours_remaining", "sortable": true, "label":"Horas Faltantes"}
+    ]
+}

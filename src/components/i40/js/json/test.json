@@ -1,0 +1,72 @@
+{
+    "2019-07-02": [
+        {
+            "slot_id": 0,
+            "production_order_id": 0,
+            "workstation_id": 12,
+            "start_date": "2019-07-02T06:00:00",
+            "activity_description": "0",
+            "minutes_programmed": 720,
+            "programmed_amount": 0,
+            "minutes_to_deadline": 0,
+            "order_production_process_id": 0,
+            "locked": false
+        }
+    ],
+    "2019-07-03": [
+        {
+            "slot_id": 0,
+            "production_order_id": 0,
+            "workstation_id": 12,
+            "start_date": "2019-07-03T06:00:00",
+            "activity_description": "0",
+            "minutes_programmed": 720,
+            "programmed_amount": 0,
+            "minutes_to_deadline": 0,
+            "order_production_process_id": 0,
+            "locked": false
+        }
+    ],
+    "2019-07-04": [
+        {
+            "slot_id": 0,
+            "production_order_id": 0,
+            "workstation_id": 12,
+            "start_date": "2019-07-04T06:00:00",
+            "activity_description": "0",
+            "minutes_programmed": 720,
+            "programmed_amount": 0,
+            "minutes_to_deadline": 0,
+            "order_production_process_id": 0,
+            "locked": false
+        }
+    ],
+    "2019-07-05": [
+        {
+            "slot_id": 0,
+            "production_order_id": 0,
+            "workstation_id": 12,
+            "start_date": "2019-07-05T06:00:00",
+            "activity_description": "0",
+            "minutes_programmed": 720,
+            "programmed_amount": 0,
+            "minutes_to_deadline": 0,
+            "order_production_process_id": 0,
+            "locked": false
+        }
+    ],
+    "2019-07-06": [
+        {
+            "slot_id": 0,
+            "production_order_id": 0,
+            "workstation_id": 12,
+            "start_date": "2019-07-06T06:00:00",
+            "activity_description": "0",
+            "minutes_programmed": 720,
+            "programmed_amount": 0,
+            "minutes_to_deadline": 0,
+            "order_production_process_id": 0,
+            "locked": false
+        }
+    ]
+}

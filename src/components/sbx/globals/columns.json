@@ -1,0 +1,57 @@
+{
+    "start_production_orders": [
+        {"key":"consecutive_order", "sortable": true, "label":"# Orden"},
+        {"key":"priority", "sortable": true, "label":"Prioridad"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"activity_description", "sortable": true, "label":"Actividad"},
+        {"key":"programed_amount", "sortable": true, "label":"Programado"},
+        {"key":"produced_amount", "sortable": true, "label":"Producido"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        
+        {"key":"edit", "sortable": true, "label":"Seleccione"}
+    ],
+    
+    "columns_drump_totals": [
+        {"key":"consume_buffer", "sortable": true, "label":"Buffer"},
+        {"key":"status_modules_code", "sortable": true, "label":"Estado"},
+        {"key":"name", "sortable": true, "label":"Cliente"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"deadline", "sortable": true, "label":"Fecha Comprometida"},
+        {"key":"programed_amount", "sortable": true, "label":"Programada"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        {"key":"activity_description", "sortable": true, "label":"Actividad"},
+        {"key":"sequence", "sortable": true, "label":"Secuencia"}
+    ],
+
+    "columns_drump_totals_process": [
+        {"key":"consume_buffer", "sortable": true, "label":"Buffer"},
+        {"key":"status_modules_code", "sortable": true, "label":"Estado"},
+        {"key":"name", "sortable": true, "label":"Cliente"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"deadline", "sortable": true, "label":"Fecha Comprometida"},
+        {"key":"programed_amount", "sortable": true, "label":"Programada"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        {"key":"sequence", "sortable": true, "label":"Secuencia"},
+        {"key":"activity_description", "sortable": true, "label":"Actividad"},
+        {"key":"workstation_groups", "sortable": true, "label":"Grupos"}
+    ],
+
+    "columns_drump_totals_workstation": [
+        {"key":"consume_buffer", "sortable": true, "label":"Buffer"},
+        {"key":"status_modules_code", "sortable": true, "label":"Estado"},
+        {"key":"name", "sortable": true, "label":"Cliente"},
+        {"key":"code", "sortable": true, "label":"Código"},
+        {"key":"products_description", "sortable": true, "label":"Descripción"},
+        {"key":"deadline", "sortable": true, "label":"Fecha Comprometida"},
+        {"key":"programed_amount", "sortable": true, "label":"Programada"},
+        {"key":"pending_amount", "sortable": true, "label":"Pendiente"},
+        {"key":"activity_description", "sortable": true, "label":"Actividad"},
+        {"key":"sequence", "sortable": true, "label":"Secuencia"},
+        {"key":"workstation_code", "sortable": true, "label":"CT"},
+        {"key":"workstation_groups", "sortable": true, "label":"Grupos"}
+    ]
+
+}
