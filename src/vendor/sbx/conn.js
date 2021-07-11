@@ -5,14 +5,14 @@ const protocolo = 'http'
 var InfoConfig = {
     host: function()
     {
-        // let hst = window.location.hostname
+        let hst = window.location.hostname
         // let hst = "10.10.1.251"
         // let hst = "10.0.0.23"
         // let hst = "10.10.1.134"
         // let hst = "10.1.1.11"
         // let hst = "172.16.25.5"
         // let hst = "192.168.115.115"
-        let hst = "192.168.1.208"
+        // let hst = "192.168.1.208"
         // let hst = "192.168.80.53"
         // let hst = "20.0.0.49"
         // let hst = "192.168.10.198"
@@ -32,14 +32,14 @@ var InfoConfig = {
 
     login: function()
     {
-        // return protocolo+`://`+window.location.hostname+`/datacontrollerloginx/`
+        return protocolo+`://`+window.location.hostname+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.10.1.251"+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.0.0.23"+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.10.1.134"+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.1.1.11"+`/datacontrollerloginx/`
         // return protocolo+`://`+"172.16.25.5"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.115.115"+`/datacontrollerloginx/`
-        return protocolo+`://`+"192.168.1.208"+`/datacontrollerloginx/`
+        // return protocolo+`://`+"192.168.1.208"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.80.53"+`/datacontrollerloginx/`
         // return protocolo+`://`+"20.0.0.49"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.10.198"+`/datacontrollerloginx/` 810758535

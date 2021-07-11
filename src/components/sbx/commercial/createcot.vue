@@ -22,10 +22,10 @@
                     {{document_type_text}}
                 </div>
                 <div>
-                   <b> Direccion de Facturación: </b> {{invoice_address}}
+                   <b> Direccion de Facturación: </b> {{invoice_address}} | {{invoice_city}}
                 </div>
                 <div>
-                   <b> Direccion de Envío de Mercancía: </b> {{shipping_address}}
+                   <b> Direccion de Envío de Mercancía: </b> {{shipping_address}} | {{shipping_city}}
                 </div>
                 <div>
                    <b> Días de Vencimiento de la Oferta: </b> {{expiration_days}}
@@ -44,7 +44,7 @@
                 <b-btn size="xs" variant="outline-secondary" @click="showCarteraDetail=true"><i class="fas fa-wallet"></i>&nbsp; Detalle Cartera</b-btn>
                 <b-btn size="xs" variant="outline-warning" @click="editHeaderOrder()"><i class="fas fa-edit"></i>&nbsp; Editar Cotizacion</b-btn>
                 <b-btn size="xs" variant="outline-info" :to="'/comm/cot/'+orderLocation+'/0'"><i class="fas fa-trash-alt"></i>&nbsp; Nueva Cotizacion</b-btn>
-                <b-btn size="xs" variant="outline-success" @click="convertToOrder()" v-if="!this.infoHeader.released"><i class="fas fa-check"></i>&nbsp; Convertir en Pedido</b-btn>
+                <b-btn size="xs" variant="outline-success" @click="askConvertToOrder()" v-if="!this.infoHeader.released"><i class="fas fa-check"></i>&nbsp; Convertir en Pedido</b-btn>
                 <b-btn size="xs" variant="outline-success" @click="$refs.confirmApproved.open()" v-if="this.infoHeader.released && !this.infoHeader.approved"><i class="fas fa-check"></i>&nbsp; Aprobar Cotizacion</b-btn>
                 <b-btn size="xs" variant="outline-success" @click="printOrder()"><i class="fas fa-check"></i>&nbsp; Imprimir Cotizacion</b-btn>
                 <!-- <b-btn size="xs" variant="outline-success" :to="'/print/'+quotation_id"><i class="fas fa-check"></i>&nbsp; Imprimir Cotizacion</b-btn> -->
@@ -108,6 +108,10 @@
 
                                 <b-form-input v-if="!showSelectedInvoice" size="sm" id="`type-fact`" v-model="invoice_address" type="text"></b-form-input>
                                 <b-form-select v-if="showSelectedInvoice" size="sm" id="`type-fact`" v-model="invoice_address_id" :options="invoiceAddress"></b-form-select>
+
+                                <b-input-group-append>
+                                    <b-form-input size="sm" id="`type-fact`" v-model="invoice_city" type="text"></b-form-input>
+                                </b-input-group-append>
                             </b-input-group>
                         </b-col>
                     </b-row>
@@ -122,6 +126,11 @@
                                 </b-input-group-prepend>
                                 <b-form-select v-if="showSelectedProduct" size="sm" id="`type-fact`" v-model="shipping_address_id" :options="shippingAddress"></b-form-select>
                                 <b-form-input v-if="!showSelectedProduct" size="sm" id="`type-fact`" v-model="shipping_address" type="text"></b-form-input>                            
+
+                                <b-input-group-append>
+                                    <b-form-input size="sm" id="`type-fact`" v-model="shipping_city" type="text"></b-form-input>
+                                </b-input-group-append>
+                            
                             </b-input-group>
                         </b-col>
                     </b-row>
@@ -657,6 +666,21 @@
                 </div>
             </b-modal>
 
+            <b-modal id="modals-top" v-model="showAskConvert"  class="modal-center" size="md">
+                <div slot="modal-title">
+                    Convertir Cotizacion en Pedido <span class="font-weight-light"> </span>
+                </div>
+                Fecha de Compromiso
+                <date-picker v-model="dateitems" :config="optionsDate"></date-picker>
+                
+                <div slot="modal-footer" class="w-100 text-right">
+                    
+                    <b-button size="md" variant="primary" @click="showAskConvert=false;">Cerrar</b-button>
+                    <b-button size="md" variant="success" @click="convertToOrder();">Convertir Cotizacion</b-button>
+                   
+                </div>
+            </b-modal>
+
             <b-modal id="modals-top" v-model="eventoPedido"  class="modal-center" size="xl">
                 <div slot="modal-title">
                     Documento Pedido <span class="font-weight-light"> </span>
@@ -855,6 +879,12 @@ export default {
             orderLocation:'',
 
             status_deleted_id:0,
+
+            invoice_city:'',
+            shipping_city:'',
+
+            showAskConvert: false,
+            dateitems: null,
             /// Columnas de las tablas
         }
     },
@@ -882,6 +912,31 @@ export default {
                     this.selectedProductItem.deadline = value
                 else
                     this.selectedProductItem.deadline = this.selectedDeadLine
+            }
+        },
+
+        'shipping_address_id':function(value){
+            if(value != null){
+                for (let index = 0; index < this.shippingAddress.length; index++) {
+                    const element = this.shippingAddress[index];
+                    if(element.value == value){
+                        this.shipping_address = element.text
+                        this.shipping_city=element.city
+                    }
+                }
+            }
+            
+        },
+
+        'invoice_address_id':function(value){
+            if(value != null ){
+                for (let index = 0; index < this.invoiceAddress.length; index++) {
+                    const element = this.invoiceAddress[index];
+                    if(element.value == value){
+                        this.invoice_address = element.text
+                        this.invoice_city=element.city
+                    }
+                }
             }
         }
     },
@@ -982,6 +1037,11 @@ export default {
             this.prepareDoc('download')
         },
 
+        async askConvertToOrder(){
+            this.showAskConvert = true
+            this.dateitems = null
+        },
+
         async convertToOrder(){
             let info = {}
             info.customer_id=this.itemSelectedCustomer.customers_id
@@ -1002,6 +1062,7 @@ export default {
             info.quotation_id = this.infoHeader.quotation_id
             info.order_notes = this.infoHeader.order_notes
             info.transporter_notes = this.infoHeader.transporter_notes
+            info.date_deadline = this.dateitems
             let eventT ="insert"
             let headerid=null
             let versionid=null
@@ -1031,6 +1092,8 @@ export default {
             for (let index2 = 0; index2 < dataDetails.length; index2++) {
                 const element2 =dataDetails[index2];
                 element2.orders_id = headerid 
+                element.deadline = this.dateitems
+                element.requested_date = this.dateitems
                 await infotrade.addorderdetails(element2,"insert").then(data =>{})
             }
 
@@ -1225,11 +1288,11 @@ export default {
             // if(this.sale_price != 0){
                 let price = 0
                 // console.log(this.selectedProductItem.last_price)
-                if(this.selectedProductItem.last_price == 0 || this.selectedProductItem.last_price == null){
-                    price = this.selectedProductItem.price_list
-                }else{
-                    price = this.selectedProductItem.price_list <  this.selectedProductItem.last_price ? this.selectedProductItem.price_list: this.selectedProductItem.last_price
-                }
+                // if(this.selectedProductItem.last_price == 0 || this.selectedProductItem.last_price == null){
+                price = this.selectedProductItem.price_list
+                // }else{
+                //     price = this.selectedProductItem.price_list <  this.selectedProductItem.last_price ? this.selectedProductItem.price_list: this.selectedProductItem.last_price
+                // }
                 if(this.orderLocation == 'international'){
                     price= this.trm_
                     real_value/this.selectedProductItem.price_list
@@ -1315,23 +1378,6 @@ export default {
         editHeaderOrder(){this.src = master+'customersearch/'; this.editOrderCreated=true},
         //INFO HEADER PEDIDO// array
         saveHeader(){
-            if(this.invoice_address_id != null && this.invoice_address == ''){
-                for (let index = 0; index < this.invoiceAddress.length; index++) {
-                    const element = this.invoiceAddress[index];
-                    if(element.value == this.invoice_address_id){
-                        this.invoice_address = element.text
-                    }
-                }
-            }
-
-            if(this.shipping_address_id != null && this.shipping_address == ''){
-                for (let index = 0; index < this.shippingAddress.length; index++) {
-                    const element = this.shippingAddress[index];
-                    if(element.value == this.shipping_address_id){
-                        this.shipping_address = element.text
-                    }
-                }
-            }
 
             for (let index = 0; index < this.info_order_type.length; index++) {
                 const element = this.info_order_type[index];
@@ -1343,6 +1389,8 @@ export default {
             this.infoHeader.customer_id=this.itemSelectedCustomer.customers_id
             this.infoHeader.document_type=this.document_type
             this.infoHeader.invoice_address = this.invoice_address
+            this.infoHeader.invoice_city = this.invoice_city
+            this.infoHeader.shipping_city = this.shipping_city
             this.infoHeader.shipping_address = this.shipping_address
             this.infoHeader.document_customer = this.document_customer
             this.infoHeader.quotation_id = this.quotation_id
@@ -1577,6 +1625,8 @@ export default {
                 this.showSelectedInvoice = false
                 this.invoice_address = ''
                 this.shipping_address = ''
+                this.invoice_city = ''
+                this.shipping_city = ''
                 this.consultant_id = item.consultant_id
                 
 
@@ -1587,24 +1637,28 @@ export default {
                     for (let index = 0; index < array.length; index++) {
                         const element = array[index];
                         if(element.type == "product"){
-                            this.shippingAddress.push({value:element.customers_address_id,text:element.address+' ('+element.city+' - '+element.country+')'})
+                            this.shippingAddress.push({value:element.customers_address_id,text:element.address, city:element.city})
                         }else{
-                            this.invoiceAddress.push({value:element.customers_address_id,text:element.address+' ('+element.city+' - '+element.country+')'})
+                            this.invoiceAddress.push({value:element.customers_address_id,text:element.address, city:element.city})
                         }
                     }
                     
                     if(this.shippingAddress.length == 1){
                         this.shipping_address = this.shippingAddress[0].text
+                        this.shipping_city = this.shippingAddress[0].city
                     }else if(this.shippingAddress.length == 0){
                         this.shipping_address = item.address
+                        this.shipping_city = item.city
                     }else{
                         this.showSelectedProduct = true
                     }
 
                     if(this.invoiceAddress.length == 1){
                         this.invoice_address = this.invoiceAddress[0].text
+                        this.invoice_city = this.shippingAddress[0].city
                     }else if(this.invoiceAddress.length == 0){
                         this.invoice_address = item.address
+                        this.invoice_city = item.city
                     }else{
                         this.showSelectedInvoice = true
                     }
@@ -1699,6 +1753,8 @@ export default {
 
                 if (data.data != "")
 
+                    console.log(data.data[0])
+
                     this.headercomplete = data.data[0]
                     this.defaultVersionSelected( data.data[0].versions)
                     this.loadcartera(data.data[0].nit)
@@ -1714,6 +1770,8 @@ export default {
                     this.document_type=data.data[0].document_type
                     this.invoice_address = data.data[0].invoice_address
                     this.shipping_address = data.data[0].shipping_address
+                    this.invoice_city =  data.data[0].invoice_city
+                    this.shipping_city =  data.data[0].shipping_city
                     this.document_customer = data.data[0].document_customer
                     this.quotation_id = data.data[0].quotation_id
                     this.consultant_id = data.data[0].consultant_id

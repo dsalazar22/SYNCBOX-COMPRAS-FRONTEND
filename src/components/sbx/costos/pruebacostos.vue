@@ -4,10 +4,11 @@
         <h4 class="font-weight-bold py-3 mb-4">Costo por Codigo Detalle</h4>
         <div class="w-100 text-right"></div>
 
+<!-- {{itemSelected}} -->
 
-
-            <multipane class="vertical-panes" layout="vertical" style="height:600px">
-            <div class="pane overflow-auto" :style="{ padding: '0.5rem' }">
+<div id="chart_div"></div>
+            <!-- <multipane class="vertical-panes" layout="vertical" style="height:600px"> v-if="operations.length==0" -->
+            <div class="pane overflow-auto" :style="{ padding: '0.5rem' }" >
                 <div>
                     <div>
                         <div >
@@ -26,7 +27,7 @@
                                 </b-tr>
                                 </b-thead>
                                 <b-tbody>
-                                    <b-tr v-for="(item ,index)  in (arraytblOriginal)" :key="index" :class="(itemSelected.Code == item.Code ? 'bg-warning' : '') " >
+                                    <b-tr v-for="(item ,index)  in (arraytblOriginal)" :key="index" :class="(itemSelected.Code == item.Code ? 'bg-warning' : '')" v-show="itemSelected.Parent == null || itemSelected.Parent == item.Parent" >
                                         <b-td data-th="Codigo" class="text-nowrap" @click="toggle(item, index)" >
                                             <span v-bind:style="setPadding(item)">                
                                                 <i :class="'text-success fas fa-'+ iconName(item)"></i>
@@ -49,8 +50,12 @@
                     </div>
                 </div>
             </div>
-            <multipane-resizer></multipane-resizer>
-            <div class="pane overflow-auto" :style="{ padding: '0.5rem' }">
+
+
+            <!-- <multipane-resizer></multipane-resizer> -->
+            <div>
+            <hr>
+            <div class="overflow-auto" :style="{ padding: '0.5rem' }">
                 <div style="width:100%;">
                     <h4>Operaciones</h4>
                     <b-table-simple small style="width:100%; font-size:12px">
@@ -170,7 +175,11 @@
                         </b-table-simple>
                     </div>
                 </div>
-            </multipane>
+            </div>
+            <b-btn block variant="info" size="xs" @click="itemSelected={};operations=[]" v-if="itemSelected.Parent != null">
+                CERRAR INFORMACION REFERENCIA SELECCIONADA
+            </b-btn>
+            <!-- </multipane> -->
 
 <!-- <b-modal v-model="detalleCodigo" size="lg" title="Detalle Codigo">
 
@@ -201,7 +210,7 @@
 
 <b-modal v-model="detalleCodigo" size="xl" :title="`${productDetails.CCCode} - ${productDetails.CCDescription}`">
  <!--  -->
-
+<!-- {{productDetails.Products}} -->
     <b-table small show-empty stacked="md" :items="productDetails.Products" :fields="columnsDetails" class="mt-2">
         <template v-slot:cell(production_per_hh)="row">
             <div class="text-left text-nowrap">
@@ -306,8 +315,33 @@
                 let vm = this;
                 var newObj = [];
                 vm.recursive(vm.operations, newObj, 0, vm.itemId2, vm.isExpanded2);
-                console.log(newObj)
                 return newObj;
+            }
+        },
+        watch:{
+            'itemSelected':function(value){
+                document.getElementById('chart_div').innerHTML=''
+
+                if(value.Code != undefined){
+                    let vm = this;
+
+                    var newObj = [];
+                    newObj.push([{'v':`${value.Code}`, 'f':`${value.Code} <br> ${value.Description}`},
+                                '', ''])
+                    if(value.Materials != null){
+                        for (let index = 0; index < value.Materials.length; index++) {
+                            const element = value.Materials[index];
+                            newObj.push([`<div style="display: none;">${value.Code}</div>${element.child_code}<br>${element.child_description}<div style="color:red; font-style:italic">MP</div>`, value.Code, ''])
+                            
+                        }
+                    }
+                    
+                    vm.prepareChart(vm.itemSelected, newObj)
+
+                    this.arrChart = newObj
+                    google.charts.setOnLoadCallback(this.drawChart);
+                }
+
             }
         },
         data: () => ({
@@ -325,6 +359,7 @@
 
             codeDetails:[],
             columnsDetails:[
+                {key:'parent_code', label:"Padre"},
                 {key:'child_code', label:"Codigo"},
                 {key:'child_description', label:"Descripcion"},
                 {key:'unity_measure', label:"UM"},
@@ -401,11 +436,75 @@
             itemSelected:{},
 
             itemsproductstotales:{},
+            chart:null,
+            arrChart:null,
             
             ///
 
         }),
         methods:{
+            prepareChart(value, newObj){
+                let vm = this
+                if(value.Materials != null){
+                    
+                    for (let index = 0; index < value.Materials.length; index++) {
+                        const elm = value.Materials[index];
+                        // console.log(value.Code,elm)
+                        newObj.push([`<div style="display: none;">${value.Code}</div>${elm.child_code}<br>${elm.child_description}<div style="color:red; font-style:italic">MP</div>`, value.Code, ''])
+                        
+                    }
+                }
+                if(value.detalle != null){
+                    value.detalle.forEach(function(element) { {
+                            newObj.push([{'v':element.Code, 'f':`${element.Code} <br> ${element.Description}`},
+                                value.Code, ''])
+                            vm.prepareChart(element, newObj)
+                        }
+                    })
+                }
+            },
+
+            selectHandler(e) {
+                console.log(e, this.chart.getSelection())
+            },
+
+
+            drawChart() {
+
+                // [{'v':'Mike', 'f':'Mike<div style="color:red; font-style:italic">President</div>'},
+                //     '', ''],
+                //     [{'v':'Jim', 'f':'Jim<div style="color:red; font-style:italic">Vice President</div>'},
+                //     'Mike', 'VP'],
+                //     ['Alice', 'Mike', ''],
+                //     ['Bob', 'Jim', 'Bob Sponge'],
+                //     ['Carol', 'Bob', ''],
+                //     ['Uno', 'Alice', '']
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Name');
+                data.addColumn('string', 'Manager');
+                data.addColumn('string', 'ToolTip');
+
+                // For each orgchart box, provide the name, manager, and tooltip to show.
+                data.addRows(
+                    this.arrChart
+                );
+
+                data.setRowProperty(0, 'selectedStyle', 'background-color:#00FF00');
+
+                // Create the chart.
+
+                let ch = new google.visualization.OrgChart(document.getElementById('chart_div'));
+                
+                this.chart = ch
+                
+                google.visualization.events.addListener(ch, 'select', this.selectHandler);
+                // Draw the chart, setting the allowHtml option to true for the tooltips.
+                ch.draw(data, {'allowHtml':true});
+
+                
+            },
+            
             calcularInfo(valor, item, itemop){
                 let total = 0
                 if( itemop.DriverRoute == "PrdHH"){
@@ -432,6 +531,7 @@
                 return total
             },
             abrirDetalle(item){
+                console.log(item)
                 this.productDetails = item
                 this.detalleCodigo=true
 
@@ -471,8 +571,6 @@
                     if(item.Description == element.Description){
                         if(this.operations[index]["expend"] == true){
                             index = index+1
-
-
                             element["expend"] = false
                             element["leaf"] = false
                             operations2.push(element)
@@ -490,9 +588,7 @@
                     }
                     
                 }
-
                 this.operations=operations2
-                
             },
 
 
@@ -600,7 +696,7 @@
 
             submit: function(){
                 infocosts.detalleproducto(this.code, this.quant).then(data => {
-                    console.log(data)
+                    // console.log(data)
 
                     this.resultado =data.data
                     // if (data.status === 202){
@@ -618,9 +714,13 @@
         },
         created(){
             infocosts.detallecostoppto('3').then(data =>{
-                console.log(data.data)
+                // console.log(data.data)
                 this.resultadoTotal = data.data
             })
+
+
+                  google.charts.load('current', {packages:["orgchart"]});
+                    
         },
     }
 </script>

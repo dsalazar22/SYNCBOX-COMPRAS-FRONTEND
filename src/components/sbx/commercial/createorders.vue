@@ -21,10 +21,10 @@
                     {{document_type_text}}
                 </div>
                 <div>
-                   <b> Direccion de Facturación: </b> {{invoice_address}}
+                   <b> Direccion de Facturación: </b> {{invoice_address}} | {{invoice_city}}
                 </div>
                 <div>
-                   <b> Direccion de Envío de Mercancía: </b> {{shipping_address}}
+                   <b> Direccion de Envío de Mercancía: </b> {{shipping_address}} | {{shipping_city}}
                 </div>
                 <div>
                     <i class="fas fa-circle text-success" v-if="(customerInfo['quota']-(customerInfo['total']+customerInfo['orders']))>0"></i>
@@ -101,13 +101,16 @@
                         </b-col>
                         <b-col sm="8">
                               <b-input-group>
-                                  
-                                <b-input-group-prepend>
+                                 <b-input-group-prepend>
                                     <b-button size="sm" v-if="invoiceAddress.length>1" @click="showSelectedInvoice = !showSelectedInvoice" variant="outline-success icon-btn"> <i class="fas fa-exchange-alt"></i></b-button>
                                 </b-input-group-prepend>
 
                                 <b-form-input v-if="!showSelectedInvoice" size="sm" id="`type-fact`" v-model="invoice_address" type="text"></b-form-input>
                                 <b-form-select v-if="showSelectedInvoice" size="sm" id="`type-fact`" v-model="invoice_address_id" :options="invoiceAddress"></b-form-select>
+
+                                <b-input-group-append>
+                                    <b-form-input size="sm" id="`type-fact`" v-model="invoice_city" type="text"></b-form-input>
+                                </b-input-group-append>
                             </b-input-group>
                         </b-col>
                     </b-row>
@@ -117,11 +120,15 @@
                         </b-col>
                         <b-col sm="8">
                             <b-input-group>
-                                <b-input-group-prepend>
+                                 <b-input-group-prepend>
                                     <b-button size="sm" v-if="shippingAddress.length>1" @click="showSelectedProduct = !showSelectedProduct" variant="outline-success icon-btn"> <i class="fas fa-exchange-alt"></i></b-button>
                                 </b-input-group-prepend>
                                 <b-form-select v-if="showSelectedProduct" size="sm" id="`type-fact`" v-model="shipping_address_id" :options="shippingAddress"></b-form-select>
                                 <b-form-input v-if="!showSelectedProduct" size="sm" id="`type-fact`" v-model="shipping_address" type="text"></b-form-input>                            
+
+                                <b-input-group-append>
+                                    <b-form-input size="sm" id="`type-fact`" v-model="shipping_city" type="text"></b-form-input>
+                                </b-input-group-append>
                             </b-input-group>
                         </b-col>
                     </b-row>
@@ -806,6 +813,8 @@ export default {
             invoiceAddress:[],
             shippingAddress:[],
             invoice_address:'',
+            invoice_city:'',
+            shipping_city:'',
             showSelectedProduct:false,
             shipping_address:'',
             editOrderCreated:false,
@@ -890,6 +899,31 @@ export default {
                     this.selectedProductItem.deadline = value
                 else
                     this.selectedProductItem.deadline = this.selectedDeadLine
+            }
+        },
+
+        'shipping_address_id':function(value){
+            if(value != null){
+                for (let index = 0; index < this.shippingAddress.length; index++) {
+                    const element = this.shippingAddress[index];
+                    if(element.value == value){
+                        this.shipping_address = element.text
+                        this.shipping_city=element.city
+                    }
+                }
+            }
+            
+        },
+
+        'invoice_address_id':function(value){
+            if(value != null ){
+                for (let index = 0; index < this.invoiceAddress.length; index++) {
+                    const element = this.invoiceAddress[index];
+                    if(element.value == value){
+                        this.invoice_address = element.text
+                        this.invoice_city=element.city
+                    }
+                }
             }
         }
     },
@@ -1113,11 +1147,12 @@ export default {
             // if(this.sale_price != 0){
                 let price = 0
                 // console.log(this.selectedProductItem.last_price)
-                if(this.selectedProductItem.last_price == 0 || this.selectedProductItem.last_price == null){
-                    price = this.selectedProductItem.price_list
-                }else{
-                    price = this.selectedProductItem.price_list <  this.selectedProductItem.last_price ? this.selectedProductItem.price_list: this.selectedProductItem.last_price
-                }
+                price = this.selectedProductItem.price_list
+                // if(this.selectedProductItem.last_price == 0 || this.selectedProductItem.last_price == null){
+                    
+                // }else{
+                //     price = this.selectedProductItem.price_list <  this.selectedProductItem.last_price ? this.selectedProductItem.price_list: this.selectedProductItem.last_price
+                // }
                 if(this.orderLocation == 'international'){
                     price= this.trm_
                     real_value/this.selectedProductItem.price_list
@@ -1145,7 +1180,6 @@ export default {
         },
 
         searchAllProducts(){
-            console.log(master+'commercialsearch/'+this.allProducts+'/'+this.itemSelectedCustomer.nit+'/')
             this.src = master+'commercialsearch/'+this.allProducts+'/'+this.itemSelectedCustomer.nit+'/'
         },
 
@@ -1207,24 +1241,6 @@ export default {
         editHeaderOrder(){this.src = master+'customersearch/'; this.editOrderCreated=true},
         //INFO HEADER PEDIDO// array
         saveHeader(){
-            if(this.invoice_address_id != null && this.invoice_address == ''){
-                for (let index = 0; index < this.invoiceAddress.length; index++) {
-                    const element = this.invoiceAddress[index];
-                    if(element.value == this.invoice_address_id){
-                        this.invoice_address = element.text
-                    }
-                }
-            }
-
-            if(this.shipping_address_id != null && this.shipping_address == ''){
-                for (let index = 0; index < this.shippingAddress.length; index++) {
-                    const element = this.shippingAddress[index];
-                    if(element.value == this.shipping_address_id){
-                        this.shipping_address = element.text
-                    }
-                }
-            }
-
             for (let index = 0; index < this.info_order_type.length; index++) {
                 const element = this.info_order_type[index];
                 if(element.value==this.document_type){
@@ -1235,7 +1251,9 @@ export default {
             this.infoHeader.customer_id=this.itemSelectedCustomer.customers_id
             this.infoHeader.document_type=this.document_type
             this.infoHeader.invoice_address = this.invoice_address
+            this.infoHeader.invoice_city = this.invoice_city
             this.infoHeader.shipping_address = this.shipping_address
+            this.infoHeader.shipping_city = this.shipping_city
             this.infoHeader.document_customer = this.document_customer
             this.infoHeader.orders_id = this.order_id
             this.infoHeader.released = false
@@ -1455,6 +1473,7 @@ export default {
         },
 
         onHit (item) {
+            // console.log(item)
             if(this.order_id == 0 || this.editOrderCreated){
                 this.loadcartera(item.nit)
                 this.customerInfo.quota = item.quota
@@ -1465,6 +1484,8 @@ export default {
                 this.showSelectedInvoice = false
                 this.invoice_address = ''
                 this.shipping_address = ''
+                this.invoice_city = ''
+                this.shipping_city = ''
                 this.consultant_id = item.consultant_id
                 
 
@@ -1472,27 +1493,33 @@ export default {
                     this.invoiceAddress = []
                     this.shippingAddress = []
                     let array = data.data
+
+                    // console.log(data.data)
                     for (let index = 0; index < array.length; index++) {
                         const element = array[index];
                         if(element.type == "product"){
-                            this.shippingAddress.push({value:element.customers_address_id,text:element.address+' ('+element.city+' - '+element.country+')'})
+                            this.shippingAddress.push({value:element.customers_address_id,text:element.address, city:element.city})
                         }else{
-                            this.invoiceAddress.push({value:element.customers_address_id,text:element.address+' ('+element.city+' - '+element.country+')'})
+                            this.invoiceAddress.push({value:element.customers_address_id,text:element.address, city:element.city})
                         }
                     }
                     
                     if(this.shippingAddress.length == 1){
                         this.shipping_address = this.shippingAddress[0].text
+                        this.shipping_city = this.shippingAddress[0].city
                     }else if(this.shippingAddress.length == 0){
                         this.shipping_address = item.address
+                        this.shipping_city = item.city
                     }else{
                         this.showSelectedProduct = true
                     }
 
                     if(this.invoiceAddress.length == 1){
                         this.invoice_address = this.invoiceAddress[0].text
+                        this.invoice_city = this.shippingAddress[0].city
                     }else if(this.invoiceAddress.length == 0){
                         this.invoice_address = item.address
+                        this.invoice_city = item.city
                     }else{
                         this.showSelectedInvoice = true
                     }
@@ -1585,6 +1612,7 @@ export default {
         loadCompleteInfo(value){
             infotrade.addheadorders(value,"get").then(data =>{
               if(data.status == 200){
+                //   console.log(data.data[0])
                 // this.infoHeader.order_id = data.data  
                 // this.order_id = data.data
 
@@ -1599,9 +1627,11 @@ export default {
                     this.infoHeader.order_id = data.data[0].order_id
                     this.itemSelectedCustomer.customers_id = data.data[0].customers_id
                     this.document_type=data.data[0].document_type
-                    this.invoice_address = data.data[0].invoice_address
                     this.shipping_address = data.data[0].shipping_address
                     this.document_customer = data.data[0].document_customer
+                    this.invoice_address =  data.data[0].invoice_address
+                    this.invoice_city =  data.data[0].invoice_city
+                    this.shipping_city =  data.data[0].shipping_city
                     this.orders_id = data.data[0].order_id
                     this.order_id = data.data[0].order_id
                     this.consultant_id = data.data[0].consultant_id
@@ -1639,7 +1669,6 @@ export default {
             result.module = 'local'
             infosysconfig.commercialcontroller(result, "get").then(data => {
                 this.policies = data.data[0]
-                console.log(data.data[0])
             })
         
         if(value == 0){
