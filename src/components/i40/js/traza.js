@@ -20,7 +20,7 @@ var infotraza = {
   },
 
   getinfows: function (info) {
-    console.log('getinfows/'+info)
+    // console.log('getinfows/'+info)
     return axios.get(traza + 'getinfows/'+info, axiosConfig)
   },
   

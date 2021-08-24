@@ -587,6 +587,10 @@ const router = new Router({
       component: () => import('@/components/sbx/costos/presupuesto_cm_prd.vue')
     },
     { 
+      path: 'cst/cecosact',
+      component: () => import('@/components/sbx/costos/reportececos.vue')
+    },
+    { 
       path: 'cst/sbrp',
       component: () => import('@/components/sbx/costos/subrepartos.vue')
     }, 
@@ -614,6 +618,10 @@ const router = new Router({
     {
       path: 'reprt/detalleOrdenProduccion/:id',
       component: () => import('@/components/sbx/reports/controlfloor/OrdnProduccion/OrdenProduccion'), name:'detalleOrdenProduccion'
+    },
+    {
+      path: 'reprt/reportproduction',
+      component: () => import('@/components/sbx/reports/controlfloor/OrdnProduccion/ReportesProduccion'), name:'reportproduction'
     },
     {
       path: 'reprt/products',

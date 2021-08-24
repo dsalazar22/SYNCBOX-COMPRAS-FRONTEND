@@ -384,7 +384,7 @@ export default {
         },
 
         setChange(){
-            console.log(this.itemOrderSelected)
+            // console.log(this.itemOrderSelected)
             infoplanning.calendarcontroller({ws_planning_default_id: this.itemOrderSelected.ws_planning_default_id, workstation_id:this.wsselected}, "select-change-workstation").then(data =>{
                 this.content_load()
             })

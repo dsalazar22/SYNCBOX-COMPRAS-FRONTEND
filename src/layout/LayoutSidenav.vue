@@ -139,6 +139,7 @@
         <sidenav-router-link class="ml-0" to="/reprt/products" :exact="true">Busqueda por Producto</sidenav-router-link>
         <sidenav-router-link class="ml-0" to="/reprt/productiontime" :exact="true">Productos Rango de Tiempo</sidenav-router-link>
         <sidenav-router-link class="ml-0" to="/reprt/cmp" :exact="true">Consumo de Materiales</sidenav-router-link>
+        <sidenav-router-link class="ml-0" to="/reprt/reportproduction" :exact="true">Reportes</sidenav-router-link>
         <sidenav-router-link class="ml-0" to="/reprt/calls" :exact="true">Llamados</sidenav-router-link>
       </sidenav-menu>
 

@@ -791,7 +791,7 @@ export default {
     created() {
         google.charts.load('current', {'packages':['timeline']});
         this.order_id=this.orderid
-        console.log(this.orderid)
+        // console.log(this.orderid)
         this.$emit('refresh',true)
         this.validateMontaje()
     }, 

@@ -504,7 +504,7 @@ export default {
                 for (let index = 0; index < data.data.length; index++) {
                     const element = data.data[index];
                     if(element.service_name == 'automount'){
-                        console.log(element)
+                        // console.log(element)
                         this.automount = element
                     }
                     

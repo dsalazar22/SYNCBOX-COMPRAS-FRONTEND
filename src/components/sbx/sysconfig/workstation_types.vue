@@ -242,7 +242,7 @@
                         if(data.data != ''){
                             let tdrivers = []
 
-                            console.log(tdrivers)
+                            // console.log(tdrivers)
 
                             for (let index = 0; index < data.data.length; index++) {
                                 let element = data.data[index]

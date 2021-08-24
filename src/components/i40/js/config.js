@@ -86,7 +86,6 @@ var infoconfig = {
   getuserswsgroup: function (info) {
     return axios.get(config + 'userswsgroup/' + info, axiosConfig)
   },
-  
 }
 
 export {

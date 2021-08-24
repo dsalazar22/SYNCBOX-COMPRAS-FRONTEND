@@ -496,7 +496,7 @@ export default {
         },
 
         data_changeOrderPoli(value, event){
-            console.log(value, event)
+            // console.log(value, event)
 
             let pos = -1
 

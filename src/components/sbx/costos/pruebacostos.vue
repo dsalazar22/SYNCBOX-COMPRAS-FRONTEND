@@ -6,7 +6,16 @@
 
 <!-- {{itemSelected}} -->
 
-<div id="chart_div"></div>
+<div v-if="arraytblOriginal.length==0">
+
+
+        <b-input-group>
+            <b-form-input v-model="filter" placeholder="Buscar..." />
+            <b-input-group-append>
+            <b-btn :disabled="!filter" @click="filter = ''"> <span class="oi oi-delete" ></span> </b-btn>
+            </b-input-group-append>
+        </b-input-group>
+        <div id="chart_div"></div>
             <!-- <multipane class="vertical-panes" layout="vertical" style="height:600px"> v-if="operations.length==0" -->
             <div class="pane overflow-auto" :style="{ padding: '0.5rem' }" >
                 <div>
@@ -20,10 +29,53 @@
                                     <b-th class="text-nowrap">Unidad Medida</b-th>
                                     <b-th class="text-nowrap">Desperdicio</b-th>
                                     <b-th class="text-nowrap">Programado</b-th>
-                                    <b-th class="text-nowrap">Total Procesos</b-th>
+                                    <b-th class="text-nowrap">V/H Procesos</b-th>
                                     <b-th class="text-nowrap">Valor Materiales</b-th>
-                                    <b-th class="text-nowrap">Valor Procesos</b-th>
-                                    <b-th class="text-nowrap">Valor/Unidad</b-th>
+                                    <b-th class="text-nowrap">Valor Proceso</b-th>
+                                </b-tr>
+                                </b-thead>
+                                <b-tbody>
+                                    <b-tr v-for="(itemx ,index)  in (resultadoPrimero)" :key="index" >
+                                        <b-td data-th="Codigo" class="text-nowrap" @click="selectedCode(itemx)" >
+                                            <span>                
+                                                <i :class="'text-success fas fa-'+ (itemx.detalle>0 ? 'check': 'circle')"></i>
+                                            </span> {{itemx.Code}}
+                                        </b-td>
+                                        <b-td data-th="Descripcion">
+                                            <div class="text-nowrap"> {{itemx.Description}} </div> 
+                                        </b-td>
+                                        <b-td data-th="Unidad Medida"> {{itemx.UnityMeasure}} </b-td>
+                                        <b-td data-th="Desperdicio"> {{formatAmount(itemx.ScrapTotal.toFixed(2))}} </b-td>
+                                        <b-td data-th="Programado"> {{formatAmount(itemx.TotalProgrammed.toFixed(2))}} </b-td>
+                                        <b-td data-th="Total Procesos"> {{formatAmount(itemx.RateComponents.toFixed(2))}} </b-td>
+                                        <b-td data-th="Valor Materiales"> {{formatAmount(itemx.TotalMaterials.toFixed(2))}} </b-td>
+                                        <b-td data-th="Valor/Unidad"> {{formatAmount((itemx.Tarifa).toFixed(2))}} </b-td>
+                                    </b-tr>
+                                </b-tbody>
+                            </b-table-simple>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+<div v-if="arraytblOriginal.length>0">
+            <div id="chart_div"></div>
+            <!-- <multipane class="vertical-panes" layout="vertical" style="height:600px"> v-if="operations.length==0" -->
+            <div class="pane overflow-auto" :style="{ padding: '0.5rem' }" >
+                <div>
+                    <div>
+                        <div >
+                            <b-table-simple small style="font-size:12px">
+                                <b-thead>
+                                <b-tr class style="text-align: left;">
+                                    <b-th class="text-nowrap">Codigo</b-th>
+                                    <b-th class="text-nowrap">Descripcion</b-th>
+                                    <b-th class="text-nowrap">Unidad Medida</b-th>
+                                    <b-th class="text-nowrap">Desperdicio</b-th>
+                                    <b-th class="text-nowrap">Programado</b-th>
+                                    <b-th class="text-nowrap">V/H Procesos</b-th>
+                                    <b-th class="text-nowrap">Valor Materiales</b-th>
+                                    <b-th class="text-nowrap">Valor Proceso</b-th>
                                 </b-tr>
                                 </b-thead>
                                 <b-tbody>
@@ -39,10 +91,9 @@
                                         <b-td data-th="Unidad Medida"> {{item.UnityMeasure}} </b-td>
                                         <b-td data-th="Desperdicio"> {{formatAmount(item.ScrapTotal.toFixed(2))}} </b-td>
                                         <b-td data-th="Programado"> {{formatAmount(item.TotalProgrammed.toFixed(2))}} </b-td>
-                                        <b-td data-th="Total Procesos"> {{formatAmount(item.Rate.toFixed(2))}} </b-td>
+                                        <b-td data-th="Total Procesos"> {{formatAmount(item.RateComponents.toFixed(2))}} </b-td>
                                         <b-td data-th="Valor Materiales"> {{formatAmount(item.TotalMaterials.toFixed(2))}} </b-td>
-                                        <b-td data-th="Valor Procesos"> {{formatAmount(item.RateComponents.toFixed(2))}} </b-td>
-                                        <b-td data-th="Valor/Unidad"> {{formatAmount((item.TotalMaterials+item.RateComponents).toFixed(2))}} </b-td>
+                                        <b-td data-th="Valor/Unidad"> {{formatAmount((item.Tarifa).toFixed(2))}} </b-td>
                                     </b-tr>
                                 </b-tbody>
                             </b-table-simple>
@@ -66,7 +117,7 @@
                             <b-th class="text-nowrap">HH</b-th>
                             <b-th class="text-nowrap">Kw/h</b-th>
                             <b-th class="text-nowrap">Kcal/h</b-th>
-                            <!-- <b-th class="text-nowrap">Valor/Und</b-th> -->
+                            <b-th class="text-nowrap">Tarifa</b-th>
                         </b-tr>
                         </b-thead>
                         <b-tbody>
@@ -82,9 +133,10 @@
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="HH"> {{formatAmount(item.TotalProductionManPerHours.toFixed(2))}} </b-td>
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Kw/h"> {{formatAmount(item.TotalEnergyPerHour.toFixed(2))}} </b-td>
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Kcal/h"> {{formatAmount(item.TotalFuelPerHour.toFixed(2))}} </b-td>
-                                <!-- <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Valor/Unidad"> {{formatAmount(item.Rate.toFixed(2))}} </b-td> -->
+                                <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Tarifa"> {{formatAmount(item.Tarifa.toFixed(2))}} </b-td>
 
                                 <b-td v-if="item.leaf == true" colspan="6">
+                                    
                                     <h4>Drivers</h4>
                                     <b-table-simple small style="width:100%; font-size:12px">
                                         <b-thead>
@@ -93,7 +145,8 @@
                                             <b-th class="text-nowrap">Descripcion</b-th>
                                             <b-th class="text-nowrap">Driver</b-th>
                                             <b-th class="text-nowrap">Precio Total</b-th>
-                                            <b-th class="text-nowrap">Precio Hora</b-th>
+                                            <b-th class="text-nowrap">Tarifa</b-th>
+                                            <b-th class="text-nowrap">Valor Proceso</b-th>
                                             <!-- <b-th class="text-nowrap">Valor Final</b-th> -->
                                         </b-tr>
                                         </b-thead>
@@ -105,7 +158,8 @@
                                                 <b-td data-th="Descripcion" class="text-nowrap"> {{itemx.DriverDescription}} </b-td>
                                                 <b-td data-th="Descripcion" class="text-nowrap"> {{itemx.DriverRoute}} </b-td>
                                                 <b-td data-th="Precio Total"> {{formatAmount(itemx.PriceTotal.toFixed(2))}} </b-td>
-                                                <b-td data-th="Precio Hora"> {{formatAmount((calcularInfo(itemx.PriceTotal,item, itemx)).toFixed(2))}} </b-td>
+                                                <b-td data-th="Tarifa"> {{formatAmount(itemx.PricePerHour.toFixed(2))}} </b-td>
+                                                <b-td data-th="Valor Proceso"> {{formatAmount(itemx.Tarifa.toFixed(2))}} </b-td>
                                                 <!-- <b-td data-th="Valor Final"> {{formatAmount(item.FinalPrice.toFixed(2))}} </b-td> -->
                                             </b-tr>
                                         </b-tbody>
@@ -176,10 +230,11 @@
                     </div>
                 </div>
             </div>
-            <b-btn block variant="info" size="xs" @click="itemSelected={};operations=[]" v-if="itemSelected.Parent != null">
-                CERRAR INFORMACION REFERENCIA SELECCIONADA
+            <b-btn block variant="info" size="xs" @click="itemSelected={};operations=[]; resultadoTotal=[]" v-if="arraytblOriginal.length>0">
+                CERRAR INFORMACION REFERENCIA SELECCIONADA / BORRAR SELECCION
             </b-btn>
             <!-- </multipane> -->
+</div>
 
 <!-- <b-modal v-model="detalleCodigo" size="lg" title="Detalle Codigo">
 
@@ -319,6 +374,16 @@
             }
         },
         watch:{
+             'filter':function(value){
+                this.resultadoPrimero = this.resultadoPrimeroGeneral.filter(function (task) {
+                    if(task.Code.toLowerCase().includes(value.toLowerCase()) || task.Description.toLowerCase().includes(value.toLowerCase()))
+                        return task
+                });
+
+                // this.totalRows = this.tableCommercialsOrders.length
+                // this.currentPage = 1
+            },
+
             'itemSelected':function(value){
                 document.getElementById('chart_div').innerHTML=''
 
@@ -351,6 +416,10 @@
             quant:null,
             resultado:[],
             splitterModel: 150,
+
+            resultadoPrimero:[],
+            resultadoPrimeroGeneral:[],
+            filter:'',
 
             infoRoute:{},
             infoMP:[],
@@ -465,7 +534,7 @@
             },
 
             selectHandler(e) {
-                console.log(e, this.chart.getSelection())
+                // console.log(e, this.chart.getSelection())
             },
 
 
@@ -531,7 +600,7 @@
                 return total
             },
             abrirDetalle(item){
-                console.log(item)
+                // console.log(item)
                 this.productDetails = item
                 this.detalleCodigo=true
 
@@ -709,17 +778,22 @@
                     console.log(error.status)
                 })
             },
-            
+            selectedCode(item){
+                infocosts.selectedCode(item.Code).then(data =>{
+                    // console.log(data.data)
+                    this.resultadoTotal = data.data
+                })
+            }
         
         },
         created(){
             infocosts.detallecostoppto('3').then(data =>{
                 // console.log(data.data)
-                this.resultadoTotal = data.data
+                this.resultadoPrimeroGeneral = data.data
+                this.resultadoPrimero = data.data
             })
-
-
-                  google.charts.load('current', {packages:["orgchart"]});
+            
+            google.charts.load('current', {packages:["orgchart"]});
                     
         },
     }

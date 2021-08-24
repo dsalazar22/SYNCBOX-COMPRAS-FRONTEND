@@ -583,7 +583,7 @@ export default {
                 // values.push(element)
                 // newTable.push(this.tableData[index])
                 await infoplanning.sandbox_planning(element).then(data => {
-                    console.log(data)
+                    // console.log(data)
                     if(data.status == 200){
                         this.tableData[index]["NuevaFecha"] = data.data
                     }
@@ -715,9 +715,9 @@ export default {
 
                                 if(element.Code==id.Code){
                                     let vle = id.ProductionPerHour.toString()
-                                    console.log(this.resumen_planning[index].ResumenActivities[index2], this.resumen_planning[index].ResumenActivities[index2].ResumenWorkstations[index3])
+                                    // console.log(this.resumen_planning[index].ResumenActivities[index2], this.resumen_planning[index].ResumenActivities[index2].ResumenWorkstations[index3])
                                      infoplanning.setstandard(this.resumen_planning[index].ResumenActivities[index2].OrderProductionProcessId, vle).then(data =>{
-                                         console.log(data)
+                                        //  console.log(data)
                                      })
                                     this.resumen_planning[index].ResumenActivities[index2].ResumenWorkstations[index3].ProductionPerHour= parseFloat(vle)
                                     return

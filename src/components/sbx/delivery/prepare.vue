@@ -158,6 +158,7 @@ export default {
                 {key:'requested_amount', label:"Cantidad Solicitada"},
                 {key:'delivered_quantity', label:"Cantidad Entregada"},
                 {key:'pending_amount', label:"Cantidad Pendiente"},
+                {key:'deadline', label:"Fecha Entrega"},
                 {key:'delivery_amount', label:"Entrega Actual"},
             ],
             documentCode:null,
@@ -223,7 +224,7 @@ export default {
 
 
         open_deliveries(item){
-            console.log(item)
+            // console.log(item)
             this.selectedOrderDetail = item
             this.tableWarehouse=[]
             this.selectedWarehouse={
@@ -251,7 +252,7 @@ export default {
             })
             
             infotrade.deliveries(this.dataresult[0].deliveries_header_id, "get").then(data =>{
-                console.log(data)
+                // console.log(data)
                 if(data.data != "")
                     this.tableDeliveries = data.data
                 else

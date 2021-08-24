@@ -453,8 +453,6 @@
                                     this.selectedPlant = element.workstation_plant_selected
 
                                     this.loadWorkstations("select", element)
-
-
                                 }
                             }
                         }

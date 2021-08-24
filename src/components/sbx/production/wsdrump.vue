@@ -1140,7 +1140,7 @@ export default {
             }
 
             infosysconfig.documentstatus({module:'production_order'}, "select").then(data => {
-                console.log("-----_", data.data)
+                // console.log("-----_", data.data)
                 if(data.data != ''){
                     this.optionsStatus = data.data
                 }else{
@@ -1179,7 +1179,7 @@ export default {
         }
     },
     created(){
-        console.log(this.code_workstation)
+        // console.log(this.code_workstation)
         this.isFromRealTime = this.fromRealTime
 
         if(this.$route.params.wscode != undefined){

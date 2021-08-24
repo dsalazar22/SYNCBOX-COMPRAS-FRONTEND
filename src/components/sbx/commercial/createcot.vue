@@ -1092,8 +1092,8 @@ export default {
             for (let index2 = 0; index2 < dataDetails.length; index2++) {
                 const element2 =dataDetails[index2];
                 element2.orders_id = headerid 
-                element.deadline = this.dateitems
-                element.requested_date = this.dateitems
+                element2.deadline = this.dateitems
+                element2.requested_date = this.dateitems
                 await infotrade.addorderdetails(element2,"insert").then(data =>{})
             }
 
@@ -1111,7 +1111,7 @@ export default {
         },
 
         addNewVersion(item){
-            console.log(item.quotation_id)
+            // console.log(item.quotation_id)
 
             infotrade.quotcontroller(item.quotation_id,"add-version").then(data1 =>{
               if(data1.status == 200){
@@ -1126,7 +1126,7 @@ export default {
         },
 
         activeVersion(item,qttid){
-            console.log(item)
+            // console.log(item)
             infotrade.quotcontroller(item.quotation_version_id,"active-version").then(data1 =>{
               if(data1.status == 200){
                   infotrade.quotcontroller(qttid,"get").then(data =>{
@@ -1165,7 +1165,7 @@ export default {
         },
 
         handleDiscount(){
-            console.log(this.itemSelectedCustomer)
+            // console.log(this.itemSelectedCustomer)
             // if(this.itemSelectedCustomer.discount == undefined)
             //     this.itemSelectedCustomer.discount 0
             
@@ -1753,7 +1753,7 @@ export default {
 
                 if (data.data != "")
 
-                    console.log(data.data[0])
+                    // console.log(data.data[0])
 
                     this.headercomplete = data.data[0]
                     this.defaultVersionSelected( data.data[0].versions)

@@ -243,7 +243,7 @@ export default {
 
                         for (let index = 0; index < this.selectedFiles.length; index++) {
                             const element = this.selectedFiles[index];
-                            console.log(element)
+                            // console.log(element)
                             inforundb.uploadFile(postAction, element).then(data=>{
                                 this.infoLoad()
                             })

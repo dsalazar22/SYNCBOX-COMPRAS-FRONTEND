@@ -155,7 +155,7 @@ export default {
             })
 
             infoproduction.getcurrentorders(this.info.wscode).then(data => {
-                console.log(data.data, this.info.wscode)
+                // console.log(data.data, this.info.wscode)
                 this.activeorders = data.data
             })
         },

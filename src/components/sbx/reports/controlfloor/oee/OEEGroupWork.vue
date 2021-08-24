@@ -438,7 +438,7 @@ export default {
         this.dateFinish +
         ":59";
 
-        console.log(reports+'/obtenerOEEProductosGrupoCentroTrabajo/'+paramtros)
+        // console.log(reports+'/obtenerOEEProductosGrupoCentroTrabajo/'+paramtros)
     
            this.$http.get(reports+'/obtenerOEEProductosGrupoCentroTrabajo/'+paramtros)
                     .then(respuesta =>{

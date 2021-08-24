@@ -253,7 +253,7 @@ export default {
             this.listDefinitionBOM['key_'+row.item.child_id.toString()]=[]
             var result = []
             await infoconfig.billofmaterialscontrol([], row.item.child_id, "select").then(data => {
-                console.log(data)
+                // console.log(data)
                 if (data.status === 202){
                     // console.log(data)
                     // this.showCustom('bg-danger text-white', "Error","¡Error al Crear el Registro!")

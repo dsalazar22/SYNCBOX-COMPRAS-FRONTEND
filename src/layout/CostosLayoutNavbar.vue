@@ -31,7 +31,7 @@
         </sidenav-menu>
 
         
-        <sidenav-router-link to="/bcf/um" icon="fas fa-ruler">Unidades de Medida</sidenav-router-link>
+        <sidenav-router-link to="/cst/cecosact" icon="fas fa-ruler">Informe CeCos por Actividad</sidenav-router-link>
 
         <div class="mt-3">|</div>
         

@@ -220,6 +220,19 @@
                         <!-- <b-btn variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="data_change(row.item,'delete')"><i class="ion ion-md-close"></i></b-btn> -->
                       </div>
                     </template>
+                    <template v-slot:cell(consecutive_order)="row">
+                      
+                        <div>
+                          <b-form-checkbox-group
+                              id="checkbox-group-2"
+                              v-model="selectedOrders"
+                            >
+                              <b-form-checkbox :value="row.item">{{row.item.consecutive_order}}</b-form-checkbox>
+                          </b-form-checkbox-group>
+                          
+                        </div>
+                      
+                    </template>
                     <template v-slot:cell(order_id)="row">
                       <div class="d-flex justify-content-between">
                         <div>
@@ -347,12 +360,15 @@
             <!-- {{checkDefaultSpeed(row.item)}} -->
             <b-btn
               v-if="!(row.item.tools_id == itemTimeSelected.tools_id)"
-              variant="outline-success borderless icon-btn"
+              variant="outline-dark borderless icon-btn"
               class="btn-xs"
               @click.prevent="selectedSpeed(row.item)"
             >
               <i class="ion ion-md-checkmark"></i>
             </b-btn>
+
+            <i v-if="(row.item.tools_id == itemTimeSelected.tools_id)" class="fas fa-circle text-success"></i>
+
             <!-- <b-btn variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="removeSpeed(row.item)"><i class="ion ion-md-close"></i></b-btn> -->
           </div>
         </template>
@@ -381,7 +397,7 @@
             placeholder="Unidades por Ciclo"
             type="number"
             min="0.01"
-            v-model="unityPerCicle"
+            v-model="itemTimeSelected.unity_expected_cycle"
             :disabled="!itemTimeSelected.modify_unity_expected"
           />
         </div>

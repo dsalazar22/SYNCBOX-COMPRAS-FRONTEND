@@ -438,7 +438,7 @@
                     </b-input-group-text>
                 </b-input-group> -->
 
-                <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: 0, right: 'auto'}">
                     <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
                         <span class="name" v-text="item.code"></span>
                         <span class="text-muted">{{ item.description }}</span>
@@ -582,7 +582,7 @@
                                             <i class="ion ion-ios-search"></i>
                                         </b-input-group-text>
 
-                                        {{valueSelectedTool}}
+                                        <!-- {{valueSelectedTool}} -->
                                         <input type="text" class="form-control"
                                             placeholder="Seleccione un Herramental"
                                             autocomplete="off"
@@ -597,7 +597,7 @@
                                             <i class="ion ion-md-close" ></i>
                                         </b-input-group-text>
                                     </b-input-group>
-                                    <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                                    <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: 0, right: isRTL ? 0 : 'auto'}">
                                         <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
                                             <span class="name" v-text="item.code"></span>
                                             <span class="text-muted">{{ item.description }}</span>
@@ -1349,7 +1349,7 @@ export default {
             inforundb.downloadProfilePicture(postAction).then(data=>{
                 try{
                     if(data.data.byteLength>0){
-                        console.log(data.data)
+                        // console.log(data.data)
                         var _imageEncode = function (arrayBuffer) {
                             let u8 = new Uint8Array(arrayBuffer)
                             let b64encoded = btoa([].reduce.call(new Uint8Array(arrayBuffer),function(p,c){return p+String.fromCharCode(c)},''))
@@ -1710,7 +1710,7 @@ export default {
                 if (data.status === 202){
                     this.showCustom('bg-danger text-white', "Error","¡Error al Crear el Registro!")
                 }else{
-                    console.log(data.data)
+                    // console.log(data.data)
                     if (data.data != "")
                         this.listDefinitionBOM = data.data
                 }
@@ -1948,7 +1948,7 @@ export default {
 
                     infomaster.lines(this.moduleSelected,"select").then(datalines => {
                         this.infoLines = []
-                        console.log(datalines)
+                        // console.log(datalines)
                         if(datalines.data != ""){
                             var lines = datalines.data
                             for (let index = 0; index < lines.length; index++) {

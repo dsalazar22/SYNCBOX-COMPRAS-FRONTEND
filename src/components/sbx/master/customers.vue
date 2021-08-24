@@ -769,7 +769,7 @@
             this.ojbContacto.customer_id = this.objInfo.customers_id
             this.contactsData = []
             infoconfig.controllercontact(this.ojbContacto,this.ojbContacto.contacts_customer_id == undefined ? "insert" : "update").then(data =>{
-                console.log(data.data)
+                // console.log(data.data)
                 
                 if (data.status === 202){
                     this.showCustom('bg-danger text-white', "Error","¡Error al Borrar el Registro!")
@@ -789,7 +789,7 @@
             this.contactsData = []
             this.ojbContacto.customer_id = this.objInfo.customers_id
             infoconfig.controllercontact(this.ojbContacto, "delete").then(data => {
-                console.log(data.data)
+                // console.log(data.data)
                 if (data.status === 202){
                     this.showCustom('bg-danger text-white', "Error","¡Error al Borrar el Registro!")
                 }else{

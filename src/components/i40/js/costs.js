@@ -52,6 +52,10 @@ var infocosts = {
         return axios.get(costs + 'getsubrepartos', axiosConfig)
     },
     
+    getCeCosPorActividad: function () {
+        return axios.get(costs + 'getcecosactividad', axiosConfig)
+    },
+
     workstationdrivers: function (action,info) {
         if(action == "get")
             return axios.get(costs + 'workstationdrivers/'+ info, axiosConfig)
@@ -83,6 +87,10 @@ var infocosts = {
 
     delliquidarserpro: function (info) {
         return axios.post(costs + 'delliquidarserpro', info, axiosConfig)
+    },
+
+    selectedCode: function (code) {
+        return axios.get(costs + 'selectedcode/'+code, axiosConfig)
     },
 
     detallecostoppto: function (code) {

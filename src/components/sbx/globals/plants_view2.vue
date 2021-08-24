@@ -275,6 +275,7 @@ export default {
         }
 
         realtime.obteneroeeinfocomplete().then(data => {
+            // console.log(mods,data)
             this.tableData = []
             this.indicadores={
                 eficiencia:0,

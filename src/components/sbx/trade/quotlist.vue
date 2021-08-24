@@ -146,7 +146,7 @@ export default {
 
         loadcartera(){
             infotrade.quotcontroller([],"getall").then(data =>{
-                console.log(data.data)
+                // console.log(data.data)
                 if(data.status == 200){
                     if(data.data != '')
                         this.tableCommercialsOrders = []

@@ -606,7 +606,8 @@ export default {
             
             this.$refs.reportsDetails.open()
         },
-        selected_source(){console.log(this.info_result_orders)
+        selected_source(){
+            // console.log(this.info_result_orders)
             // if (this.code_workstation == undefined || this.code_group == undefined){
 
             //     if(this.code_workstation != undefined){

@@ -1156,7 +1156,7 @@ export default {
 
         openOperators(item){
 
-            console.log(item)
+            // console.log(item)
 
             this.$refs.showOperators.open()
             // this.$refs.stop_orders.getParos(item, 'stop')
