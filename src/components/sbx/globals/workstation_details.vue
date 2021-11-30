@@ -514,6 +514,8 @@ export default {
         },
 
         openFinOrder(item){
+            console.log('uno')
+            this.$refs.stop_orders.abrirOrdenes(item)
             this.$refs.showStopOrders.open()
             this.$refs.stop_orders.getParos(item, 'stop')
             // this.showFinOrders = true

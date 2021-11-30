@@ -42,6 +42,7 @@ let host = InfoConfig.host()
 // let costs = 'http://127.0.0.1:3900/'
 
 let costs = protocolo+'://'+host+'/costs'
+let wscosts = 'ws://'+host+':5000'
 let sysconfig = protocolo+'://'+host+'/sysconfig'
 let master = protocolo+'://'+host+'/master'
 let config = protocolo+'://'+host+'/config'
@@ -92,6 +93,7 @@ let embebbed = protocolo+'://'+host+'/embebbed'
 
 export {
     costs, 
+    wscosts,
     notify, 
     embebbed, 
     mainten,

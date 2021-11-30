@@ -6,7 +6,7 @@
                 <h4 style="margin-bottom:5px"> {{item.cc_code}} | {{item.cc_desc}} </h4>
                 <b> HM: </b>{{numberWithCommas(item.hm)}} | <b> HH: </b>{{numberWithCommas(item.hh)}} | <b> Kw: </b>{{numberWithCommas(item.kw)}} | <b> Kcal: </b>{{numberWithCommas(item.Kcal)}}
                 <div>
-                    <b> %HM: </b>{{numberWithCommas(item.percentaje_hm)}} | <b> %HH: </b>{{numberWithCommas(item.percentaje_hh)}} | <b> %Kw: </b>{{numberWithCommas(item.percentaje_kw)}} | <b> %Kcal: </b>{{numberWithCommas(item.percentaje_Kcal)}}
+                    <b> %HM: </b>{{numberWithCommas(item.percentaje_hm)}} | <b> %HH: </b>{{numberWithCommas(item.percentaje_hh)}} | <b> %Kw: </b>{{numberWithCommas(item.percentaje_kw)}} | <b> %Kcal: </b>{{numberWithCommas(item.percentaje_kcal)}}
                 </div>
             </div>
             

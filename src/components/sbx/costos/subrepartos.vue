@@ -4,29 +4,33 @@
         <notifications group="notifications-default" />
         <h4 class="font-weight-bold py-3 mb-4">Subrepartos  <span class="font-weight-light">INFO ---</span></h4>
 
-            <div class="mb-2">
+        
+
+            <div class="mb-2" v-if="arraytblOriginal[2] != null">
                 <b-btn v-if="arraytblOriginal[2].enero != null" size="xs" variant="danger" block @click="cancelarLiquidacion()"><i class="ion ion-md-checkmark"> </i> &nbsp;&nbsp; Cancelar Liquidación SERPRO</b-btn>
                 <b-btn v-if="arraytblOriginal[2].enero == null" size="xs" variant="success" block @click="ejecutarLiquidacion()"><i class="ion ion-md-checkmark"> </i> &nbsp;&nbsp; Liquidar SERPRO</b-btn>
             </div>
 
-            <div class="q-table-container q-table-dense">
-                <div class="q-table-middle scroll">
-                    <table class="q-table">
-                        <thead>
-                        <tr class style="text-align: left;">
-                            <th>Codigo</th>
-                            <th>Descripcion</th>
-                            <th>Promedio</th>
-                            <th class="text-center">Detalle</th>
-                            <th class="text-center">Mes a Mes</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+        <div id="wsinfo" class="text-center"></div>    
+
+            <div>
+                <div>
+                    <b-table-simple style="font-size:12px;">
+                        <b-thead>
+                        <b-tr>
+                            <b-th>Codigo</b-th>
+                            <b-th>Descripcion</b-th>
+                            <b-th>Promedio</b-th>
+                            <b-th class="text-center">Detalle</b-th>
+                            <b-th class="text-center">Mes a Mes</b-th>
+                        </b-tr>
+                        </b-thead>
+                        <b-tbody>
 
                             <!-- @click="selectedRow(item)" -->
 
-                        <tr v-for="(item ,index)  in (arraytblOriginal)" :key="index" >
-                            <td data-th="Codigo" @click="toggle(item, index);" >
+                        <b-tr v-for="(item ,index)  in (arraytblOriginal)" :key="index" >
+                            <b-td data-th="Codigo" @click="toggle(item, index);" >
 
                             <span class="q-tree-link q-tree-label" v-bind:style="setPadding(item)">                
                                 <!-- <q-icon  style="cursor: pointer;" 
@@ -35,12 +39,10 @@
                                 {{item.code}}
                             </span>
 
-                            </td>
-                            <td data-th="Descripcion">{{item.description}}</td>
-                            <td width="20%" data-th="Promedio"> {{numberWithCommas(item.prom_total)}} </td>
-                            <td width="20%" data-th="Detalle" >
-
-        
+                            </b-td>
+                            <b-td data-th="Descripcion">{{item.description}}</b-td>
+                            <b-td width="20%" data-th="Promedio"> {{numberWithCommas(item.prom_total)}} </b-td>
+                            <b-td width="20%" data-th="Detalle" >
                                     <div class="text-center">
                                         <small>  {{ item.parentvalue==null ? '100' : ((item.prom_total / (item.parentvalue))*100).toFixed(2) }} %</small>
                                     </div>
@@ -48,8 +50,8 @@
                                         <b-progress-bar :value="item.parentvalue==null ? 1 : item.prom_total / item.parentvalue">
                                         </b-progress-bar>
                                     </b-progress>
-                            </td>
-                            <td width="20%" data-th="Mes a Mes" class="text-center">
+                            </b-td>
+                            <b-td width="20%" data-th="Mes a Mes" class="text-center">
                                     <sparkline>
                                         <sparklineBar
                                         :data="calcChartData(item)"
@@ -58,11 +60,43 @@
                                         :styles="spBarStyles4"
                                         :refLineStyles="spRefLineStyles4" />
                                     </sparkline>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            </b-td>
+                        </b-tr>
+                        </b-tbody>
+                    </b-table-simple>
                 </div>
+            </div>
+
+            <div class="accordion" role="tablist">
+                <b-card no-body class="mb-1">
+                <b-card-header header-tag="header" class="p-1" role="tab">
+                    <b-button block v-b-toggle.accordion-1 variant="warning">Codigos Con Problemas</b-button>
+                </b-card-header>
+                <b-collapse id="accordion-1" :visible='false' accordion="my-accordion" role="tabpanel">
+                    <b-card-body>
+                        <b-table-simple style="font-size:12px;">
+                            <b-thead>
+                                <b-tr>
+                                    <b-th>Codigo</b-th>
+                                    <b-th>Descripcion</b-th>
+                                    <b-th>Operacion</b-th>
+                                    <b-th>Codigo CT</b-th>
+                                    <b-th>Descripcion CT</b-th>
+                                </b-tr>
+                            </b-thead>
+                            <b-tbody>
+                                <b-tr v-for="(item ,index)  in (arrayCCProblems)" :key="index" >
+                                    <b-td data-th="Codigo"> {{item.code}} </b-td>
+                                    <b-td data-th="Descripcion"> {{item.product_description}} </b-td>
+                                    <b-td data-th="Operacion"> {{item.operation_description}} </b-td>
+                                    <b-td data-th="Codigo CT"> {{item.ws_code}} </b-td>
+                                    <b-td data-th="Descripcion CT"> {{item.ws_description}} </b-td>
+                                </b-tr>
+                            </b-tbody>
+                        </b-table-simple>
+                    </b-card-body>
+                </b-collapse>
+                </b-card>
             </div>
 
     </div>
@@ -72,7 +106,6 @@
 <style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style src="@/vendor/libs/vue-input-tag/vue-input-tag.scss" lang="scss"></style>
-<script src="https://unpkg.com/quasar-framework@^0.16.0/dist/umd/quasar.mat.umd.min.js"></script>
 
 <script>
     import Vue from 'vue'
@@ -149,6 +182,10 @@
             windowHeight: 0,
             totalRows:0,
             tblOriginal:[],
+
+            arrayCCProblems:[],
+
+            wsresultado:'uno'
 
         }),
         methods:{
@@ -259,13 +296,26 @@
                         this.totalRows = this.tblOriginal.length
                     }
                 })
+
+                infocosts.getroutesproblems().then(data =>{
+                    // console.log(data)
+                    if(data.data != ""){
+                        this.arrayCCProblems = data.data
+                    }else{
+                        this.arrayCCProblems = []
+                    }
+                })
             },
 
             ejecutarLiquidacion: function(){
+
+
                 infocosts.ejecutarLiquidacion().then(data =>{
                     if(data.data == "ok")
                         this.showData()
                 })
+
+
             },
 
             validarLiquidacion: function(){
@@ -286,6 +336,22 @@
 
         created(){
             this.showData()
+
+
+                const socket = infocosts.costsrt()
+                socket.on("connection", function(data){
+                    console.log(data)
+                });
+                socket.on("costs-state", function(data){
+                    // console.log(data)
+                    this.wsresultado = data
+                    
+                    var s = document.getElementById("wsinfo");
+                    s.innerHTML = data;
+
+                    // console.log(document)
+                });
+
         },
 
         mounted() {
@@ -299,7 +365,3 @@
         },
     }
 </script>
-
-<style>
-  @import 'https://unpkg.com/quasar-framework@^0.16.0/dist/umd/quasar.mat.min.css';
-</style>

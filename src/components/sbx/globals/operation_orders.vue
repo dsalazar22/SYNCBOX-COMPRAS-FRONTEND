@@ -231,7 +231,7 @@
                           </b-form-checkbox-group>
                           
                         </div>
-                      
+                        
                     </template>
                     <template v-slot:cell(order_id)="row">
                       <div class="d-flex justify-content-between">
@@ -304,8 +304,8 @@
               </div>
           </b-tab>
         </b-tabs>
-      <!-- TABLA ORDENES DE PRODUCCION -->
       </div>
+      <!-- TABLA ORDENES DE PRODUCCION -->
     </div>
 
     <div v-if="startOrden">
@@ -316,7 +316,7 @@
         >| {{contentStartOrder.code}} - {{contentStartOrder.products_description}}</span>
       </div>
 
-      <div class="h4 mt-4">Velocidades Disponibles</div>
+      <div class="h4 mt-4">Velocidades/Herramentales Disponibles</div>
       <b-table
         small
         show-empty
@@ -367,7 +367,16 @@
               <i class="ion ion-md-checkmark"></i>
             </b-btn>
 
-            <i v-if="(row.item.tools_id == itemTimeSelected.tools_id)" class="fas fa-circle text-success"></i>
+            <!-- <i v-if="(row.item.tools_id == itemTimeSelected.tools_id)" class="fas fa-circle text-success"></i> -->
+
+            <b-btn
+              v-if="(row.item.tools_id == itemTimeSelected.tools_id)"
+              variant="outline-dark borderless icon-btn"
+              class="btn-xs"
+              @click.prevent="selectedSpeed(row.item)"
+            >
+              <i class="fas fa-circle text-success"></i>
+            </b-btn>
 
             <!-- <b-btn variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="removeSpeed(row.item)"><i class="ion ion-md-close"></i></b-btn> -->
           </div>
@@ -783,32 +792,12 @@ export default {
       return this.selectedToStart.lenght > 0;
     },
 
-    selectOrder: function(item) {
-      // console.log(item)
-      // SpeedController({
-      //     id: 0,
-      //     speed_config_id: 0,
-      //     product_id: item.product_id,
-      //     code: '',
-      //     description: '',
-      //     standard_time_cycle: 0,
-      //     unity_expected_cycle: 0,
-      //     default: false,
-      //     modify_unity_expected: false
-      //     }, "select").then(data => {
-      //         this.speedTableData = data.data
-      //         for(let i=0;i<this.speedTableData.length;i++){
-      //             if(this.speedTableData[i].default){
-      //                 this.itemTimeSelected = this.speedTableData[i]
-      //                 this.unityPerCicle = this.speedTableData[i].unity_expected_cycle
-      //             }
-      //         }
-      //     })
+    async selectOrder(item) {
 
       this.status_send =
         item.status_modules_id != null && item.status_modules_id == 150;
 
-      infoproduction
+      await infoproduction
         .production(
           {
             product_id: item.product_id,
@@ -827,15 +816,16 @@ export default {
                 first = false;
                 this.itemTimeSelected = this.speedTableData[i];
                 this.unityPerCicle = this.speedTableData[i].unity_expected_cycle;
+                break
               }
+            }
 
-              if (first) {
+            if (first) {
                 if (this.speedTableData.length > 0) {
                   this.itemTimeSelected = this.speedTableData[0];
                   this.unityPerCicle = this.speedTableData[0].unity_expected_cycle;
                 }
               }
-            }
           }else{
             this.speedTableData = [];
           }
@@ -912,6 +902,8 @@ export default {
         standard_unit_cycle: this.itemTimeSelected.unity_expected_cycle,
         real_unit_cycle: this.unityPerCicle,
         expected_time_cycle: this.itemTimeSelected.standard_time_cycle,
+        tool_id:this.itemTimeSelected.tools_id,
+        tools_id:this.itemTimeSelected.tools_id,
         // workstation_id: this.selectedWorkstation.wsinfo == undefined ? 0: JSON.parse(this.selectedWorkstation.wsinfo)[0].workstation_id,
         order_production_process_id: this.contentStartOrder
           .order_production_process_id,
@@ -997,15 +989,18 @@ export default {
           const element = this.selectedOrders[index];
 
           var result = {
-            job_id: element.job_id,
             standard_unit_cycle: this.itemTimeSelected.unity_expected_cycle,
             real_unit_cycle: this.unityPerCicle,
             expected_time_cycle: this.itemTimeSelected.standard_time_cycle,
+            tool_id:this.itemTimeSelected.tools_id,
+            tools_id:this.itemTimeSelected.tools_id,
             // workstation_id: this.selectedWorkstation.wsinfo == undefined ? 0: JSON.parse(this.selectedWorkstation.wsinfo)[0].workstation_id,
             order_production_process_id: element.order_production_process_id,
             qty_pending: element.pending_amount,
             wscode:this.selectedWorkstation.wscode
           };
+
+          console.log(result)
 
           if(index == 0){
             
@@ -1013,6 +1008,7 @@ export default {
             realtime
               .actionProductionOrder(result, this.selectedWorkstation.wscode, "start")
               .then(data => {
+                console.log(data)
                 if (data.status === 202) {
                   // console.log(data)
                   this.button_action = true;
@@ -1046,19 +1042,22 @@ export default {
 
       }else{
         let result = {
-          job_id: this.contentStartOrder.job_id,
           standard_unit_cycle: this.itemTimeSelected.unity_expected_cycle,
           real_unit_cycle: this.unityPerCicle,
           expected_time_cycle: this.itemTimeSelected.standard_time_cycle,
+          tool_id:this.itemTimeSelected.tools_id,
+          tools_id:this.itemTimeSelected.tools_id,
           // workstation_id: this.selectedWorkstation.wsinfo == undefined ? 0: JSON.parse(this.selectedWorkstation.wsinfo)[0].workstation_id,
-          order_production_process_id: this.contentStartOrder
-            .order_production_process_id,
+          order_production_process_id: this.contentStartOrder.order_production_process_id,
           qty_pending: this.contentStartOrder.pending_amount
         };
+
+        console.log(result)
 
         realtime
           .actionProductionOrder(result, this.selectedWorkstation.wscode, "start")
           .then(data => {
+                // console.log(data)
             if (data.status === 202) {
               // console.log(data)
               this.button_action = true;

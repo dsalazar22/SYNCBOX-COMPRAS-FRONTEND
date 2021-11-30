@@ -15,6 +15,7 @@
             <b-btn :disabled="!filter" @click="filter = ''"> <span class="oi oi-delete" ></span> </b-btn>
             </b-input-group-append>
         </b-input-group>
+        <b-btn class="mt-2" variant="success" size="xs" block @click="guardarInformacion=true"> Guardar Informacion </b-btn>
         <div id="chart_div"></div>
             <!-- <multipane class="vertical-panes" layout="vertical" style="height:600px"> v-if="operations.length==0" -->
             <div class="pane overflow-auto" :style="{ padding: '0.5rem' }" >
@@ -31,7 +32,8 @@
                                     <b-th class="text-nowrap">Programado</b-th>
                                     <b-th class="text-nowrap">V/H Procesos</b-th>
                                     <b-th class="text-nowrap">Valor Materiales</b-th>
-                                    <b-th class="text-nowrap">Valor Proceso</b-th>
+                                    <!-- <b-th class="text-nowrap">Tarifa 1</b-th> -->
+                                    <b-th class="text-nowrap">Tarifa Final</b-th>
                                 </b-tr>
                                 </b-thead>
                                 <b-tbody>
@@ -49,6 +51,7 @@
                                         <b-td data-th="Programado"> {{formatAmount(itemx.TotalProgrammed.toFixed(2))}} </b-td>
                                         <b-td data-th="Total Procesos"> {{formatAmount(itemx.RateComponents.toFixed(2))}} </b-td>
                                         <b-td data-th="Valor Materiales"> {{formatAmount(itemx.TotalMaterials.toFixed(2))}} </b-td>
+                                        <!-- <b-td data-th="Valor/Unidad"> {{formatAmount((itemx.Tarifa1).toFixed(2))}} </b-td> -->
                                         <b-td data-th="Valor/Unidad"> {{formatAmount((itemx.Tarifa).toFixed(2))}} </b-td>
                                     </b-tr>
                                 </b-tbody>
@@ -57,8 +60,8 @@
                     </div>
                 </div>
             </div>
-</div>
-<div v-if="arraytblOriginal.length>0">
+        </div>
+        <div v-if="arraytblOriginal.length>0">
             <div id="chart_div"></div>
             <!-- <multipane class="vertical-panes" layout="vertical" style="height:600px"> v-if="operations.length==0" -->
             <div class="pane overflow-auto" :style="{ padding: '0.5rem' }" >
@@ -75,7 +78,8 @@
                                     <b-th class="text-nowrap">Programado</b-th>
                                     <b-th class="text-nowrap">V/H Procesos</b-th>
                                     <b-th class="text-nowrap">Valor Materiales</b-th>
-                                    <b-th class="text-nowrap">Valor Proceso</b-th>
+                                    <b-th class="text-nowrap">Tarifa</b-th>
+                                    <b-th class="text-nowrap">Tarifa Final</b-th>
                                 </b-tr>
                                 </b-thead>
                                 <b-tbody>
@@ -93,6 +97,7 @@
                                         <b-td data-th="Programado"> {{formatAmount(item.TotalProgrammed.toFixed(2))}} </b-td>
                                         <b-td data-th="Total Procesos"> {{formatAmount(item.RateComponents.toFixed(2))}} </b-td>
                                         <b-td data-th="Valor Materiales"> {{formatAmount(item.TotalMaterials.toFixed(2))}} </b-td>
+                                        <b-td data-th="Valor/Unidad"> {{formatAmount((item.Tarifa1).toFixed(2))}} </b-td>
                                         <b-td data-th="Valor/Unidad"> {{formatAmount((item.Tarifa).toFixed(2))}} </b-td>
                                     </b-tr>
                                 </b-tbody>
@@ -117,7 +122,7 @@
                             <b-th class="text-nowrap">HH</b-th>
                             <b-th class="text-nowrap">Kw/h</b-th>
                             <b-th class="text-nowrap">Kcal/h</b-th>
-                            <b-th class="text-nowrap">Tarifa</b-th>
+                            <b-th class="text-nowrap">Valor Proceso</b-th>
                         </b-tr>
                         </b-thead>
                         <b-tbody>
@@ -129,11 +134,15 @@
                                     <b-btn variant="outline-warning borderless icon-btn" class="btn-xs" @click.prevent="abrirDetalle(item)"><i class="ion ion-md-create"></i></b-btn>
                                     {{item.Description}}
                                 </b-td>
+                                
+                                
+                                
+                                
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="HM"> {{formatAmount(item.TotalProductionPerHours.toFixed(2))}} </b-td>
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="HH"> {{formatAmount(item.TotalProductionManPerHours.toFixed(2))}} </b-td>
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Kw/h"> {{formatAmount(item.TotalEnergyPerHour.toFixed(2))}} </b-td>
                                 <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Kcal/h"> {{formatAmount(item.TotalFuelPerHour.toFixed(2))}} </b-td>
-                                <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Tarifa"> {{formatAmount(item.Tarifa.toFixed(2))}} </b-td>
+                                <b-td v-if="item.leaf == false || item.leaf == undefined" data-th="Valor Proceso"> {{formatAmount(item.Tarifa.toFixed(2))}} </b-td>
 
                                 <b-td v-if="item.leaf == true" colspan="6">
                                     
@@ -234,94 +243,107 @@
                 CERRAR INFORMACION REFERENCIA SELECCIONADA / BORRAR SELECCION
             </b-btn>
             <!-- </multipane> -->
-</div>
+        </div>
 
-<!-- <b-modal v-model="detalleCodigo" size="lg" title="Detalle Codigo">
+        <!-- <b-modal v-model="detalleCodigo" size="lg" title="Detalle Codigo">
 
-    <b-table small show-empty stacked="md" :items="codeDetails" :fields="columnsDetails" class="mt-2">
-        <template v-slot:cell(production_per_hh)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_hh)}}
-            </div>
-        </template>
-        <template v-slot:cell(production_per_hm)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_hm)}}
-            </div>
-        </template>
-        <template v-slot:cell(production_per_kw)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_kw)}}
-            </div>
-        </template>
-        <template v-slot:cell(production_per_kc)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_kc)}}
-            </div>
-        </template>
-    </b-table>
+            <b-table small show-empty stacked="md" :items="codeDetails" :fields="columnsDetails" class="mt-2">
+                <template v-slot:cell(production_per_hh)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_hh)}}
+                    </div>
+                </template>
+                <template v-slot:cell(production_per_hm)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_hm)}}
+                    </div>
+                </template>
+                <template v-slot:cell(production_per_kw)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_kw)}}
+                    </div>
+                </template>
+                <template v-slot:cell(production_per_kc)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_kc)}}
+                    </div>
+                </template>
+            </b-table>
 
-</b-modal> -->
+        </b-modal> -->
+        <b-modal hide-footer v-model="guardarInformacion" title="Guardar Informacion">
+            <div class="text-center">
+                Desea guardar estos costos?
+                <!-- <b-form-input v-model="text" placeholder="Ingrese una Descripcion"></b-form-input> -->
+            </div>
+            <div class="row">
+                <div class="col">
+                    <b-btn class="mt-2" variant="warning" size="sm" block @click="saveinfo"> Guardar </b-btn>
+                </div>
+                <div class="col">
+                    <b-btn class="mt-2" variant="info" size="sm" block @click="guardarInformacion = false"> Cancelar </b-btn>
+                </div>
+            </div>
+        </b-modal>
 
-<b-modal v-model="detalleCodigo" size="xl" :title="`${productDetails.CCCode} - ${productDetails.CCDescription}`">
- <!--  -->
-<!-- {{productDetails.Products}} -->
-    <b-table small show-empty stacked="md" :items="productDetails.Products" :fields="columnsDetails" class="mt-2">
-        <template v-slot:cell(production_per_hh)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_hh)}}
-            </div>
-        </template>
-        <template v-slot:cell(production_per_hm)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_hm)}}
-            </div>
-        </template>
-        <template v-slot:cell(production_per_kw)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_kw)}}
-            </div>
-        </template>
-        <template v-slot:cell(production_per_kc)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_kc)}}
-            </div>
-        </template>
-        <template v-slot:cell(child_programmed)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.child_programmed)}}
-            </div>
-        </template>
+        <b-modal v-model="detalleCodigo" size="xl" :title="`${productDetails.CCCode} - ${productDetails.CCDescription}`">
+        <!--  -->
+        <!-- {{productDetails.Products}} -->
+            <b-table small show-empty stacked="md" :items="productDetails.Products" :fields="columnsDetails" class="mt-2">
+                <template v-slot:cell(production_per_hh)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_hh)}}
+                    </div>
+                </template>
+                <template v-slot:cell(production_per_hm)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_hm)}}
+                    </div>
+                </template>
+                <template v-slot:cell(production_per_kw)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_kw)}}
+                    </div>
+                </template>
+                <template v-slot:cell(production_per_kc)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_kc)}}
+                    </div>
+                </template>
+                <template v-slot:cell(child_programmed)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.child_programmed)}}
+                    </div>
+                </template>
 
-                <template v-slot:cell(t_production_per_hh)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_hh > 0 ? row.item.child_programmed/row.item.production_per_hh : 0)}}
-            </div>
-        </template>
-        <template v-slot:cell(t_production_per_hm)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_hm > 0 ? row.item.child_programmed/row.item.production_per_hm : 0)}}
-            </div>
-        </template>
-        <template v-slot:cell(t_production_per_kw)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_kw > 0 ? row.item.child_programmed/row.item.production_per_kw : 0)}}
-            </div>
-        </template>
-        <template v-slot:cell(t_production_per_kc)="row">
-            <div class="text-left text-nowrap">
-                {{formatAmount(row.item.production_per_kc > 0 ? row.item.child_programmed/row.item.production_per_kc : 0)}}
-            </div>
-        </template>
+                        <template v-slot:cell(t_production_per_hh)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_hh > 0 ? row.item.child_programmed/row.item.production_per_hh : 0)}}
+                    </div>
+                </template>
+                <template v-slot:cell(t_production_per_hm)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_hm > 0 ? row.item.child_programmed/row.item.production_per_hm : 0)}}
+                    </div>
+                </template>
+                <template v-slot:cell(t_production_per_kw)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_kw > 0 ? row.item.child_programmed/row.item.production_per_kw : 0)}}
+                    </div>
+                </template>
+                <template v-slot:cell(t_production_per_kc)="row">
+                    <div class="text-left text-nowrap">
+                        {{formatAmount(row.item.production_per_kc > 0 ? row.item.child_programmed/row.item.production_per_kc : 0)}}
+                    </div>
+                </template>
+            </b-table>
 
-    </b-table>
-
-    Total HH: {{formatAmount(itemsproductstotales.production_per_hh)}}<br>
-    Total HM: {{formatAmount(itemsproductstotales.production_per_hm)}}<br>
-    Total KW: {{formatAmount(itemsproductstotales.production_per_kw)}}<br>
-    Total KCAL: {{formatAmount(itemsproductstotales.production_per_kc)}}<br>
-
-</b-modal>
+            <!-- {{productDetails}} -->
+            Total HM: {{formatAmount(productDetails.TotalProductionPerHours)}}<br>
+            Total HH: {{formatAmount(productDetails.TotalProductionManPerHours)}}<br>
+            Total KW: {{formatAmount(productDetails.TotalEnergyPerHour)}}<br>
+            Total KCAL: {{formatAmount(productDetails.TotalFuelPerHour)}}<br>
+        </b-modal>
 
 
 
@@ -507,11 +529,22 @@
             itemsproductstotales:{},
             chart:null,
             arrChart:null,
-            
-            ///
+            guardarInformacion :false,
 
         }),
         methods:{
+            saveinfo(){
+                infocosts.saveproductscode({}).then(data =>{
+                    infocosts.detallecostoppto('3').then(data =>{
+                        // console.log(data.data)
+                        this.resultadoPrimeroGeneral = data.data
+                        this.resultadoPrimero = data.data
+                    })
+
+                    this.guardarInformacion = false
+                })
+            },
+
             prepareChart(value, newObj){
                 let vm = this
                 if(value.Materials != null){
@@ -780,7 +813,7 @@
             },
             selectedCode(item){
                 infocosts.selectedCode(item.Code).then(data =>{
-                    // console.log(data.data)
+                    console.log(data.data)
                     this.resultadoTotal = data.data
                 })
             }

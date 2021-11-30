@@ -6,13 +6,13 @@ var InfoConfig = {
     host: function()
     {
         // let hst = "ingeproductos.syncbox.cloud"
-        let hst = window.location.hostname
+        // let hst = window.location.hostname
         // let hst = "10.10.1.251"
         // let hst = "10.0.0.23"
         // let hst = "10.10.1.134"
         // let hst = "10.1.1.11"
         // let hst = "172.16.25.5"
-        //  let hst = "192.168.115.85"
+         let hst = "192.168.115.85"
         // let hst = "192.168.115.115"
         // let hst = "192.168.25.51"
         // let hst = "192.168.1.208"
@@ -36,13 +36,13 @@ var InfoConfig = {
     login: function()
     {
         // return protocolo+`://`+"ingeproductos.syncbox.cloud"+`/datacontrollerloginx/`
-        return protocolo+`://`+window.location.hostname+`/datacontrollerloginx/`
+        // return protocolo+`://`+window.location.hostname+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.10.1.251"+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.0.0.23"+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.10.1.134"+`/datacontrollerloginx/`
         // return protocolo+`://`+"10.1.1.11"+`/datacontrollerloginx/`
         // return protocolo+`://`+"172.16.25.5"+`/datacontrollerloginx/`
-        //  return protocolo+`://`+"192.168.115.85"+`/datacontrollerloginx/`
+         return protocolo+`://`+"192.168.115.85"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.115.115"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.25.51"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.1.208"+`/datacontrollerloginx/`

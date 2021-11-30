@@ -281,6 +281,7 @@ export default {
 
   created () {
     infousers.getnumber().then(data =>{
+      console.log(data)
       this.usersData = data.data
     })
   }

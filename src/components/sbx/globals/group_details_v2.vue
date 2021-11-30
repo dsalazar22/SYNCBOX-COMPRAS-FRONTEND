@@ -83,7 +83,8 @@
                                         <div class="col">
                                             <div class="text-muted small ml-2">
                                                 Ciclo Actual
-                                                <div class="float-right mr-2"> {{ getInfoContent(itemws.infocalculada,'percentage_current_cycle',0) }}% </div>
+                                                <div class="float-right mr-2">
+                                                    {{ getInfoContent(itemws.infocalculada,'percentage_current_cycle',0) }}% </div>
                                             </div>
                                             <b-progress :variant="infoColorsCurrenVelocity(getInfoContent(itemws.infocalculada,'percentage_current_cycle',0))" :value=" getInfoContent(itemws.infocalculada,'percentage_current_cycle',0) " height="3px" class="rounded-0" />
                                             <div class="font-weight-bold text-center">{{ getInfoContent(itemws.infocalculada,'tiempocicloactual',0) }}</div>
@@ -155,8 +156,11 @@
                                 <b-th v-if="!setstacked" v-for="item in fields"> <div class="text-nowrap">{{item.new_description}}</div></b-th>
                                 
                                 <b-th><div class="text-nowrap">Ciclo Actual</div></b-th>
+                                <b-th><div class="text-nowrap">% Inst</div></b-th>
                                 <b-th>Pendiente</b-th>
+                                <b-th>Disponibilidad</b-th>
                                 <b-th>Eficiencia</b-th>
+                                <b-th>Calidad</b-th>
                                 <b-th>OEE</b-th>
                                 </b-tr>
                             </b-thead>
@@ -185,14 +189,31 @@
                                             </b-btn>
                                         </div>
                                     </b-td>
-                                    <td v-for="it in itemws.htmltable" v-if="!setstacked"><div class="text-nowrap">{{ isNaN(it.valor) ? it.valor :numberWithCommas(it.valor) }}</div> </td>
+                                    <td v-for="it in itemws.htmltable" v-if="!setstacked">
+                                        <div class="text-nowrap">
+                                            {{ isNaN(it.valor) ? it.valor :numberWithCommas(it.valor) }}
+                                        </div> 
+                                    </td>
                                     <b-td class="text-right" :class="'text-'+  (getInfoContent(itemws.infocalculada,'StatusStateCurrentColor','info') == 'dark' ? 'transparent' : ((getInfoContent(itemws.infocalculada,'second_total_current_ciclye_time',0)>getInfoContent(itemws.infocalculada,'expected_cycle_time',0))?'danger':'success' ))">
-                                    <b> {{getInfoContent(itemws.infocalculada,'tiempocicloactual',0)}} </b>
+                                        <b> {{getInfoContent(itemws.infocalculada,'tiempocicloactual',0)}} </b>
+                                    </b-td>
+                                    <b-td class="text-right" :class="'text-'+  (getInfoContent(itemws.infocalculada,'StatusStateCurrentColor','info') == 'dark' ? 'transparent' : ((getInfoContent(itemws.infocalculada,'second_total_current_ciclye_time',0)>getInfoContent(itemws.infocalculada,'percentage_last_cycle',0))?'danger':'success' ))">
+                                        <b> {{getInfoContent(itemws.infocalculada,'percentage_last_cycle',0)}}% </b>
                                     </b-td>
                                     <b-td v-if="!setstacked" class="text-right text-white" :class="'bg-'+ ((getInfoContent(itemws.infocalculada,'totalPendienteUnd',0)/getInfoContent(itemws.infocalculada,'programmed',0))<=0.1?'danger':'success' )">{{numberWithCommas(getInfoContent(itemws.infocalculada,'totalPendienteUnd',0))}}</b-td>
+                                    <b-td :class="'text-right bg-'+infoColorsOEE(getInfoContent(itemws.infocalculada,'disponibilidad',0)) ">
+                                        <div :class="'text-'+(infoColorsOEE(getInfoContent(itemws.infocalculada,'disponibilidad',0))=='success' || infoColorsOEE(getInfoContent(itemws.infocalculada,'disponibilidad',0))=='danger' || infoColorsOEE(getInfoContent(itemws.infocalculada,'disponibilidad',0))=='primary' ?'white':'dark')">
+                                            {{getInfoContent(itemws.infocalculada,'disponibilidad',0)}}%
+                                        </div>
+                                    </b-td>
                                     <b-td :class="'text-right bg-'+infoColorsOEE(getInfoContent(itemws.infocalculada,'eficiencia',0)) ">
                                         <div :class="'text-'+(infoColorsOEE(getInfoContent(itemws.infocalculada,'eficiencia',0))=='success' || infoColorsOEE(getInfoContent(itemws.infocalculada,'eficiencia',0))=='danger' || infoColorsOEE(getInfoContent(itemws.infocalculada,'eficiencia',0))=='primary' ?'white':'dark')">
                                             {{getInfoContent(itemws.infocalculada,'eficiencia',0)}}%
+                                        </div>
+                                    </b-td>
+                                    <b-td :class="'text-right bg-'+infoColorsOEE(getInfoContent(itemws.infocalculada,'calidad',0)) ">
+                                        <div :class="'text-'+(infoColorsOEE(getInfoContent(itemws.infocalculada,'calidad',0))=='success' || infoColorsOEE(getInfoContent(itemws.infocalculada,'calidad',0))=='danger' || infoColorsOEE(getInfoContent(itemws.infocalculada,'calidad',0))=='primary' ?'white':'dark')">
+                                            {{getInfoContent(itemws.infocalculada,'calidad',0)}}%
                                         </div>
                                     </b-td>
                                     <b-td :class="'text-right bg-'+infoColorsOEE(getInfoContent(itemws.infocalculada,'oee',0)) ">
@@ -1481,11 +1502,13 @@ export default {
             this.selected_item = item
             // this.showFinOrders = true
             // console.log(stoporders)
+            this.$refs.stop_orders.abrirOrdenes(item)
             this.$refs.showStopOrders.open()
             this.$refs.stop_orders.getParos(item, 'stop')
         },
 
         openChangeState(item){
+            this.$refs.stop_orders.abrirOrdenes(item)
             this.$refs.showStopOrders.open()
             this.selected_item = item
             this.$refs.stop_orders.getParos(item, 'change_status')

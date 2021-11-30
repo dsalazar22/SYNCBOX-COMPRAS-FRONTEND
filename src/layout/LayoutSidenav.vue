@@ -60,8 +60,9 @@
         <sidenav-router-link  class="ml-0" v-if="check_access('planning_resources', 'r')" to="/pp/capacity" :exact="true">Planeación de Recursos</sidenav-router-link>
         <sidenav-router-link class="ml-0" v-if="check_access('planning_online', 'r')" to="/pp/invonl" :exact="true">Inventario en Línea</sidenav-router-link>
         <!-- <sidenav-router-link class="ml-0" to="/pp/listplanned" :exact="true">Ordenes Planeadas</sidenav-router-link> -->
-        <sidenav-router-link class="ml-0" v-if="check_access('planning_order', 'r')" to="/pp/production_order" :exact="true">Crear Orden</sidenav-router-link>
-        <sidenav-router-link class="ml-0" to="/pp/order_programming" :exact="true">Programar Orden</sidenav-router-link>
+        <sidenav-router-link class="ml-0" to="/pp/order_programming" :exact="true">Planear Orden Simple</sidenav-router-link>
+        <sidenav-router-link class="ml-0" v-if="check_access('planning_order', 'r')" to="/pp/production_order" :exact="true">Planear Procesos</sidenav-router-link>
+        <sidenav-router-link class="ml-0" v-if="check_access('planning_order', 'r')" to="/pp/group_planning" :exact="true">Planear Orden Grupal</sidenav-router-link>
         <sidenav-router-link class="ml-0" to="/pp/planner" :exact="true">Planeador</sidenav-router-link>
      </sidenav-menu>
 

@@ -178,14 +178,14 @@
                                                         </tr>
 
                                                         <tr>
-                                                            <td><strong>Consumo KWs por Hora:</strong></td>
+                                                            <td><strong>Unidades por KWs:</strong></td>
                                                             <td v-if="item.route_operation_id != selectedEditRouteOperation">{{item.kws_per_hour}}</td>
                                                             <td v-if="item.route_operation_id == selectedEditRouteOperation">
                                                                 <b-input v-model="objToEditRouteOperation.kws_per_hour" />
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td><strong>Consumo m3 por Hora:</strong></td>
+                                                            <td><strong>Consumo Kcal por Hora:</strong></td>
                                                             <td v-if="item.route_operation_id != selectedEditRouteOperation">{{item.m3_per_hour}}</td>
                                                             <td v-if="item.route_operation_id == selectedEditRouteOperation">
                                                                 <b-input v-model="objToEditRouteOperation.m3_per_hour" />

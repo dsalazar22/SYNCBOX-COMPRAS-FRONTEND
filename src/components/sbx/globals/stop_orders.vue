@@ -41,84 +41,317 @@
     <div v-if="itemselected['next_order']">
         <strong> Seleccione la órden de producción a la que se le asiganará el tiempo de paro de este centro de trabajo </strong>
             <!-- TABLA ORDENES DE PRODUCCION -->
-                <div class="row">
-                    <div class="col">
-                        <b-row>
-                            <b-col md="6" class="my-1">
-                                <!-- <b-form-group horizontal label="Filtrar" class="mb-0"> -->
-                                <b-input-group>
-                                    <b-form-input v-model="filter" placeholder="Buscar..." />
-                                    <b-input-group-append>
-                                    <b-btn :disabled="!filter" @click="filter = ''"> <span class="oi oi-delete" ></span> </b-btn>
-                                    </b-input-group-append>
-                                </b-input-group>
-                                <!-- </b-form-group> -->
-                            </b-col>
-                            <b-col md="6" class="my-1">
-                                <b-form-select :options="pageOptions" v-model="perPage" />
-                            </b-col>
-                            <!-- <b-col md="1" class="my-1 ml-3">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <b-btn variant="outline-success icon-btn" class="btn-md"  v-b-modal.modals-default @click.prevent="addData"><i class="ion ion-md-add"></i></b-btn>
-                                    </div>
-                                    <div class="col-6">
-                                        <b-btn variant="outline-info icon-btn" class="btn-md"  v-b-modal.modals-default @click.prevent="openHelp"><i class="fas fa-chalkboard-teacher"></i></b-btn>
-                                    </div>
-                                </div>
-                            </b-col> -->
-                        </b-row>
-                        <b-table small show-empty stacked="md" :items="tableData" :fields="columns" :current-page="currentPage" :per-page="perPage" 
-                            :filter="filter" @filtered="onFiltered">
-                            <template v-slot:cell(edit)="row">
+                
+                            <!-- <template v-slot:cell(edit)="row">
                                 <div class="text-center">
-                                    <!-- <b-btn variant="outline-info borderless icon-btn" class="btn-xs" @click.prevent="showDetailsProductionOrders"><i class="ion ion-md-information-circle-outline"></i></b-btn> -->
                                     <i v-if="props.item.order_id == wsinfo.order_id" class="ion ion-md-hammer"></i>
                                     <b-btn v-if="props.item.order_id != orderSelected.order_id && props.item.order_id != wsinfo.order_id" variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="selectOrder(row.item)"><i class="ion ion-md-checkmark"></i></b-btn>
-                                    <!-- <b-btn variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="data_change(props.item,'delete')"><i class="ion ion-md-close"></i></b-btn> -->
                                 </div>
-                            </template>
-                            <template v-slot:cell(order_id)="row">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <span ><i v-if="props.item.is_global" class="ion ion-ios-globe"></i></span>
-                                    </div>
-                                    <div>
-                                        {{props.item.order_id}}
-                                    </div>
-                                </div>
-                            </template>
-                            <template v-slot:cell(show)="row">
-                                <div class="text-center">
-                                    <!-- <i class="ion ion-md-create"></i> -->
-                                <span style="color:red" v-if="!props.item.show"><i class="ion ion-md-remove-circle"></i></span>
-                                    <span style="color:green" v-if="props.item.show"><i class="ion ion-md-add-circle"></i></span>
-                                </div>
-                            </template>
-                            <template v-slot:cell(active)="row">
-                                <div class="text-center">
-                                    <!-- <i class="ion ion-md-create"></i> -->
-                                    <span style="color:red" v-if="!props.item.active"><i class="ion ion-md-remove-circle"></i></span>
-                                    <span style="color:green" v-if="props.item.active"><i class="ion ion-md-add-circle"></i></span>
-                                </div>
-                            </template>
-                            <template v-slot:cell(deadline)="row">
-                                <div class="text-center">
-                                    {{ customFormatter(props.item.deadline) }}
-                                    <!-- {{moment(props.item.deadline).toDate()}} -->
-                                </div>
-                            </template>
-                        </b-table>
-                        <b-row>
-                            <b-col md="6" class="my-1">
-                                <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
-                            </b-col>
-                        </b-row>
-                    </div>
-                </div>
+                            </template> -->
+                           
             <!-- TABLA ORDENES DE PRODUCCION -->
-        </div>
 
+                  <!-- TABLA ORDENES DE PRODUCCION -->
+      <div>
+        <b-tabs content-class="mt-3">
+          <b-tab title="Ordenes de Producción Planeadas" active  v-if="visiblePlanning">
+              <div class="mb-2" >
+              <h4>Ordenes de Producción Planeadas</h4>
+              <div class="row">
+                <div class="col">
+                  <b-row>
+                    <b-col md="6" class="my-1">
+                      <!-- <b-form-group horizontal label="Filtrar" class="mb-0"> -->
+                      <b-input-group>
+                        <b-form-input v-model="filterPlanning" placeholder="Buscar..." />
+                        <b-input-group-append>
+                          <b-btn :disabled="!filterPlanning" @click="filterPlanning = ''">Limpiar</b-btn>
+                        </b-input-group-append>
+                      </b-input-group>
+                      <!-- </b-form-group> -->
+                    </b-col>
+                    <b-col md="6" class="my-1">
+                      <b-form-select :options="pageOptions" v-model="perPagePlanning" />
+                    </b-col>
+                    <!-- <b-col md="1" class="my-1 ml-3">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <b-btn variant="outline-success icon-btn" class="btn-md"  v-b-modal.modals-default @click.prevent="addData"><i class="ion ion-md-add"></i></b-btn>
+                                            </div>
+                                            <div class="col-6">
+                                                <b-btn variant="outline-info icon-btn" class="btn-md"  v-b-modal.modals-default @click.prevent="openHelp"><i class="fas fa-chalkboard-teacher"></i></b-btn>
+                                            </div>
+                                        </div>
+                      </b-col>-->
+                  </b-row>
+
+                  <b-table
+                    small
+                    show-empty
+                    stacked="md"
+                    :items="tableDataPlanning"
+                    :fields="columnsOrders"
+                    :current-page="currentPagePlanning"
+                    :per-page="perPage"
+                    :filter="filterPlanning"
+                    @filtered="onFilteredPlanning"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    style="font-size:12px"
+                    >
+
+                    <template v-slot:cell(programed_amount)="row">
+                      <div>
+                      {{formatAmount(row.item.programed_amount.toFixed(2))}}
+                      </div>
+                    </template>
+                    <template v-slot:cell(produced_amount)="row">
+                      <div>
+                      {{formatAmount(row.item.produced_amount.toFixed(2))}}
+                      </div>
+                    </template>
+                    <template v-slot:cell(pending_amount)="row">
+                      <div class="text-nowrap">
+                        {{formatAmount(row.item.pending_amount.toFixed(2))}}
+
+                        <i class="fas fa-circle text-success" v-if="(row.item.pending_amount/row.item.programed_amount)>=0.2"></i>
+                        <i class="fas fa-circle text-danger" v-if="(row.item.pending_amount/row.item.programed_amount)<=0.10"></i> 
+                        <i class="fas fa-circle text-warning" v-if="(row.item.pending_amount/row.item.programed_amount)>0.10 && (row.item.pending_amount/row.item.programed_amount)<=0.20"></i> 
+                      </div>
+                    </template>
+                    
+                    <template v-slot:cell(edit)="row">
+                      <div class="text-center">
+
+
+                        <!-- <b-btn
+                          v-b-tooltip.html
+                          v-if="(sendOrder && row.item.is_active == null) || !sendOrder"
+                          :variant="{'outline-warning':(sendOrder && row.item.status_modules_id != null), 'outline-success': !(sendOrder && row.item.status_modules_id != null), 'borderless icon-btn': true}"
+                          class="btn-sm"
+                          @click.prevent="selectOrder(row.item)">
+                          <i v-if="!sendOrder" class="ion ion-md-checkmark"></i>
+                          <i
+                            v-if="sendOrder && row.item.status_modules_id == null"
+                            class="fas fa-map-marker-alt"
+                          ></i>
+                          <i v-if="sendOrder && row.item.status_modules_id != null" class="fas fa-ban"></i>
+
+
+
+                        </b-btn> -->
+
+                        <div class="text-center">
+                            <i v-if="row.item.order_production_process_id == wsinfo.order_production_process_id" class="ion ion-md-hammer"></i>
+                            <b-btn v-if="row.item.order_production_process_id == orderSelected.order_production_process_id"  variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="orderSelected={}"><i class="fas fa-tools"></i></b-btn>
+                            <b-btn v-if="row.item.order_production_process_id != orderSelected.order_production_process_id && row.item.order_production_process_id != wsinfo.order_production_process_id"  variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="selectOrder(row.item)"><i class="ion ion-md-checkmark"></i></b-btn>
+                        </div>
+
+                        <!-- <i v-if="sendOrder && row.item.is_active != null" class="fas fa-cogs text-success"></i> -->
+                        <!-- <b-btn variant="outline-info borderless icon-btn" class="btn-xs" @click.prevent="showDetailsProductionOrders"><i class="ion ion-md-information-circle-outline"></i></b-btn> -->
+                        <!-- <b-btn variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="data_change(row.item,'delete')"><i class="ion ion-md-close"></i></b-btn> -->
+                      </div>
+                    </template>
+                    <template v-slot:cell(consecutive_order)="row">
+                      
+                        <div>
+                          {{row.item.consecutive_order}}
+                          <!-- <b-form-checkbox-group
+                              id="checkbox-group-2"
+                              v-model="selectedOrders"
+                            >
+                              <b-form-checkbox :value="row.item">{{row.item.consecutive_order}}</b-form-checkbox>
+                          </b-form-checkbox-group> -->
+                          
+                        </div>
+                      
+                    </template>
+                    <template v-slot:cell(order_id)="row">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <span>
+                            <i v-if="row.item.is_global" class="ion ion-ios-globe"></i>
+                          </span>
+                        </div>
+                        <div>{{row.item.order_id}}</div>
+                      </div>
+                    </template>
+                    <template v-slot:cell(show)="row">
+                      <div class="text-center">
+                        <!-- <i class="ion ion-md-create"></i> -->
+                        <span style="color:red" v-if="!row.item.show">
+                          <i class="ion ion-md-remove-circle"></i>
+                        </span>
+                        <span style="color:green" v-if="row.item.show">
+                          <i class="ion ion-md-add-circle"></i>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:cell(active)="row">
+                      <div class="text-center">
+                        <!-- <i class="ion ion-md-create"></i> -->
+                        <span style="color:red" v-if="!row.item.active">
+                          <i class="ion ion-md-remove-circle"></i>
+                        </span>
+                        <span style="color:green" v-if="row.item.active">
+                          <i class="ion ion-md-add-circle"></i>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:cell(deadline)="row">
+                      <div class="text-center">
+                        {{customFormatter(row.item.deadline)}}
+                        <!-- {{moment(row.item.deadline).toDate()}} -->
+                      </div>
+                    </template>
+                  </b-table>
+                  <b-row>
+                    <b-col md="6" class="my-1">
+                      <b-pagination
+                        :total-rows="totalRowsPlanning"
+                        :per-page="perPage"
+                        v-model="currentPagePlanning"
+                        class="my-0"
+                      />
+                    </b-col>
+                  </b-row>
+                </div>
+              </div>
+            </div>
+          </b-tab>
+          <b-tab title="Ordenes de Producción Disponibles">
+            <h4>Ordenes de Producción Disponibles</h4>
+              <div class="row">
+                <div class="col">
+                  <b-row>
+                    <b-col md="6" class="my-1">
+                      <!-- <b-form-group horizontal label="Filtrar" class="mb-0"> -->
+                      <b-input-group>
+                        <b-form-input v-model="filter" placeholder="Buscar..." />
+                        <b-input-group-append>
+                          <b-btn :disabled="!filter" @click="filter = ''">Limpiar</b-btn>
+                        </b-input-group-append>
+                      </b-input-group>
+                      <!-- </b-form-group> -->
+                    </b-col>
+                    <b-col md="6" class="my-1">
+                      <b-form-select :options="pageOptions" v-model="perPage" />
+                    </b-col>
+                  </b-row>
+                  <b-table
+                    small
+                    show-empty
+                    stacked="md"
+                    :items="tableData"
+                    :fields="columnsOrders"
+                    :current-page="currentPage"
+                    :per-page="perPage"
+                    :filter="filter"
+                    @filtered="onFiltered"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    style="font-size:12px"
+                  >
+                  <!-- order_id -->
+                    <template v-slot:cell(edit)="row">
+                      <div class="text-center">
+                        <div class="text-center">
+                            <i v-if="row.item.order_production_process_id == wsinfo.order_production_process_id" class="ion ion-md-hammer"></i>
+                            <!-- <i v-if="row.item.order_production_process_id == orderSelected.order_production_process_id" class="fas fa-tools text-success"></i> -->
+                            <b-btn v-if="row.item.order_production_process_id == orderSelected.order_production_process_id"  variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="orderSelected={}"><i class="fas fa-tools"></i></b-btn>
+                            <b-btn v-if="row.item.order_production_process_id != orderSelected.order_production_process_id && row.item.order_production_process_id != wsinfo.order_production_process_id"  variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="selectOrder(row.item)"><i class="ion ion-md-checkmark"></i></b-btn>
+                        </div>
+                      </div>
+                    </template>
+                    <template v-slot:cell(consecutive_order)="row">
+                      
+                        <div>
+
+                          {{row.item.consecutive_order}}
+                          <!-- <b-form-checkbox-group
+                              id="checkbox-group-2"
+                              v-model="selectedOrders"
+                            >
+                              <b-form-checkbox :value="row.item">{{row.item.consecutive_order}}</b-form-checkbox>
+                          </b-form-checkbox-group> -->
+                          
+                        </div>
+                        
+                    </template>
+                    <template v-slot:cell(order_id)="row">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <span>
+                            <i v-if="row.item.is_global" class="ion ion-ios-globe"></i>
+                          </span>
+                        </div>
+                        <div>{{row.item.order_id}}</div>
+                      </div>
+                    </template>
+                    <template v-slot:cell(show)="row">
+                      <div class="text-center">
+                        <!-- <i class="ion ion-md-create"></i> -->
+                        <span style="color:red" v-if="!row.item.show">
+                          <i class="ion ion-md-remove-circle"></i>
+                        </span>
+                        <span style="color:green" v-if="row.item.show">
+                          <i class="ion ion-md-add-circle"></i>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:cell(active)="row">
+                      <div class="text-center">
+                        <!-- <i class="ion ion-md-create"></i> -->
+                        <span style="color:red" v-if="!row.item.active">
+                          <i class="ion ion-md-remove-circle"></i>
+                        </span>
+                        <span style="color:green" v-if="row.item.active">
+                          <i class="ion ion-md-add-circle"></i>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:cell(programed_amount)="row">
+                      <div>
+                      {{formatAmount(row.item.programed_amount.toFixed(2))}}
+                      </div>
+                    </template>
+                    <template v-slot:cell(produced_amount)="row">
+                      <div>
+                      {{formatAmount(row.item.produced_amount.toFixed(2))}}
+                      </div>
+                    </template>
+                    <template v-slot:cell(pending_amount)="row">
+                      <div class="text-nowrap">
+                      {{formatAmount(row.item.pending_amount.toFixed(2))}}
+                      <i class="fas fa-circle text-success" v-if="(row.item.pending_amount/row.item.programed_amount)>=0.2"></i>
+                      <i class="fas fa-circle text-danger" v-if="(row.item.pending_amount/row.item.programed_amount)<=0.10"></i> 
+                      <i class="fas fa-circle text-warning" v-if="(row.item.pending_amount/row.item.programed_amount)>0.10 && (row.item.pending_amount/row.item.programed_amount)<=0.20"></i> 
+                      </div>
+                    </template>
+                    <template v-slot:cell(deadline)="row">
+                      <div>
+                        {{customFormatter(row.item.deadline)}}
+                        <!-- {{moment(row.item.deadline).toDate()}} -->
+                      </div>
+                    </template>
+                  </b-table>
+                  <b-row>
+                    <b-col md="6" class="my-1">
+                      <b-pagination
+                        :total-rows="totalRows"
+                        :per-page="perPage"
+                        v-model="currentPage"
+                        class="my-0"
+                      />
+                    </b-col>
+                  </b-row>
+                </div>
+              </div>
+          </b-tab>
+        </b-tabs>
+      </div>
+      <!-- TABLA ORDENES DE PRODUCCION -->
+        </div>
             <hr>
             <div class="w-100 text-right mt-2" v-if="is_multiple == false">
                 <b-button :variant="openControlForm == 'stop' ? 'danger' : 'warning'" v-if="button_action" @click="finOrdenProduccion()">{{openControlForm == 'stop' ? 'Suspender/Finalizar Orden de Producción' : 'Cambiar de Paro'}}</b-button>
@@ -127,6 +360,8 @@
                 <h4>Resumen</h4>
                 <div class="row">
                     <div class="col-md-4 col-sm-12">
+
+                      <!-- {{orderSelected}} -->
 
                         <div style="font-size: 1rem;" class="font-weight-bold mb-1">{{itemselected.code}} - {{itemselected.description}}</div>
                         <div class="d-flex justify-content-between"> Afecta Orden Actual <i class="ion ion-md-checkmark text-success" v-if="itemselected.affect_order" ></i> <i class="ion ion-md-close text-danger" v-if="!itemselected.affect_order"></i> </div>
@@ -154,12 +389,14 @@
                             <div class="d-flex justify-content-between"> Tiempo Total Trabajado (hh:mm:ss): {{JSON.parse(selectedWorkstation.infocalculada.replace(/'/g, '"')).tiempotrabajado}} </div>
                             <div class="d-flex justify-content-between"> Tiempo de Paro (hh:mm:ss): {{JSON.parse(selectedWorkstation.infocalculada.replace(/'/g, '"')).stop_time}} </div>
                             <!-- {{selectedWorkstation}} -->
+
+                            
                         </div>
                         <div v-if="itemselected.next_order" class="col-md-6 col-sm-6">
                             <div style="font-size: 1rem;" class="font-weight-bold mb-1 mt-2">Orden Siguiente</div>
-                            <div class="d-flex justify-content-between"> Número de Orden: {{orderSelected.order_id}} </div>
+                            <div class="d-flex justify-content-between"> Número de Orden: {{orderSelected.consecutive_order}} </div>
                             <div class="d-flex justify-content-between"> Código: {{orderSelected.code}} - {{orderSelected.description}}</div>
-                            <div class="d-flex justify-content-between"> Cantidad Pendiente: {{orderSelected.total_pending}} </div>
+                            <div class="d-flex justify-content-between"> Cantidad Pendiente: {{orderSelected.pending_amount}} </div>
                         </div>
                     </div>
                 </div>
@@ -176,7 +413,10 @@ import Multiselect from 'vue-multiselect'
 import { realtime } from '@/vendor/sbx/sbx-realtime/realtime'
 import { orderAvailable } from "@/vendor/sbx/sbx/production_order";
 import Notifications from 'vue-notification'
+import { infoproduction } from "@/components/i40/js/production";
 import uuidv1 from 'uuid/v4';
+import Columns from "./columns.json";
+import * as numeral from 'numeral'
 Vue.use(Notifications)
 
 export default {
@@ -197,8 +437,37 @@ export default {
     
     data() {
         return {
+            columnsOrders:[], 
+
             selectedWorkstation:{},
             stopOrden: false,
+
+            sortBy: "id",
+            sortDesc: false,
+            ///Info de filtro y paginas para la tabla
+            currentPage: 1,
+            perPage: 10,
+            totalRows: 0,
+            pageOptions: [10, 15, 20, 25, 50, 100],
+            filter: null,
+            ///Info de filtro y paginas para la tabla
+
+            ///Info de filtro y paginas para la tabla
+
+
+            visiblePlanning:true,
+            ///Info de filtro y paginas para la tabla
+            currentPagePlanning: 1,
+            perPagePlanning: 10,
+            totalRowsPlanning: 0,
+            pageOptionsPlanning: [10, 15, 20, 25, 50, 100],
+            filterPlanning: null,
+            ///Info de filtro y paginas para la tabla
+
+            /// Columnas de las tablas
+            tableData: [],
+            tableDataPlanning: [],
+            columns: [],
 
             options:[],
             infoParos:[],
@@ -242,6 +511,72 @@ export default {
         
     },
     methods: {
+          formatAmount (p) {
+        return numeral(p).format('0,0.00')
+    },
+    ///Filtros Para las Tablas
+    onFilteredPlanning(filteredItems) {
+      this.totalRowsPlanning = filteredItems.length;
+      this.currentPagePlanning = 1;
+    },
+
+
+    abrirOrdenes: function(item) {
+
+
+        infoproduction.production(
+          {
+            plant_id: this.$route.params["idfloor"],
+            group_id: this.$route.params["idgroup"],
+            workstation_code: item.wscode
+          },
+          "select-workstation-realtime-planning"
+        )
+        .then(data => {
+          this.visiblePlanning = true
+          if(data.status == 200){
+            if(data.data != ""){
+              this.tableDataPlanning = data.data;
+              this.totalRowsPlanning = this.tableDataPlanning.length;
+            }else{
+              this.visiblePlanning = false
+              this.tableDataPlanning = [];
+              this.totalRowsPlanning = 0;
+            }
+          }else{
+            this.visiblePlanning = false
+            this.tableDataPlanning = []
+            this.totalRowsPlanning = 0
+          }
+        });
+
+      realtime.apirundb("0", "LocalConfig:EstadoDispositivos")
+        .then(data => {
+          this.hrdw = data.data
+        })
+
+      infoproduction.production(
+          {
+            workstation_code: item.wscode,
+            plant_id: this.$route.params["idfloor"],
+            group_id: this.$route.params["idgroup"]
+          },
+          "select-workstation-realtime"
+        )
+        
+        .then(data => {
+          // console.log(data)
+          if(data.data != ""){
+            this.tableData = data.data;
+            this.totalRows = this.tableData.length;
+          }else{
+            this.tableData =[]
+            this.totalRows =0
+          }
+        });
+
+
+    },
         getParos(item, controlForm){
             this.selected=  null
             this.is_multiple = false
@@ -341,6 +676,7 @@ export default {
 
         selectOrder(item){
             this.orderSelected = item
+            this.orderSelected.order_id= item.production_order_id
         },
 
         showCustom: function(classes, title, text) {
@@ -364,22 +700,23 @@ export default {
 
             // console.log(this.itemselected)
 
-            if(this.itemselected.next_order && item.jobs_id == undefined){
-                this.showCustom('bg-danger text-white', "Error","Seleccioné la orden que sigue a continuación")
+            if(this.itemselected.next_order && item.order_production_process_id == undefined){
+                this.showCustom('bg-danger text-white', "Error","Seleccione la orden que sigue a continuación")
             }else if(this.itemselected.stop_code_id == undefined){
                 this.showCustom('bg-danger text-white', "Error","No hay un paro seleccionado")
             }else{
                 result={id: this.wsinfo.interval_id == undefined ? 0 : this.wsinfo.interval_id, stop_code_id: this.itemselected.stop_code_id, workstation_id: this.wsinfo.workstation_id == undefined ? 0 : this.wsinfo.workstation_id, notes: this.commentedStopCode}
                 
                 ///Se valida si la orden de produccion siguiente será afectada por el paro
-                if(this.itemselected.next_order){
+                // if(this.itemselected.next_order){
 
-                    result["jobs_id"] = item.jobs_id
-                    auto_start_order = item.jobs_id
+                //     //result["jobs_id"] = item.jobs_id
+                //     auto_start_order = item.jobs_id
 
-                }
+                // }
 
                 result["job_auto"]= this.itemselected.auto_start
+                result["order_production_process_id"]= item.order_production_process_id
                 result["info_jobs_id"] = this.wsinfo.job_id
                 result["jobs_id"] = this.wsinfo.job_id
                 result["stop_code_root_cause_id"] = this.itemselectedSubCode.stop_code_root_cause_id
@@ -402,5 +739,9 @@ export default {
             },
         ///Filtros Para las Tablas
     },
+
+    created() {
+      this.columnsOrders = Columns.start_production_orders;
+    }
 }
 </script>

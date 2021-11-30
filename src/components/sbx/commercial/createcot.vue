@@ -1,6 +1,7 @@
 <template>
 <!-- :fields="columns" -->
     <div>
+        <!-- {{policies}} -->
         <b-alert show variant="danger" v-if="headercomplete.deleted">Esta Cotizacion Fue Cancelada</b-alert>
         <!-- {{this.selectedProductItem }} -->
         <notifications group="notifications-default" />
@@ -361,8 +362,18 @@
                                 </b-list-group-item>
                                 <b-list-group-item style="padding: 0.325rem 0.375rem;">
                                     <div class="row">
+                                        <div class="col-xs-8 col-sm-8 col-md-8">
+                                            %Descuento Comercial:
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4 col-md-4 text-right">
+                                            {{(policies.percentaje_max_comm== undefined ? 0 : policies.percentaje_max_comm)}}
+                                        </div>
+                                    </div>
+                                </b-list-group-item>
+                                <b-list-group-item style="padding: 0.325rem 0.375rem;">
+                                    <div class="row">
                                         <div class="col-xs-7 col-sm-7 col-md-7">
-                                            % Descuento:
+                                            %Descuento Cliente:
                                         </div>
                                         <div class="col-xs-5 col-sm-5 col-md-5 text-right">
                                             {{(itemSelectedCustomer.discount== undefined ? 0 : itemSelectedCustomer.discount)}}
@@ -530,6 +541,11 @@
                     </div>
                 </template>
             </b-table>
+            <div class="text-center">
+                <small>
+                    <b> Numero del Items: </b> {{tableData.length}} | <b>Total Unidades:</b> {{ totalesGenerales.unidades }}
+                </small>
+            </div>
             <b-row>
                 <b-col class="d-none d-sm-none d-md-block">
                     <b-form-group label=" Notas del Pedido" class="mt-1 ml-1">
@@ -780,6 +796,7 @@ export default {
     data() {
         return {
             userInfo:{},
+            policies: {},
 
             showSendMail:false,
             eventoPedido:false,
@@ -988,16 +1005,13 @@ export default {
             let result = {}
             result.code = '001'
             result.module = 'local'
-            await infosysconfig.commercialcontroller(result, "get").then(data => {
-                policies = data.data[0]
-            })
 
             let info = {}
 
             info.header = headerInfo
             info.details = detailsInfo
-            info.footer = policies.footer
-            info.footer1 = policies.footer1
+            info.footer = this.policies.footer
+            info.footer1 = this.policies.footer1
             info.action = action //'download'
             info.type = "cotizacion"
 
@@ -1169,7 +1183,17 @@ export default {
             // if(this.itemSelectedCustomer.discount == undefined)
             //     this.itemSelectedCustomer.discount 0
             
-        this.discount = (this.discount>this.itemSelectedCustomer.discount ? 0 : this.discount)
+        // this.discount = (this.discount>this.itemSelectedCustomer.discount ? 0 : this.discount)
+            let maxdiscount = 0
+
+            if(this.itemSelectedCustomer.discount > this.policies.percentaje_max_comm){
+                maxdiscount = this.itemSelectedCustomer.discount
+            }else{
+                maxdiscount = this.policies.percentaje_max_comm
+            }
+            
+            this.discount = (this.discount>maxdiscount ? this.itemSelectedCustomer.discount : this.discount)
+
         },
         savenotes(value, text){
             let info = {}
@@ -1205,6 +1229,8 @@ export default {
         controllerAmount(){
             let v = this.requested_amount*1000
             this.requested_amount_millar=this.numberWithCommas(v)
+
+            console.log(this.selectedProductItem)
             
             if(this.selectedProductItem.standard_packing > 0){
                 if(this.millarUm){
@@ -1214,7 +1240,7 @@ export default {
                 }
             }
 
-            if(this.requested_amount>this.disponible.available && this.requested_date>this.selectedDeadLine){
+            if(this.requested_amount>this.disponible.available0 && this.requested_date>this.selectedDeadLine){
                 this.selectedProductItem.deadline = this.selectedDeadLine
             }else{
                 if(this.requested_date>this.selectedDeadLine){
@@ -1257,15 +1283,23 @@ export default {
                 this.totalesGenerales.impuesto = null
                 this.totalesGenerales.subtotal = null
                 this.totalesGenerales.grantotal = null
+                this.totalesGenerales.unidades = 0
+
                 for (let index = 0; index < this.tableData.length; index++) {
                     const element = this.tableData[index];
                     let elementDescuento = ((element.requested_amount*element.sale_price)*(element.discount/100))
                     let elementTotal = (element.requested_amount*element.sale_price)
                     let elementSubtotal = elementDescuento == 0?elementTotal:elementDescuento
+                    let impuesto = 0
+                    if(this.orderLocation != "international" || element.tax > 0){
+                         impuesto = (elementTotal-elementDescuento) *(element.tax/100)
+                    }
+
+                    this.totalesGenerales.unidades = this.totalesGenerales.unidades + element.requested_amount
 
                     this.totalesGenerales.total = this.totalesGenerales.total + elementTotal
                     this.totalesGenerales.descuento = this.totalesGenerales.descuento + elementDescuento
-                    this.totalesGenerales.impuesto =  this.orderLocation == "international"?0:this.totalesGenerales.impuesto + (element.tax == 0 ? 0 : (elementSubtotal*(element.tax/100)))
+                    this.totalesGenerales.impuesto =  this.totalesGenerales.impuesto + impuesto//this.orderLocation == "international"?0:this.totalesGenerales.impuesto + (element.tax == 0 ? 0 : (elementSubtotal*(element.tax/100)))
                     this.totalesGenerales.subtotal = this.totalesGenerales.subtotal + (elementSubtotal == elementTotal ? elementTotal: ((element.requested_amount*element.sale_price)-elementSubtotal))
                 }
 
@@ -1669,7 +1703,7 @@ export default {
                 })
             }else{
                 this.selectedProductItem = item
-                this.selectedDeadLine = item.deadline
+                // this.selectedDeadLine = item.deadline
                 this.um = this.millarUm ? 'MILL' : item.unity_measure
                 this.valueSelectedProduct = '('+item.code+') - ' + item.description
                 // this.sale_price = item.price_list
@@ -1811,6 +1845,13 @@ export default {
         }else{
             this.loadHeader(value)
         }
+
+        let result = {}
+        result.code = '001'
+        result.module = 'local'
+        infosysconfig.commercialcontroller(result, "get").then(data => {
+            this.policies = data.data[0]
+        })
 
 
         let rs = infouser.currentUser()

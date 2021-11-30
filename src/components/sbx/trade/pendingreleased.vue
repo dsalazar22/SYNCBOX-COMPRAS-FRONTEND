@@ -39,7 +39,7 @@
 
 
                             <template v-slot:cell(edit)="row">
-                                <b-dropdown v-if="check_access('drump_commercial', 'w')" variant="default btn-xs icon-btn md-btn-flat hide-arrow" :right="!isRTL">
+                                <b-dropdown v-if="check_access('liberar_comm', 'w')" variant="default btn-xs icon-btn md-btn-flat hide-arrow" :right="false">
                                     <!-- {{props.item}} -->
                                     <template slot="button-content"><i class="ion ion-ios-settings"></i></template>
                                     <!-- <b-dropdown-item href="javascript:void(0)">Ver Perfil</b-dropdown-item> -->
@@ -90,23 +90,26 @@ function isRTL () {
 export default {
     
     metaInfo: {
-       title: ' Pendientes por Liberar'
+        title: ' Pendientes por Liberar'
     },
     components: {
-            VueMarkdown,
-            SweetModal,
-            Multiselect
-        },
+        VueMarkdown,
+        SweetModal,
+        Multiselect
+    },
 
     watch:{
         'filter':function(value){
+            // console.log(this.filter_tableData)
             this.tableCommercialsOrders = this.filter_tableData.filter(function (task) {
-                if(task.nit.toLowerCase().includes(value.toLowerCase()) || task.name.toLowerCase().includes(value.toLowerCase()))
+                if(task.nit.toLowerCase().includes(value.toLowerCase()) || task.customer_name.toLowerCase().includes(value.toLowerCase())
+                || task.username.toLowerCase().includes(value.toLowerCase()))
                     return task
             });
+
+
             this.totalRows = this.tableCommercialsOrders.length
             this.currentPage = 1
-            // this.onFiltered(this.tableCommercialsOrders)
         },
     },
 
@@ -115,19 +118,18 @@ export default {
             tableCommercialsOrders:[],
             filter_tableData:[],
             columnsCommercialsOrders: [
-        
-                    ///Este objeto es fijo en caso de que se necesite modificar la info
-                    // {key:' id_workplace', label:"id_workplace", thClass: 'd-none', tdClass: 'd-none'},
-                    // {key:' workstation_type_id', label:"workstation_type_id", thClass: 'd-none', tdClass: 'd-none'},
-                    // {key:'order_code', label:"Numero Orden"},
-                    {key:'username', label:"Asesor", stickyColumn: true},
-                    {key:'nit', label:"NIT"},
-                    {key:'customer_name', label:"Cliente"},
-                    {key:'order_created', label:"Fecha Creación"},
-                    {key:'document_customer', label:"#Orden Cliente"},
-                    
-                    {key:'edit', label:"Action"},
-                ],
+                ///Este objeto es fijo en caso de que se necesite modificar la info
+                // {key:' id_workplace', label:"id_workplace", thClass: 'd-none', tdClass: 'd-none'},
+                // {key:' workstation_type_id', label:"workstation_type_id", thClass: 'd-none', tdClass: 'd-none'},
+                // {key:'order_code', label:"Numero Orden"},
+                {key:'username', label:"Asesor", stickyColumn: true},
+                {key:'nit', label:"NIT"},
+                {key:'customer_name', label:"Cliente"},
+                {key:'order_created', label:"Fecha Creación"},
+                {key:'document_customer', label:"#Orden Cliente"},
+                
+                {key:'edit', label:"Action"},
+            ],
 
             ///Info de filtro y paginas para la tabla
                 currentPage: 1,

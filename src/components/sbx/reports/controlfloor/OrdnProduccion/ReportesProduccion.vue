@@ -101,6 +101,9 @@ export default {
                 {key:'created',label:'Fecha'},
                 {key:'amount',label:'Cantidad'},
                 {key:'amount_2',label:'Cantidad 2'},
+                {key:'personal_code',label:'Codigo Persona'},
+                {key:'personal_name',label:'Nombre Persona'},
+                {key:'workstation_origin',label:'CT Origen'},
         ],
             
             options: {

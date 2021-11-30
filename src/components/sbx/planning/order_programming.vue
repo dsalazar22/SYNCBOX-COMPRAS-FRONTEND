@@ -539,6 +539,8 @@ export default {
                 dateline: this.dateline,
                 details:this.info_product_map
             }
+
+            console.log(info_to_send)
             
             infoproduction.createproductionorder(info_to_send)
             this.selected_info_order_type={}
@@ -550,6 +552,7 @@ export default {
             this.selectTab='producto'
             this.$refs.wizard.navigateToTab(0)
         },
+
         getCapacity(){
             infoplanning.getKeepCapacity([],"").then(data => {
                 // console.log(data.data)
@@ -739,5 +742,3 @@ export default {
   text-align: left;
 }
 </style>
-
-

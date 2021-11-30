@@ -151,6 +151,11 @@ const router = new Router({
       // component: () => import('@/components/sbx/planning/cr_planning_order')
     },
     {
+      path: 'pp/group_planning',
+      component: () => import('@/components/sbx/planning/group_planning')
+      // component: () => import('@/components/sbx/planning/cr_planning_order')
+    },
+    {
       path: 'pp/order_programming',
       component: () => import('@/components/sbx/planning/order_programming')
     },

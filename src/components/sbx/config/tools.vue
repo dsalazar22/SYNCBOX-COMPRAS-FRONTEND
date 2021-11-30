@@ -15,15 +15,26 @@
                         </b-form-group>
                     </b-form-row>
                     <b-form-row>
-                        <b-form-group class="col-md-4" label="Unidades por Ciclo" :feedback="objState.message">        
+                        <b-form-group class="col-md-2" label="Unidades por Ciclo" :feedback="objState.message">        
                             <b-input type="number" step="0.1"  placeholder="Unidades por Ciclo" v-model="infoTimes.unity_expected_cycle" :state="objState.unity_expected_cycle!=0" v-on:input="objState.unity_expected_cycle = 'valid'; objState.unity_expected_cycle= infoTimes.unity_expected_cycle==''?'invalid':'valid'"/>
                         </b-form-group>
-                        <b-form-group class="col-md-4" label="Tiempo de Ciclo" :feedback="objState.message">
-                            <b-input-group append="segundos">
+                        <b-form-group class="col-md-3" label="Tiempo de Ciclo" :feedback="objState.message">
+                            <b-input-group append="seg.">
                                 <b-input type="number" step="0.1" placeholder="Tiempo de Ciclo" v-model="infoTimes.standard_time_cycle" :state="objState.standard_time_cycle!=0" v-on:input="objState.standard_time_cycle = 'valid'; objState.standard_time_cycle= infoTimes.standard_time_cycle==''?'invalid':'valid'"/>
                             </b-input-group>
                         </b-form-group>
-                        <b-form-group class="col-md-4" label="Tipo de Herramental">
+                        <b-form-group class="col-md-2" label="Peso Unidad Teorica" :feedback="objState.message">
+                            <b-input-group>
+                                <b-input type="number" step="0.1" placeholder="Peso Teorico" v-model="infoTimes.theoric_weight"/>
+                            </b-input-group>
+                        </b-form-group>
+                        <b-form-group class="col-md-2" label="Desperdicio" :feedback="objState.message">
+                            <b-input-group>
+                                <b-input type="number" step="0.1" placeholder="Desperdicio" v-model="infoTimes.scrap"/>
+                            </b-input-group>
+                        </b-form-group>
+
+                        <b-form-group class="col-md-3" label="Tipo de Herramental">
                             <multiselect
                                 v-model="infoTimes.selectedtootltype"
                                 :options="toolTypeContent"
@@ -138,6 +149,8 @@
                     code:'',
                     description:'',
                     description_tool_type:'',
+                    theoric_weight:0,
+                    scrap:0,
                     standard_time_cycle:0.0,
                     unity_expected_cycle:0.0,
                     generic_data:false,
@@ -301,6 +314,9 @@ export default {
                 generic_data:false,
                 modify_unity_expected:false,
 
+                scrap:0,
+                theoric_weight:0,
+
                 selectedtootltype:null,
                 selectedgroupsworkstation:null,
             },
@@ -358,7 +374,7 @@ export default {
         },
 
         submit(){
-            if(this.validate_content()){
+            // if(this.validate_content()){
                 this.infoTimes.tool_type_id = this.infoTimes.selectedtootltype.tool_type_id
 
                 if(this.infoTimes.selectedgroupsworkstation != null)
@@ -385,7 +401,7 @@ export default {
                         this.infoTimes = {}
                     }
                 })
-            }
+            // }
         },
 
         updateAllCycleTime(){

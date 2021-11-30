@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {costs} from './globals'
+import {costs,wscosts} from './globals'
 let axiosConfig = {
   headers: {
     'Authorization': localStorage.getItem('syncbox.cloud') == null ? '' : JSON.parse(localStorage.getItem('syncbox.cloud')).token
@@ -52,6 +52,9 @@ var infocosts = {
         return axios.get(costs + 'getsubrepartos', axiosConfig)
     },
     
+    getroutesproblems: function () {
+        return axios.get(costs + 'getroutesproblems', axiosConfig)
+    },
     getCeCosPorActividad: function () {
         return axios.get(costs + 'getcecosactividad', axiosConfig)
     },
@@ -85,6 +88,10 @@ var infocosts = {
         return axios.post(costs + 'liquidarserpro', {}, axiosConfig)
     },
 
+    costsrt: function(){
+        return io(wscosts,  {transports: ["websocket"]});
+    },
+
     delliquidarserpro: function (info) {
         return axios.post(costs + 'delliquidarserpro', info, axiosConfig)
     },
@@ -95,6 +102,10 @@ var infocosts = {
 
     detallecostoppto: function (code) {
         return axios.get(costs + 'calctotalppto/'+code, axiosConfig)
+    },
+
+    saveproductscode: function (info) {
+        return axios.post(costs + 'saveproductscode', info, axiosConfig)
     },
 }
 

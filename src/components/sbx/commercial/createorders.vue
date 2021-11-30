@@ -894,11 +894,13 @@ export default {
         },
 
         'requested_date':function(value){
-            if(this.requested_amount<=this.disponible.available ){
-                if(value>this.selectedDeadLine)
-                    this.selectedProductItem.deadline = value
-                else
-                    this.selectedProductItem.deadline = this.selectedDeadLine
+            if(!this.selectedProductItem.service){
+                if(this.requested_amount<=this.disponible.available ){
+                    if(value>this.selectedDeadLine)
+                        this.selectedProductItem.deadline = value
+                    else
+                        this.selectedProductItem.deadline = this.selectedDeadLine
+                }
             }
         },
 
@@ -1068,11 +1070,13 @@ export default {
                     }
                 }
 
-                if(this.requested_amount>this.disponible.available && this.requested_date>this.selectedDeadLine){
-                    this.selectedProductItem.deadline = this.selectedDeadLine
-                }else{
-                    if(this.requested_date>this.selectedDeadLine){
-                        this.selectedProductItem.deadline = this.requested_date
+            if(!this.selectedProductItem.service){
+                    if(this.requested_amount>this.disponible.available && this.requested_date>this.selectedDeadLine){
+                        this.selectedProductItem.deadline = this.selectedDeadLine
+                    }else{
+                        if(this.requested_date>this.selectedDeadLine){
+                            this.selectedProductItem.deadline = this.requested_date
+                        }
                     }
                 }
             }
@@ -1529,7 +1533,7 @@ export default {
                     console.log(error.status)
                 })
             }else{
-                
+                console.log(item)
                 this.selectedProductItem = item
                 this.selectedDeadLine = item.deadline
 

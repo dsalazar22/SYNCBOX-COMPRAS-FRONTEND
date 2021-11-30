@@ -686,6 +686,7 @@ export default {
         validateMontaje(){
             
             infoplanning.mount(this.order_id).then(data =>{
+                // console.log(data)
                 let resumenPlanning = data.data["ResumenPlanning"]
                 var container = document.getElementById('mountimeline');
                 var chart = new google.visualization.Timeline(container);
