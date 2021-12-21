@@ -416,11 +416,11 @@ export default {
   },
 
   created() {
-     ObtenerInfoLicense().then( data => {
-        this.serverCode = data.data.NumeroValidacion
+    //  ObtenerInfoLicense().then( data => {
+        // this.serverCode = data.data.NumeroValidacion
        
         if(this.$route.params['id'] != null){
-          infousers.getinfouser(this.$route.params['id'], this.serverCode).then(data =>{
+          infousers.getinfouser(this.$route.params['id']).then(data =>{
           
             this.userInfo = JSON.parse(data.data)[0].infouser[0]
             
@@ -445,9 +445,9 @@ export default {
           })
         }
 
-    }).catch(function (error) {
-        console.log("ERR", error.status)
-    });
+    // }).catch(function (error) {
+    //     console.log("ERR", error.status)
+    // });
   }
 }
 </script>

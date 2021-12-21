@@ -142,7 +142,7 @@
             <tab-content title="<div class='small text-muted'>CANTIDAD</div>">
                 <b-card class="mb-3">
                     <h5>Cantidad a Producir</h5>
-                    <b-form-input v-model="product_ppal.amount" placeholder="Enter your name"></b-form-input>
+                    <b-form-input v-model="product_ppal.amount" placeholder="Cantidad"></b-form-input>
                 </b-card>
             </tab-content>
 
@@ -230,9 +230,9 @@
                                                     <b-btn v-if="!row.item.configured" variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="showEditOperationProcess=true;objInfoOperationProcess=row.item;objInfoOperationProcess.selectedWorkstation=row.item.wsselected" ><i class="ion ion-md-add"></i></b-btn>
                                                     <b-btn v-if="row.item.configured" variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="showEditOperationProcess=true;objInfoOperationProcess=row.item;objInfoOperationProcess.selectedWorkstation=row.item.wsselected" ><i class="ion ion-md-create"></i></b-btn>
                                                     <!-- <b-btn v-if="props.item.configured" variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="submitPrepareToDelete('ws',props.item)"><i class="ion ion-md-close"></i></b-btn> -->                                    
-                                                    <b-btn variant="outline-info borderless" class="btn-sm" @click.prevent="show_tree=true; show_info_details = 'tree'; tree_product_info();">
+                                                    <!-- <b-btn variant="outline-info borderless" class="btn-sm" @click.prevent="show_tree=true; show_info_details = 'tree'; tree_product_info();">
                                                         <span class="fas fa-project-diagram"></span>&nbsp;&nbsp;Cargar Árbol
-                                                    </b-btn>
+                                                    </b-btn> -->
                                                 </template> 
                                             </b-table>
                                         </div>
@@ -535,7 +535,7 @@ export default {
                 amount: this.product_ppal.amount,
                 order_type: this.selected_info_order_type.code,
                 bom: this.selected_listDefinitionBOM.bill_of_materials_id,
-                route: this.selected_listDefinitionRoute.route_id,
+                route: this.selected_listDefinitionRoute.route_product_id,
                 dateline: this.dateline,
                 details:this.info_product_map
             }

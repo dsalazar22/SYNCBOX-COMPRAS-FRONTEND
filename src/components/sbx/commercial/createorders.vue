@@ -105,11 +105,19 @@
                                     <b-button size="sm" v-if="invoiceAddress.length>1" @click="showSelectedInvoice = !showSelectedInvoice" variant="outline-success icon-btn"> <i class="fas fa-exchange-alt"></i></b-button>
                                 </b-input-group-prepend>
 
-                                <b-form-input v-if="!showSelectedInvoice" size="sm" id="`type-fact`" v-model="invoice_address" type="text"></b-form-input>
-                                <b-form-select v-if="showSelectedInvoice" size="sm" id="`type-fact`" v-model="invoice_address_id" :options="invoiceAddress"></b-form-select>
+                                <b-form-input v-if="!showSelectedInvoice" id="`type-fact`" v-model="invoice_address" type="text"></b-form-input>
+                                <b-form-select v-if="showSelectedInvoice" id="`type-fact`" v-model="invoice_address_id" :options="invoiceAddress"></b-form-select>
 
                                 <b-input-group-append>
-                                    <b-form-input size="sm" id="`type-fact`" v-model="invoice_city" type="text"></b-form-input>
+                                    <!-- <b-form-input size="sm" id="`type-fact`" v-model="invoice_city" type="text"></b-form-input> -->
+                                            <multiselect
+                                                v-model="itemselectedCitiesInv"
+                                                :options="infoCities"
+                                                label="description"
+                                                :searchable="true"
+                                                :show-labels="false"
+                                                placeholder="Ciudad"
+                                            />
                                 </b-input-group-append>
                             </b-input-group>
                         </b-col>
@@ -121,13 +129,21 @@
                         <b-col sm="8">
                             <b-input-group>
                                  <b-input-group-prepend>
-                                    <b-button size="sm" v-if="shippingAddress.length>1" @click="showSelectedProduct = !showSelectedProduct" variant="outline-success icon-btn"> <i class="fas fa-exchange-alt"></i></b-button>
+                                    <b-button v-if="shippingAddress.length>1" @click="showSelectedProduct = !showSelectedProduct" variant="outline-success icon-btn"> <i class="fas fa-exchange-alt"></i></b-button>
                                 </b-input-group-prepend>
-                                <b-form-select v-if="showSelectedProduct" size="sm" id="`type-fact`" v-model="shipping_address_id" :options="shippingAddress"></b-form-select>
-                                <b-form-input v-if="!showSelectedProduct" size="sm" id="`type-fact`" v-model="shipping_address" type="text"></b-form-input>                            
+                                <b-form-select v-if="showSelectedProduct" id="`type-fact`" v-model="shipping_address_id" :options="shippingAddress"></b-form-select>
+                                <b-form-input v-if="!showSelectedProduct" id="`type-fact`" v-model="shipping_address" type="text"></b-form-input>                            
 
                                 <b-input-group-append>
-                                    <b-form-input size="sm" id="`type-fact`" v-model="shipping_city" type="text"></b-form-input>
+                                    <!-- <b-form-input size="sm" id="`type-fact`" v-model="shipping_city" type="text"></b-form-input> -->
+                                            <multiselect
+                                                v-model="itemselectedCitiesEnvio"
+                                                :options="infoCities"
+                                                label="description"
+                                                :searchable="true"
+                                                :show-labels="false"
+                                                placeholder="Ciudad"
+                                            />
                                 </b-input-group-append>
                             </b-input-group>
                         </b-col>
@@ -735,6 +751,8 @@
 </template>
 <style src="@/vendor/libs/sweet-modal-vue/sweet-modal-vue.scss" lang="scss"></style>
 <style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css" > </style>
+<style src="@/vendor/libs/vue-multiselect/vue-multiselect.scss" lang="scss"></style>
 <script>
 
 import Vue from 'vue'
@@ -753,7 +771,7 @@ import { CrearCommercialPDF } from "@/vendor/js/orderCommercial"
 import { infoplanning } from "@/components/i40/js/iplanning";
 import { infouser } from "@/vendor/sbx/sbx-users/users";
 import {infousers} from '@/components/i40/js/users'
-
+import Multiselect from 'vue-multiselect'
 Vue.use(Notifications)
 
 export default {
@@ -763,6 +781,7 @@ export default {
     components: {
         SweetModal,
         datePicker,
+        Multiselect,
     },
 
     computed: {
@@ -815,6 +834,8 @@ export default {
             invoice_address:'',
             invoice_city:'',
             shipping_city:'',
+            invoice_city_code:'',
+            shipping_city_code:'',
             showSelectedProduct:false,
             shipping_address:'',
             editOrderCreated:false,
@@ -831,6 +852,9 @@ export default {
             src:'',
             valueSelectedCustomer:'',
             itemSelectedCustomer:{},
+            itemselectedCitiesEnvio:{},
+            itemselectedCitiesInv:{},
+            infoCities:[],
 
             um:'',
             sale_price:0,
@@ -911,6 +935,7 @@ export default {
                     if(element.value == value){
                         this.shipping_address = element.text
                         this.shipping_city=element.city
+                        this.shipping_city_code=element.city_code
                     }
                 }
             }
@@ -924,6 +949,7 @@ export default {
                     if(element.value == value){
                         this.invoice_address = element.text
                         this.invoice_city=element.city
+                        this.invoice_city_code=element.city_code
                     }
                 }
             }
@@ -1251,13 +1277,16 @@ export default {
                     this.document_type_text = element.text
                 }
             }
-
+            this.shipping_city = this.itemselectedCitiesEnvio.description 
+            this.invoice_city = this.itemselectedCitiesInv.description
             this.infoHeader.customer_id=this.itemSelectedCustomer.customers_id
             this.infoHeader.document_type=this.document_type
             this.infoHeader.invoice_address = this.invoice_address
-            this.infoHeader.invoice_city = this.invoice_city
+            this.infoHeader.invoice_city = this.itemselectedCitiesInv.description //this.invoice_city
+            this.infoHeader.invoice_city_code = this.itemselectedCitiesInv.code //this.invoice_city_code
             this.infoHeader.shipping_address = this.shipping_address
-            this.infoHeader.shipping_city = this.shipping_city
+            this.infoHeader.shipping_city = this.itemselectedCitiesEnvio.description //
+            this.infoHeader.shipping_city_code = this.itemselectedCitiesEnvio.code //this.shipping_city_code
             this.infoHeader.document_customer = this.document_customer
             this.infoHeader.orders_id = this.order_id
             this.infoHeader.released = false
@@ -1267,6 +1296,7 @@ export default {
             this.infoHeader.approved = false
             this.infoHeader.released = false
             this.infoHeader.consultant_id = this.consultant_id
+            this.infoHeader.city_code_shipping = this.itemselectedCitiesEnvio.code
             let eventT = (this.infoHeader.order_id==null || this.infoHeader.order_id==0) ? "insert" : "update"
             
             infotrade.addheadorders(this.infoHeader,eventT).then(data =>{
@@ -1476,8 +1506,25 @@ export default {
             })
         },
 
+        selectedCity(controlador,code){
+            
+            let item = {}
+            for (let index = 0; index < this.infoCities.length; index++) {
+                const element = this.infoCities[index];
+                if(code == element.code){
+                    item = element
+                }
+            }
+
+            if(controlador == 'shipping'){
+                this.itemselectedCitiesEnvio = item
+            }else{
+                this.itemselectedCitiesInv = item
+            }
+        },
+
         onHit (item) {
-            // console.log(item)
+            console.log(item)
             if(this.order_id == 0 || this.editOrderCreated){
                 this.loadcartera(item.nit)
                 this.customerInfo.quota = item.quota
@@ -1490,6 +1537,8 @@ export default {
                 this.shipping_address = ''
                 this.invoice_city = ''
                 this.shipping_city = ''
+                this.invoice_city_code = ''
+                this.shipping_city_code = ''
                 this.consultant_id = item.consultant_id
                 
 
@@ -1510,20 +1559,21 @@ export default {
                     
                     if(this.shippingAddress.length == 1){
                         this.shipping_address = this.shippingAddress[0].text
-                        this.shipping_city = this.shippingAddress[0].city
+                        // this.shipping_city = this.shippingAddress[0].city
+                        this.selectedCity('shipping', this.shippingAddress[0].city_code)
                     }else if(this.shippingAddress.length == 0){
                         this.shipping_address = item.address
-                        this.shipping_city = item.city
+                        this.selectedCity('shipping', item.code)
                     }else{
                         this.showSelectedProduct = true
                     }
 
                     if(this.invoiceAddress.length == 1){
                         this.invoice_address = this.invoiceAddress[0].text
-                        this.invoice_city = this.shippingAddress[0].city
+                        this.selectedCity('invoice', this.invoiceAddress[0].city_code)
                     }else if(this.invoiceAddress.length == 0){
                         this.invoice_address = item.address
-                        this.invoice_city = item.city
+                        this.selectedCity('invoice', item.code)
                     }else{
                         this.showSelectedInvoice = true
                     }
@@ -1636,6 +1686,12 @@ export default {
                     this.invoice_address =  data.data[0].invoice_address
                     this.invoice_city =  data.data[0].invoice_city
                     this.shipping_city =  data.data[0].shipping_city
+                    // this.invoice_city_code =  data.data[0].invoice_city_code
+                    // this.shipping_city_code =  data.data[0].shipping_city_code
+
+                    this.selectedCity('shipping', data.data[0].shipping_city_code)
+                    this.selectedCity('invoice', data.data[0].invoice_city_code)
+
                     this.orders_id = data.data[0].order_id
                     this.order_id = data.data[0].order_id
                     this.consultant_id = data.data[0].consultant_id
@@ -1673,6 +1729,10 @@ export default {
             result.module = 'local'
             infosysconfig.commercialcontroller(result, "get").then(data => {
                 this.policies = data.data[0]
+            })
+
+            infomaster.getcities().then(data => {
+                this.infoCities = data.data
             })
         
         if(value == 0){
