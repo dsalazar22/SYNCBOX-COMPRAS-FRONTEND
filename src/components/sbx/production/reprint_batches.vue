@@ -26,17 +26,6 @@
 
         <b-modal hide-footer v-model="modal" size="xl">
 
-          
-            
-            <!-- 
-                <template v-slot:modal-title>
-                <h4 class="font-weight-bold py-3 mb-0"> Imprimir</h4>
-                
-                     {{ info}}
-                
-            </template>
-           -->
-
         <div class=" text-center">
             <h3 class="font-weight-bold py-3 mb-0">Seleccionar impresora</h3>
 
