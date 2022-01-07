@@ -45,6 +45,9 @@ var infoproduction = {
   },
   getcurrentorders: function(info) {
     return axios.get(production + 'getcurrentorders/'+ info, axiosConfig)
+  },
+  getbatch: function(info) {
+    return axios.get(production + 'getbatchs/'+ info, axiosConfig)
   }
 }
 
