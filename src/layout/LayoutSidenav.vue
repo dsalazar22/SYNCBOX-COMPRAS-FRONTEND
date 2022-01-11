@@ -29,6 +29,9 @@
 <sidenav-header class="small font-weight-semibold">MOVIMIENTOS</sidenav-header>
 <sidenav-divider class="mb-0 mt-0"></sidenav-divider>
       <!-- Dashboards -->
+
+      
+
       <sidenav-menu icon="fas fa-book" :active="isMenuActive('/btc')" :open="isMenuOpen('/btc')">
         <template slot="link-text">Bitacora</template>
         <sidenav-router-link class="ml-0" to="/btc/btc" :exact="true">Bitácora</sidenav-router-link>
@@ -92,6 +95,15 @@
         <sidenav-router-link class="ml-0" v-if="check_access('appr_comm', 'r')" to="/comm/appr" :exact="true">Aprobar Pedidos</sidenav-router-link>
         <sidenav-router-link class="ml-0" v-if="check_access('bill_comm', 'r')" to="/comm/cart" :exact="true">Cartera</sidenav-router-link>
      </sidenav-menu>
+
+     <sidenav-menu icon="fas fa-shopping-cart" :active="isMenuActive('/purch')" :open="isMenuOpen('/purch')">
+      <template slot="link-text">Compras</template> 
+      <sidenav-router-link class="ml-0"   to="/purch/new_purchase" :exact="true">Nueva Compra</sidenav-router-link>
+      <sidenav-router-link class="ml-0"   to="/purch/new_requirement" :exact="true">Nuevo Requerimiento</sidenav-router-link>
+      <sidenav-router-link class="ml-0"   to="/purch/list_requirements" :exact="true">Lista de Requerimientos</sidenav-router-link>
+      <sidenav-router-link class="ml-0"   to="/purch/drum_purchases" :exact="true">Tambor de Compras</sidenav-router-link>
+      <sidenav-router-link class="ml-0"   to="/purch/pending_payments" :exact="true">Pagos Pendientes</sidenav-router-link>
+      </sidenav-menu>
 
       <sidenav-menu icon="fas fa-truck" :active="isMenuActive('/deliv')" :open="isMenuOpen('/deliv')">
         <template slot="link-text">Despachos</template>

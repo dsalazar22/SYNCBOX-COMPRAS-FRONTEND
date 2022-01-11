@@ -94,6 +94,28 @@ const router = new Router({
       path: 'info/:codefloor/:idfloor/:codegroup/:idgroup/:wscode',
       component: () => import('@/components/sbx/globals/realtime_view_v2')
     },
+    // COMPRAS
+    {
+      path: 'purch/new_purchase',
+      component: () => import('@/components/sbx/purchases/new_purchase')
+    },
+    {
+      path: 'purch/list_requirements',
+      component: () => import('@/components/sbx/purchases/list_requirements')
+    },
+    {
+      path: 'purch/pending_payments',
+      component: () => import('@/components/sbx/purchases/pending_payments')
+    },
+    {
+      path: 'purch/drum_purchases',
+      component: () => import('@/components/sbx/purchases/drum_purchases')
+    },
+    {
+      path: 'purch/new_requirement',
+      component: () => import('@/components/sbx/purchases/new_requirement')
+    },
+
 
     {
       path: 'drum/reprint_batches',

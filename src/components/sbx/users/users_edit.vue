@@ -198,6 +198,12 @@ export default {
         { opcion:'show_comm', module: 'Reporte Comercial', all: false, read: false, write: false, create: false, delete: false},
         { opcion:'show_cap', module: 'Reporte Capacidades', all: false, read: false, write: false, create: false, delete: false},
 
+        { module:'Compras'},
+        { opcion:'purchases_requirements', module: 'Requerimientos de Compras', all: false, read: false, write: false, create: false, delete: false},
+        { opcion:'purchases_approved', module: 'Compras Aprobadas', all: false, read: false, write: false, create: false, delete: false},
+        { opcion:'purchases_earrings', module: 'Pagos Pendientes', all: false, read: false, write: false, create: false, delete: false},
+
+
         { module:'Tambor'},
         { opcion:'drump_production', module: 'Tambor de producción', all: false, read: false, write: false, create: false, delete: false},
         { opcion:'drump_commercial', module: 'Tambor de Pedidos', all: false, read: false, write: false, create: false, delete: false },
