@@ -2,19 +2,23 @@
   <div>
     <notifications group="notifications-default" />
     <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
-
+<!-- BUSCADOR  -->
     <b-form-group label="Buscar Proveedor">
       <b-input-group>
-        <b-form-input v-model="param" placeholder="Buscar..."></b-form-input>
+        <b-form-input v-model="filter" placeholder="Buscar..."/>
         <b-input-group-append>
-            <b-input-group-text slot="prepend" v-if="!loading">
-                 <i class="ion ion-ios-search"></i>
-            </b-input-group-text>
-          <b-button variant="success" @click="create()">Crear</b-button>
+            <b-btn :disabled="!filter" @click="filter = ''"> <span class="oi oi-delete" ></span> </b-btn>
+          <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create()"><i class="ion ion-md-add"></i></b-button>
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
+<!-- FIN BUSCADOR-->
 
+
+ <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   
+ :fields="columnsSuppliers" :filter="filter" @filtered="onFiltered">
+              
+        </b-table>
    
 
     <div v-show="show"> 
@@ -51,19 +55,23 @@
           </b-row>
 
              <b-col class="text-center" style="margin-top:20px">
-                <b-btn size="sm" variant="outline-info" :to="'/purch/new_purchase'"><i class="fas fa-trash-alt"></i>&nbsp; Nueva Compra</b-btn>
-                <b-btn size="sm" variant="outline-success" @click="h(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Pedido</b-btn>
+                <b-btn size="sm" variant="outline-danger" @click="close()"><i class="fas fa-trash-alt"></i>&nbsp;Cancelar Compra</b-btn>
+                <b-btn size="sm" variant="outline-success" @click="close(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
             </b-col>
         </b-col>
 
       </b-row>
       <br>
-      <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="i"   :fields="columnsDetails">
+      <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
               
         </b-table>
     </div>
     
-    
+  <div class="d-flex justify-content-between">
+     <div>
+      <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+     </div>
+  </div>
      
   </div>
 </template>
@@ -71,6 +79,7 @@
 <style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
 
 <script>
+import { infomaster } from "@/components/i40/js/master";
 import Vue from "vue";
 import { realtime } from "@/vendor/sbx/sbx-realtime/realtime";
 import Notifications from "vue-notification";
@@ -88,8 +97,16 @@ export default {
   },
   data() {
     return {
-      param: null,
-      productsTable: [],
+
+
+      // BUSCADOR Y PAGINA
+        currentPage:1,
+        perPage:50,
+        filter: null,
+      // fin 
+
+      totalRows:0,
+      tableData: [],
       selectedProduct: {},
       show: false,
 
@@ -99,12 +116,35 @@ export default {
           {key:"amount", "sortable": true, label:"Cantidad"},
           {key:"trade_value", "sortable": true, label:"Valor de Negociación"},
           {key:"value", "sortable": true, label:"Valor Total"},
+      ],
+
+      columnsSuppliers:[
+        {key:'nit', label:'NIT'},
+        {key:'name', label:'Nombre'},
+        {key:'phone', label:'Teléfono'},
+        {key:'address', label:'Dirección'},
+        {key:'principal_contact', label:'Contacto'}
       ]
     };
   },
 
+  mounted(){
+    this.loadSupplier();
+  },
+
   methods: {
-    loadSupplier() {},
+    loadSupplier() {
+      infomaster.supplier([], "0","select").then(data => {
+           if(data.data != ""){
+             console.log(data.data)
+              this.tableData = data.data
+              this.totalRows= this.tableData.length
+           }else{
+              this.tableData = []
+              this.totalRows= 0
+                    }
+                })
+    },
 
     create() {
       this.show = true
@@ -112,6 +152,12 @@ export default {
 
     close(){
         this.show = false
+    },
+
+    onFiltered(filteredItems){
+      this.totalRows = filteredItems.length
+      this.currentPage = 1
+      
     }
   }
 }
