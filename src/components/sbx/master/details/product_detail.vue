@@ -581,8 +581,7 @@
                                         <b-input-group-text slot="prepend" v-if="!loading">
                                             <i class="ion ion-ios-search"></i>
                                         </b-input-group-text>
-
-                                        <!-- {{valueSelectedTool}} -->
+                                        
                                         <input type="text" class="form-control"
                                             placeholder="Seleccione un Herramental"
                                             autocomplete="off"
@@ -1241,12 +1240,12 @@ export default {
 
                 tableCustomerProduct:[],
                 columnsCustomerProducts: [
-                // {key:'complete', label:"Completo"},
-                {key:'code', label:"Código"},
-                {key:'description', label:"Descripción"},
-                {key:'customer', label:"Cliente"},
-                {key:'price', label:"Precio"},
-                {key:'edit', label:"Editar"}
+                    // {key:'complete', label:"Completo"},
+                    {key:'code', label:"Código"},
+                    {key:'description', label:"Descripción"},
+                    {key:'customer', label:"Cliente"},
+                    {key:'price', label:"Precio"},
+                    {key:'edit', label:"Editar"}
                 ],
 
             ////INFO CLIENTES
@@ -1943,8 +1942,6 @@ export default {
                 let param_id=this.$route.params['idproduct']
                 if(param_id!=0 && param_id!=undefined){
                     this.infoProduct.product_id = param_id
-
-
 
                     infomaster.lines(this.moduleSelected,"select").then(datalines => {
                         this.infoLines = []

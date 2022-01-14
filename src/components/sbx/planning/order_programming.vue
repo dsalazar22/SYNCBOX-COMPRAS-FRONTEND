@@ -8,14 +8,14 @@
         <div class="row">
             <div class="col">
                 <h5>Tipo de Documento</h5>
-                Codigo: {{ selected_info_order_type.code }}
+                    Codigo: {{ selected_info_order_type.code }}
                 <div>
                     Definición:  {{ selected_info_order_type != null ? selected_info_order_type.description : ""}}
                 </div>
                 <h5 class="mt-2">Producto Seleccionado</h5>
                     Descripción: {{product_ppal != null ? product_ppal.description : ""}}
                 <div></div>
-                Cantidad a Producir: {{product_ppal.amount}}
+                    Cantidad a Producir: {{product_ppal.amount}}
             </div>
             <div class="col">
                 <h5 >Listas de Materiales</h5>

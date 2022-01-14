@@ -2,16 +2,38 @@
   <div>
     <notifications group="notifications-default" />
     <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
+
 <!-- BUSCADOR  -->
-    <b-form-group label="Buscar Proveedor">
-      <b-input-group>
-        <b-form-input v-model="filter" placeholder="Buscar..."/>
-        <b-input-group-append>
-            <b-btn :disabled="!filter" @click="filter = ''"> <span class="oi oi-delete" ></span> </b-btn>
-          <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create()"><i class="ion ion-md-add"></i></b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-form-group>
+                                <div class="position-relative mb-3">
+                                    <b-input-group>
+                                        <b-input-group-text slot="prepend" v-if="loading">
+                                            <i class="ion ion-md-sync"></i>
+                                        </b-input-group-text>
+                                        <b-input-group-text slot="prepend" v-if="!loading">
+                                            <i class="ion ion-ios-search"></i>
+                                        </b-input-group-text>
+                                        <input type="text" class="form-control"
+                                            placeholder="Seleccione un proveedor"
+                                            autocomplete="off"
+                                            v-model="valueSelectedSupplier"
+                                            @keydown.down="down"
+                                            @keydown.up="up"
+                                            @keydown.enter="hit"
+                                            @keydown.esc="reset"
+                                            @blur="reset"
+                                            @input="updateQuerySupplier" />
+                                        <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput">
+                                            <i class="ion ion-md-close" ></i>
+                                        </b-input-group-text>
+                                    </b-input-group>
+                                    <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                                        <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
+                                            <span class="name" v-text="item.nit"></span>
+                                            <span class="text-muted">{{ item.name }}</span>
+                                        </a>
+                                    </div>
+                                </div>
+    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create()"><i class="ion ion-md-add"></i></b-button>
 <!-- FIN BUSCADOR-->
 
 
@@ -30,7 +52,7 @@
               <h5>Productos:</h5>
             </b-col>
             <b-col sm="4">
-              <b-form-select size="sm" v-model="f" :options="f"></b-form-select>
+              <!-- <b-form-select size="sm" v-model="f" :options="f"></b-form-select> -->
             </b-col>
           </b-row>
           <b-row class="my-2">
@@ -38,7 +60,7 @@
               <h5>Fecha:</h5>
             </b-col>
             <b-col sm="4">
-              <b-form-datepicker v-model="value"></b-form-datepicker>
+              <!-- <b-form-datepicker v-model="value"></b-form-datepicker> -->
             </b-col>
           </b-row>
 
@@ -47,10 +69,10 @@
               <h5>Cantidad:</h5>
             </b-col>
             <b-col sm="4">
-              <b-form-input
+              <!-- <b-form-input
                 v-model="cant"
                 placeholder="Ingrese la cantidad..."
-              ></b-form-input>
+              ></b-form-input> -->
             </b-col>
           </b-row>
 
@@ -79,11 +101,16 @@
 <style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
 
 <script>
+import Axios from 'axios'
 import { infomaster } from "@/components/i40/js/master";
+import { config,master } from "@/components/i40/js/globals";
 import Vue from "vue";
 import { realtime } from "@/vendor/sbx/sbx-realtime/realtime";
 import Notifications from "vue-notification";
 import Multiselect from "vue-multiselect";
+import VueTypeahead from 'vue-typeahead'
+Vue.prototype.$http = Axios
+
 Vue.use(Notifications);
 export default {
   name: "app",
@@ -92,11 +119,17 @@ export default {
     title: "Nueva Compra",
   },
 
+  extends: VueTypeahead,
+
   components: {
     Multiselect,
   },
   data() {
     return {
+
+      valueSelectedSupplier:'',
+      itemSelectedSupplier:{},
+      itemSupplierProduct:{},
 
 
       // BUSCADOR Y PAGINA
@@ -133,17 +166,38 @@ export default {
   },
 
   methods: {
+    isRTL () {
+      return false
+    },
+
     loadSupplier() {
       infomaster.supplier([], "0","select").then(data => {
-           if(data.data != ""){
-             console.log(data.data)
-              this.tableData = data.data
-              this.totalRows= this.tableData.length
-           }else{
-              this.tableData = []
-              this.totalRows= 0
-                    }
-                })
+          if(data.data != ""){
+            console.log(data.data)
+            this.tableData = data.data
+            this.totalRows= this.tableData.length
+          }else{
+            this.tableData = []
+            this.totalRows= 0
+          }
+      })
+    },
+
+    updateQuerySupplier(){
+      this.query = this.valueSelectedSupplier
+      console.log(this.query)
+      this.update()
+    },
+
+    onHit (item) {
+      this.itemSelectedSupplier=item
+      this.valueSelectedSupplier=item.name
+      this.itemSupplierProduct.supplier_id = item.supplier_id
+    },
+
+    resetInput () {
+        this.valueSelectedSupplier=''
+        this.reset()
     },
 
     create() {
@@ -157,8 +211,11 @@ export default {
     onFiltered(filteredItems){
       this.totalRows = filteredItems.length
       this.currentPage = 1
-      
     }
+
+  },
+  created(){
+    this.src = master+'suppliersearch/'
   }
 }
 </script>
