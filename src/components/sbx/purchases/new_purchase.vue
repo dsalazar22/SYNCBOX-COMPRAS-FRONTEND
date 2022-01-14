@@ -9,7 +9,7 @@
                                         <b-input-group-text slot="prepend" v-if="loading">
                                             <i class="ion ion-md-sync"></i>
                                         </b-input-group-text>
-                                        <b-input-group-text slot="prepend" v-if="!loading">
+                                        <b-input-group-text  slot="prepend" v-if="!loading">
                                             <i class="ion ion-ios-search"></i>
                                         </b-input-group-text>
                                         <input type="text" class="form-control"
@@ -22,9 +22,14 @@
                                             @keydown.esc="reset"
                                             @blur="reset"
                                             @input="updateQuerySupplier" />
-                                        <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput">
+                                             <b-input-group slot="append" v-if="isDirty || valueSelectedSupplier">
+                                            <b-button variant="success" class="btn-md" @click="searchSupplier()">Buscar</b-button>
+                                        </b-input-group>
+                                            
+                                        <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
                                             <i class="ion ion-md-close" ></i>
                                         </b-input-group-text>
+                                        
                                     </b-input-group>
                                     <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
                                         <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
@@ -33,16 +38,19 @@
                                         </a>
                                     </div>
                                 </div>
-    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create()"><i class="ion ion-md-add"></i></b-button>
+    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr()"><i class="ion ion-md-add"></i></b-button>
+  
 <!-- FIN BUSCADOR-->
 
 
- <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   
- :fields="columnsSuppliers" :filter="filter" @filtered="onFiltered">
+    <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   
+ :fields="columnsSuppliers" >
               
-        </b-table>
+     </b-table>
    
+  <b-btn size="sm" variant="outline-success" @click="showSpplr();close(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Añadir Proveedor</b-btn>
 
+<!-- COMPRAS -->
     <div v-show="show"> 
       <b-row class="border rounded border-white" >
         <b-col md="8" sm="12" style="margin-left:250px">
@@ -88,9 +96,63 @@
               
         </b-table>
     </div>
+<!-- FIN -->
+
+<!--PROVEEDORES -->
+    <div v-show="showSupplier" class="border rounded" style="font-color:'white'">
+       <h5 class="font-weight-bold py-3 mb-0">Administrar Proveedores</h5>
+      <b-row >
+         <b-col>
+           <h6 class="font-weight-bold py-3 mb-0">Seleccione un Proveedor</h6>
+            <input type="text" class="form-control"
+            placeholder="Seleccione un proveedor"
+            v-model="k" />
+          </b-col>
+      
+      
+         <b-col>
+           <h6 class="font-weight-bold py-3 mb-0">Precio</h6>
+           <input type="text" class="form-control"
+           placeholder="Precio"
+           v-model="k" />
+           </b-col>
+
+      </b-row>
+
+      <b-row>
+        <b-col>
+          <h6 class="font-weight-bold py-3 mb-0">Codigo del Proveedor</h6>
+            <input type="text" class="form-control"
+            placeholder="Codigo del proveedor"
+            v-model="k" />
+        </b-col>
+
+        <b-col>
+          <h6 class="font-weight-bold py-3 mb-0">Descripcion del Proveedor</h6>
+            <input type="text" class="form-control"
+            placeholder="Descripcion del proveedor"
+            v-model="k" />
+        </b-col>
+      </b-row>
+
+      <b-row class="my-2">
+        <b-col style="text-align:right">
+          <b-button variant="outline-danger icon-btn" class="btn-md" @click.prevent="closeSpplr()"><i class="ion ion-md-close"></i></b-button>
+          <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="closeSpplr()"><i class="ion ion-md-checkmark"></i></b-button>
+        </b-col>
+      </b-row>
+
+    </div>
+    <br>
+    <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
+              
+        </b-table>
+  <!-- Fin -->
     
+  
   <div class="d-flex justify-content-between">
      <div>
+       <br>
       <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
      </div>
   </div>
@@ -131,6 +193,7 @@ export default {
       itemSelectedSupplier:{},
       itemSupplierProduct:{},
 
+      showSupplier: false,
 
       // BUSCADOR Y PAGINA
         currentPage:1,
@@ -207,16 +270,45 @@ export default {
     close(){
         this.show = false
     },
+     searchSupplier(){
+    infomaster.supplier([], "0","select").then(data => {
+           console.log(data.data)
+          let supplier = data.data
+          this.tableData = []
+          console.log(data.data)  
+          for (let index = 0; index < supplier.length; index++) {
+            const element = supplier[index];
+            if(element.nit.includes(this.valueSelectedSupplier))
+            {
+              this.tableData.push(element)
+            }
+            
+          }
+      })
+  },
 
     onFiltered(filteredItems){
       this.totalRows = filteredItems.length
       this.currentPage = 1
-    }
+      
+    },
+
+    showSpplr(){
+      this.showSupplier = true
+    },
+
+    closeSpplr(){
+    this.showSupplier = false
+  }
 
   },
+
+  
+
   created(){
     this.src = master+'suppliersearch/'
-  }
+  },
+ 
 }
 </script>
 
