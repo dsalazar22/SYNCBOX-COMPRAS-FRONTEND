@@ -116,6 +116,20 @@ var realtime = {
     return axios.post(apirealtime + 'callerscontroller/'+event, info, axiosConfig)
   },
 
+  getdevices: function(){
+    return axios.get(apirealtime + 'getdevices' )
+  },
+
+  sendbatchprint: function(batchinfo){
+    let axconf = {
+      headers:{
+      'Authorization': JSON.parse(localStorage.getItem('syncbox.cloud')).token
+      }
+    }
+
+    return axios.post(apirealtime + 'sendbatchprint' , batchinfo,axconf)
+  },
+
   infoColorsOEE: function (value) {
     let color = ''
     if (value > 0 && value <= 75) {

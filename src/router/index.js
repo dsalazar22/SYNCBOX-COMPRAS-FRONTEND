@@ -96,6 +96,10 @@ const router = new Router({
     },
 
     {
+      path: 'drum/reprint_batches',
+      component: () => import('@/components/sbx/production/reprint_batches')
+    },
+    {
       path: 'drum/tacproduction',
       component: () => import('@/components/sbx/production/tacproduction')
     }, 

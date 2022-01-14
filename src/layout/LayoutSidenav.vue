@@ -47,6 +47,7 @@
       <sidenav-menu icon="ion ion-md-contract" :active="isMenuActive('/drum')" :open="isMenuOpen('/drum')">
         <template slot="link-text">Tambor</template>
         <sidenav-router-link class="ml-0" to="/drum/searchop" :exact="true">Buscar Orden de Producción</sidenav-router-link>
+        <sidenav-router-link class="ml-0" v-if="check_access('drump_production', 'r')"  to="/drum/reprint_batches" :exact="true">Reimpresion de Lotes</sidenav-router-link>
         <sidenav-router-link class="ml-0" v-if="check_access('drump_production', 'r')"  to="/drum/tacproduction" :exact="true">TAC de Producción</sidenav-router-link>
         <sidenav-router-link class="ml-0" v-if="check_access('drump_production', 'r')"  to="/drum/productionorders" :exact="true">Tambor de Producción</sidenav-router-link>
         <sidenav-router-link class="ml-0" v-if="check_access('drump_commercial', 'r')" to="/drum/orders" :exact="true">Tambor de Pedidos</sidenav-router-link>
