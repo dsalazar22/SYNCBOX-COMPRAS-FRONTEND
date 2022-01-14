@@ -1103,8 +1103,8 @@ export default {
             info.released = false
             info.consultant_id = this.consultant_id
             info.quotation_id = this.infoHeader.quotation_id
-            info.order_notes = this.infoHeader.order_notes
-            info.transporter_notes = this.infoHeader.transporter_notes
+            info.order_notes = this.commentorder
+            info.transporter_notes = this.commenttransp
             info.date_deadline = this.dateitems
 
 
