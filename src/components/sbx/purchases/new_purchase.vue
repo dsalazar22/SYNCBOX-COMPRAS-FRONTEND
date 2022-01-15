@@ -4,11 +4,12 @@
     <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
 
 <!-- BUSCADOR  -->
-                                <div class="position-relative mb-3">
+                                <div class="position-relative mb-3 border rounded">
                                     <b-input-group>
                                         <b-input-group-text slot="prepend" v-if="loading">
                                             <i class="ion ion-md-sync"></i>
                                         </b-input-group-text>
+
                                         <b-input-group-text  slot="prepend" v-if="!loading">
                                             <i class="ion ion-ios-search"></i>
                                         </b-input-group-text>
@@ -45,14 +46,19 @@
 
     <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   
  :fields="columnsSuppliers" >
-              
+              <template v-slot:cell(edit)="row">
+                <div class="text-center">
+                  <b-btn variant="outline-success bordeless icon-btn" class="btn-xs" @click="edit(row.item)"><i class="ion ion-md-create"></i></b-btn>
+                   <b-btn variant="outline-danger bordeless icon-btn" class="btn-xs" @click="edit(row.item)"><i class="ion ion-md-close"></i></b-btn>
+                </div>
+              </template>
      </b-table>
    
   <b-btn size="sm" variant="outline-success" @click="showSpplr();close(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Añadir Proveedor</b-btn>
 
 <!-- COMPRAS -->
-    <div v-show="show"> 
-      <b-row class="border rounded border-white" >
+    <div v-show="show" style="background-color:white"> 
+      <b-row  >
         <b-col md="8" sm="12" style="margin-left:250px">
           <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
           <b-row class="my-2">
@@ -99,7 +105,7 @@
 <!-- FIN -->
 
 <!--PROVEEDORES -->
-    <div v-show="showSupplier" class="border rounded" style="font-color:'white'">
+    <div v-show="showSupplier" class="border rounded " style="background-color:white">
        <h5 class="font-weight-bold py-3 mb-0">Administrar Proveedores</h5>
       <b-row >
          <b-col>
@@ -142,11 +148,12 @@
         </b-col>
       </b-row>
 
-    </div>
-    <br>
+  <br>
     <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
               
         </b-table>
+    </div>
+  
   <!-- Fin -->
     
   
@@ -219,7 +226,8 @@ export default {
         {key:'name', label:'Nombre'},
         {key:'phone', label:'Teléfono'},
         {key:'address', label:'Dirección'},
-        {key:'principal_contact', label:'Contacto'}
+        {key:'principal_contact', label:'Contacto'},
+        {key:'edit', label:'Editar'}
       ]
     };
   },
