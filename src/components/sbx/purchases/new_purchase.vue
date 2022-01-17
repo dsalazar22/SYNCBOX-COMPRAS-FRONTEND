@@ -44,7 +44,7 @@
 <!-- FIN BUSCADOR-->
 
 
-    <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   
+    <!-- <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   
  :fields="columnsSuppliers" >
               <template v-slot:cell(edit)="row">
                 <div class="text-center">
@@ -52,41 +52,76 @@
                    <b-btn variant="outline-danger bordeless icon-btn" class="btn-xs" @click="edit(row.item)"><i class="ion ion-md-close"></i></b-btn>
                 </div>
               </template>
-     </b-table>
+     </b-table> -->
    
-  <b-btn size="sm" variant="outline-success" @click="showSpplr();close(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Añadir Proveedor</b-btn>
 
 <!-- COMPRAS -->
     <div v-show="show" style="background-color:white"> 
       <b-row  >
         <b-col md="8" sm="12" style="margin-left:250px">
-          <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
+          <h4 class="font-weight-bold py-3 mb-0">Factura Compra</h4>
           <b-row class="my-2">
-            <b-col sm="4">
+            <b-col sm="2" class="my-2">
+            
               <h5>Productos:</h5>
             </b-col>
-            <b-col sm="4">
-              <!-- <b-form-select size="sm" v-model="f" :options="f"></b-form-select> -->
+            <b-col>
+              <b-input-group >
+                  <b-input-group-text slot="prepend" v-if="loading">
+                      <i class="ion ion-md-sync"></i>
+                  </b-input-group-text>
+
+                  <b-input-group-text  slot="prepend" v-if="!loading">
+                      <i class="ion ion-ios-search"></i>
+                  </b-input-group-text>
+                  <input type="text" class="form-control"
+                      placeholder="Seleccione un producto"
+                      autocomplete="off"
+                      v-model="v"
+                      @keydown.down="down"
+                      @keydown.up="up"
+                      @keydown.enter="hit"
+                      @keydown.esc="reset"
+                      @blur="reset"
+                      @input="updateQuerySupplier" />
+              </b-input-group>
+            
             </b-col>
+           
           </b-row>
           <b-row class="my-2">
-            <b-col sm="4">
+            <b-col sm="2" class="my-2">
               <h5>Fecha:</h5>
             </b-col>
             <b-col sm="4">
-              <!-- <b-form-datepicker v-model="value"></b-form-datepicker> -->
+              <b-form-datepicker v-model="value"></b-form-datepicker>
             </b-col>
           </b-row>
 
           <b-row class="my-2">
-            <b-col sm="4">
+            <b-col sm="2" class="my-2">
               <h5>Cantidad:</h5>
             </b-col>
-            <b-col sm="4">
-              <!-- <b-form-input
-                v-model="cant"
-                placeholder="Ingrese la cantidad..."
-              ></b-form-input> -->
+            <b-col>
+              <b-input-group >
+                  <b-input-group-text slot="prepend" v-if="loading">
+                      <i class="ion ion-md-sync"></i>
+                  </b-input-group-text>
+
+                  <b-input-group-text  slot="prepend" v-if="!loading">
+                      <i class="ion ion-ios-basket"></i>
+                  </b-input-group-text>
+                  <input type="text" class="form-control"
+                      placeholder="Seleccione un producto"
+                      autocomplete="off"
+                      v-model="va"
+                      @keydown.down="down"
+                      @keydown.up="up"
+                      @keydown.enter="hit"
+                      @keydown.esc="reset"
+                      @blur="reset"
+                      @input="updateQuerySupplier" />
+              </b-input-group>
             </b-col>
           </b-row>
 
@@ -98,63 +133,13 @@
 
       </b-row>
       <br>
-      <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
+      <div>
+        <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
               
         </b-table>
+      </div>
     </div>
-<!-- FIN -->
 
-<!--PROVEEDORES -->
-    <div v-show="showSupplier" class="border rounded " style="background-color:white">
-       <h5 class="font-weight-bold py-3 mb-0">Administrar Proveedores</h5>
-      <b-row >
-         <b-col>
-           <h6 class="font-weight-bold py-3 mb-0">Seleccione un Proveedor</h6>
-            <input type="text" class="form-control"
-            placeholder="Seleccione un proveedor"
-            v-model="k" />
-          </b-col>
-      
-      
-         <b-col>
-           <h6 class="font-weight-bold py-3 mb-0">Precio</h6>
-           <input type="text" class="form-control"
-           placeholder="Precio"
-           v-model="k" />
-           </b-col>
-
-      </b-row>
-
-      <b-row>
-        <b-col>
-          <h6 class="font-weight-bold py-3 mb-0">Codigo del Proveedor</h6>
-            <input type="text" class="form-control"
-            placeholder="Codigo del proveedor"
-            v-model="k" />
-        </b-col>
-
-        <b-col>
-          <h6 class="font-weight-bold py-3 mb-0">Descripcion del Proveedor</h6>
-            <input type="text" class="form-control"
-            placeholder="Descripcion del proveedor"
-            v-model="k" />
-        </b-col>
-      </b-row>
-
-      <b-row class="my-2">
-        <b-col style="text-align:right">
-          <b-button variant="outline-danger icon-btn" class="btn-md" @click.prevent="closeSpplr()"><i class="ion ion-md-close"></i></b-button>
-          <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="closeSpplr()"><i class="ion ion-md-checkmark"></i></b-button>
-        </b-col>
-      </b-row>
-
-  <br>
-    <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
-              
-        </b-table>
-    </div>
-  
-  <!-- Fin -->
     
   
   <div class="d-flex justify-content-between">
@@ -214,11 +199,13 @@ export default {
       show: false,
 
       columnsDetails:[
-          {key:"code", "sortable": true, label:"Codigo del Producto"},
-          {key:"description", "sortable": true, label:"Descripcion del Producto"},
-          {key:"amount", "sortable": true, label:"Cantidad"},
-          {key:"trade_value", "sortable": true, label:"Valor de Negociación"},
-          {key:"value", "sortable": true, label:"Valor Total"},
+          {key:"code", label:"Codigo del Producto"},
+          {key:"description", label:"Descripcion del Producto"},
+          {key:"date", label:"Fecha"},
+          {key:"amount",  label:"Cantidad"},
+          {key:"trade_value", label:"Valor de Negociación"},
+          {key:"value", label:"Valor Total"},
+          
       ],
 
       columnsSuppliers:[
