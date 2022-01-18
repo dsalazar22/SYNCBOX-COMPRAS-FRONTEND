@@ -2,7 +2,7 @@
   <div>
     <notifications group="notifications-default" />
     <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
-
+    <!-- {{tableDataProducts}} -->
 <!-- BUSCADOR  -->
                                 <div class="position-relative mb-3 border rounded">
                                     <b-input-group>
@@ -39,7 +39,7 @@
                                         </a>
                                     </div>
                                 </div>
-    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr()"><i class="ion ion-md-add"></i></b-button>
+    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr(); obtenerProductos()"><i class="ion ion-md-add"></i></b-button>
   
 <!-- FIN BUSCADOR-->
 
@@ -77,13 +77,16 @@
                   <input type="text" class="form-control"
                       placeholder="Seleccione un producto"
                       autocomplete="off"
-                      v-model="v"
+                      v-model="valueSelectedProduct"
                       @keydown.down="down"
                       @keydown.up="up"
                       @keydown.enter="hit"
                       @keydown.esc="reset"
                       @blur="reset"
                       @input="updateQuerySupplier" />
+                     <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput">
+                        <i class="ion ion-md-close" ></i>
+                    </b-input-group-text>
               </b-input-group>
             
             </b-col>
@@ -93,8 +96,8 @@
             <b-col sm="2" class="my-2">
               <h5>Fecha:</h5>
             </b-col>
-            <b-col sm="4">
-              <b-form-datepicker v-model="value"></b-form-datepicker>
+            <b-col sm="10">
+              <b-form-datepicker v-model="valueDate" :config="options"></b-form-datepicker>
             </b-col>
           </b-row>
 
@@ -109,34 +112,68 @@
                   </b-input-group-text>
 
                   <b-input-group-text  slot="prepend" v-if="!loading">
-                      <i class="ion ion-ios-basket"></i>
+                      <i class="ion ion-ios-filing"></i>
                   </b-input-group-text>
                   <input type="text" class="form-control"
                       placeholder="Ingrese la cantidad"
                       autocomplete="off"
-                      v-model="va"
+                      v-model="valueAmount"
                       @keydown.down="down"
                       @keydown.up="up"
                       @keydown.enter="hit"
                       @keydown.esc="reset"
                       @blur="reset"
-                      @input="updateQuerySupplier" />
+                      />
+                      <b-input-group-text slot="append" v-if="isDirty || valueAmount" @click="resetInput">
+                        <i class="ion ion-md-close" ></i>
+                    </b-input-group-text>
+              </b-input-group>
+            </b-col>
+          </b-row>
+
+          <b-row class="my-2">
+            <b-col sm="2" class="my-2">
+              <h5>Valor de Negociacion:</h5>
+            </b-col>
+            <b-col>
+              <b-input-group >
+                  <b-input-group-text slot="prepend" v-if="loading">
+                      <i class="ion ion-md-sync"></i>
+                  </b-input-group-text>
+
+                  <b-input-group-text  slot="prepend" v-if="!loading">
+                      <i class="ion ion-logo-usd"></i>
+                  </b-input-group-text>
+                  <input type="text" class="form-control"
+                      placeholder="Ingrese el Valor "
+                      autocomplete="off"
+                      v-model="tradingValue"
+                      @keydown.down="down"
+                      @keydown.up="up"
+                      @keydown.enter="hit"
+                      @keydown.esc="reset"
+                      @blur="reset"
+                      />
+                      <b-input-group-text slot="append" v-if="isDirty || tradingValue" @click="resetInput">
+                        <i class="ion ion-md-close" ></i>
+                    </b-input-group-text>
               </b-input-group>
             </b-col>
           </b-row>
 
              <b-col class="text-center" style="margin-top:20px">
                 <b-btn size="sm" variant="outline-danger" @click="close()"><i class="fas fa-trash-alt"></i>&nbsp;Cancelar Compra</b-btn>
-                <b-btn size="sm" variant="outline-success" @click="close(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
+                <b-btn size="sm" variant="outline-success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
             </b-col>
         </b-col>
 
       </b-row>
       <br>
       <div>
-        <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="tableData"   :fields="columnsDetails">
+        <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="itemsSelectedOrder"   :fields="columnsDetails">
               
         </b-table>
+      
       </div>
     </div>
 
@@ -151,10 +188,12 @@
      
   </div>
 </template>
+<style src="@/vendor/libs/sweet-modal-vue/sweet-modal-vue.scss" lang="scss"></style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css" ></style>
 <style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
 
 <script>
+import { GetActiveProducts} from "@/vendor/sbx/sbx/product";
 import Axios from 'axios'
 import { infomaster } from "@/components/i40/js/master";
 import { config,master } from "@/components/i40/js/globals";
@@ -163,6 +202,8 @@ import { realtime } from "@/vendor/sbx/sbx-realtime/realtime";
 import Notifications from "vue-notification";
 import Multiselect from "vue-multiselect";
 import VueTypeahead from 'vue-typeahead'
+import datePicker from 'vue-bootstrap-datetimepicker';
+import "pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css";
 Vue.prototype.$http = Axios
 
 Vue.use(Notifications);
@@ -195,11 +236,23 @@ export default {
 
       totalRows:0,
       tableData: [],
+      itemsSelectedOrder:[],
+      itemSelectedOrder:{},
       selectedProduct: {},
       show: false,
 
+      // ORDEN
+      tableDataProducts:[],
+      totalRowsProducts: 0,
+      valueSelectedProduct:'',
+      valueDate:'',
+      valueAmount:null,
+      tradingValue:null,
+      totalValue:0,
+
       columnsDetails:[
           {key:"code", label:"Codigo del Producto"},
+          {key:"product", label:"Producto"},
           {key:"description", label:"Descripcion del Producto"},
           {key:"date", label:"Fecha"},
           {key:"amount",  label:"Cantidad"},
@@ -215,12 +268,18 @@ export default {
         {key:'address', label:'Dirección'},
         {key:'principal_contact', label:'Contacto'},
         {key:'edit', label:'Editar'}
-      ]
+      ],
+      options: {
+                format: "YYYY-MM-DD HH:mm",
+                // useCurrent: false
+                // minDate:Date(),
+            },
     };
   },
 
   mounted(){
-    this.loadSupplier();
+    this.loadSupplier()
+    this.loadProducts()
   },
 
   methods: {
@@ -255,6 +314,10 @@ export default {
 
     resetInput () {
         this.valueSelectedSupplier=''
+        this.valueSelectedProduct = ''
+        this.valueDate = ''
+        this.valueAmount = ''
+        this.tradingValue = ''
         this.reset()
     },
 
@@ -264,6 +327,7 @@ export default {
 
     close(){
         this.show = false
+        this.resetInput()
     },
      searchSupplier(){
     infomaster.supplier([], "0","select").then(data => {
@@ -294,7 +358,48 @@ export default {
 
     closeSpplr(){
     this.showSupplier = false
-  }
+  },
+
+  loadProducts(){
+            GetActiveProducts().then(data => {
+              console.log(data.data)
+                this.tableDataProducts = data.data
+                this.totalRowsProducts= this.tableDataProducts.length
+            })
+        },
+  updateQueryProducto () {
+      let uri = encodeURIComponent(this.valueProduct)
+      this.query = uri
+      this.update()
+  },
+
+  saveOrder(){
+
+    if(this.tradingValue != '')
+    {
+    this.itemSelectedOrder = {}
+    this.itemSelectedOrder['amount'] = this.valueAmount
+    this.itemSelectedOrder['date'] = this.valueDate
+    this.itemSelectedOrder['trade_value'] = this.tradingValue
+
+    this.totalValue = this.valueAmount * this.tradingValue
+    this.itemSelectedOrder['value'] = this.totalValue
+    this.itemsSelectedOrder.push(this.itemSelectedOrder)
+    }else{
+      this.showCustom("bg-danger", "Factura fallida", "¡Campos vacios!")
+    }
+
+    this.resetInput()
+  },
+
+  showCustom: function(classes, title, text) {
+            this.$notify({
+                group: 'notifications-default',
+                type: classes,
+                title: title,
+                text: text
+            })
+        },
 
   },
 
