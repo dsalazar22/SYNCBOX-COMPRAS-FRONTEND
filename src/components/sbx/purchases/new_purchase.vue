@@ -112,7 +112,7 @@
                       <i class="ion ion-ios-basket"></i>
                   </b-input-group-text>
                   <input type="text" class="form-control"
-                      placeholder="Seleccione un producto"
+                      placeholder="Ingrese la cantidad"
                       autocomplete="off"
                       v-model="va"
                       @keydown.down="down"
