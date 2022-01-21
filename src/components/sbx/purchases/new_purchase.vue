@@ -39,7 +39,7 @@
                                         </a>
                                     </div>
                                 </div>
-    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr(); obtenerProductos()"><i class="ion ion-md-add"></i></b-button>
+    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr(); loadProducts()"><i class="ion ion-md-add"></i></b-button>
   
 <!-- FIN BUSCADOR-->
 
@@ -66,7 +66,7 @@
               <h5>Productos:</h5>
             </b-col>
             <b-col>
-              <b-input-group >
+              <!-- <b-input-group >
                   <b-input-group-text slot="prepend" v-if="loading">
                       <i class="ion ion-md-sync"></i>
                   </b-input-group-text>
@@ -74,8 +74,8 @@
                   <b-input-group-text  slot="prepend" v-if="!loading">
                       <i class="ion ion-ios-search"></i>
                   </b-input-group-text>
-                  <input type="text" class="form-control"
-                      placeholder="Seleccione un producto"
+                   <input type="text" class="form-control"
+                      placeholder="Ingrese la cantidad"
                       autocomplete="off"
                       v-model="valueSelectedProduct"
                       @keydown.down="down"
@@ -83,11 +83,21 @@
                       @keydown.enter="hit"
                       @keydown.esc="reset"
                       @blur="reset"
-                      @input="updateQuerySupplier" />
-                     <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput">
+                      @input="updateQueryProduct"
+                      />
+                      <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput">
                         <i class="ion ion-md-close" ></i>
                     </b-input-group-text>
-              </b-input-group>
+              </b-input-group> -->
+              <multiselect
+                        v-model="valueSelectedProduct"
+                        :options="tableDataProducts"
+                        :searchable="true"
+                        :show-labels="false"
+                        label="code"
+                        track-by="code"
+                        placeholder="Seleccione un Producto"
+                    ></multiselect>
             
             </b-col>
            
@@ -97,7 +107,7 @@
               <h5>Fecha:</h5>
             </b-col>
             <b-col sm="10">
-              <b-form-datepicker v-model="valueDate" :config="options"></b-form-datepicker>
+              <b-form-datepicker v-model="valueDate" :config="options" placeholder="Seleccione la Fecha"></b-form-datepicker>
             </b-col>
           </b-row>
 
@@ -161,7 +171,7 @@
             </b-col>
           </b-row>
 
-             <b-col class="text-center" style="margin-top:20px">
+             <b-col class="text-center my-1" style="margin-top:20px">
                 <b-btn size="sm" variant="outline-danger" @click="close()"><i class="fas fa-trash-alt"></i>&nbsp;Cancelar Compra</b-btn>
                 <b-btn size="sm" variant="outline-success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
             </b-col>
@@ -241,6 +251,8 @@ export default {
       selectedProduct: {},
       show: false,
 
+
+
       // ORDEN
       tableDataProducts:[],
       totalRowsProducts: 0,
@@ -249,10 +261,12 @@ export default {
       valueAmount:null,
       tradingValue:null,
       totalValue:0,
+      selectedModule:'',
+      product_ppal:{},
+      products:[],
 
       columnsDetails:[
           {key:"code", label:"Codigo del Producto"},
-          {key:"product", label:"Producto"},
           {key:"description", label:"Descripcion del Producto"},
           {key:"date", label:"Fecha"},
           {key:"amount",  label:"Cantidad"},
@@ -278,8 +292,7 @@ export default {
   },
 
   mounted(){
-    this.loadSupplier()
-    this.loadProducts()
+    this.loadSupplier();
   },
 
   methods: {
@@ -298,6 +311,7 @@ export default {
             this.totalRows= 0
           }
       })
+      
     },
 
     updateQuerySupplier(){
@@ -306,11 +320,7 @@ export default {
       this.update()
     },
 
-    onHit (item) {
-      this.itemSelectedSupplier=item
-      this.valueSelectedSupplier=item.name
-      this.itemSupplierProduct.supplier_id = item.supplier_id
-    },
+   
 
     resetInput () {
         this.valueSelectedSupplier=''
@@ -323,11 +333,13 @@ export default {
 
     create() {
       this.show = true
+      this.loadProducts()
     },
 
     close(){
         this.show = false
         this.resetInput()
+        this.itemsSelectedOrder = []
     },
      searchSupplier(){
     infomaster.supplier([], "0","select").then(data => {
@@ -345,6 +357,43 @@ export default {
           }
       })
   },
+   loadProducts(){
+      infomaster.products([],'0',"select").then(data => {
+                if(data.data != ""){
+                  console.log(data.data)
+                    this.tableDataProducts = data.data
+                    this.totalRowsProducts= this.tableDataProducts.length
+                    
+                }else{
+                    this.tableDataProducts = []
+                    this.totalRows=0
+                }
+            })
+
+        },
+
+    //  updateQueryProducto () {
+    //         let uri = encodeURIComponent(this.valueSelectedProduct)
+    //         this.query = uri
+    //         this.update()
+    //     },
+
+    
+
+    //  onHit (item) {
+    //    this.product_ppal = {
+    //             product_id: item.product_id,
+    //             description: item.description,
+    //             amount: 0
+    //         }
+    // },
+
+    // obtenerProductos: function(){
+    //         GetActiveProducts().then(data => {
+    //             this.tableData = data.data
+    //             this.totalRows= this.tableData.length
+    //         })
+    //     },
 
     onFiltered(filteredItems){
       this.totalRows = filteredItems.length
@@ -360,18 +409,6 @@ export default {
     this.showSupplier = false
   },
 
-  loadProducts(){
-            GetActiveProducts().then(data => {
-              console.log(data.data)
-                this.tableDataProducts = data.data
-                this.totalRowsProducts= this.tableDataProducts.length
-            })
-        },
-  updateQueryProducto () {
-      let uri = encodeURIComponent(this.valueProduct)
-      this.query = uri
-      this.update()
-  },
 
   saveOrder(){
 
@@ -381,6 +418,8 @@ export default {
     this.itemSelectedOrder['amount'] = this.valueAmount
     this.itemSelectedOrder['date'] = this.valueDate
     this.itemSelectedOrder['trade_value'] = this.tradingValue
+    this.itemSelectedOrder['code'] = this.valueSelectedProduct.code
+    this.itemSelectedOrder['description'] = this.valueSelectedProduct.description
 
     this.totalValue = this.valueAmount * this.tradingValue
     this.itemSelectedOrder['value'] = this.totalValue
