@@ -60,6 +60,7 @@
       <b-row  >
         <b-col md="8" sm="12" style="margin-left:250px">
           <h4 class="font-weight-bold py-3 mb-0">Factura Compra</h4>
+          <h5 class="font-weight-bold py-3 mb-0">Factura numero: {{factura}}</h5>
           <b-row class="my-2">
             <b-col sm="2" class="my-2">
             
@@ -94,8 +95,8 @@
                         :options="tableDataProducts"
                         :searchable="true"
                         :show-labels="false"
-                        label="code"
-                        track-by="code"
+                        label="description"
+                        track-by="description"
                         placeholder="Seleccione un Producto"
                     ></multiselect>
             
@@ -183,7 +184,10 @@
         <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="itemsSelectedOrder"   :fields="columnsDetails">
               
         </b-table>
-      
+        <h5 class="font-weight-bold py-3 mb-0">Total Compra: {{total}}</h5>
+
+        <b-col class="my-2 text-center"> <b-btn style="text-align-center" size="sm" variant="primary" @click="confirmOrder(); editOrderCreated=false"><i class="icon ion-ios-checkmark"></i>&nbsp; Comfirmar Compra</b-btn></b-col>
+         
       </div>
     </div>
 
@@ -264,6 +268,8 @@ export default {
       selectedModule:'',
       product_ppal:{},
       products:[],
+      total:0,
+      factura:1,
 
       columnsDetails:[
           {key:"code", label:"Codigo del Producto"},
@@ -322,13 +328,14 @@ export default {
 
    
 
-    resetInput () {
+    resetInput() {
         this.valueSelectedSupplier=''
         this.valueSelectedProduct = ''
         this.valueDate = ''
         this.valueAmount = ''
         this.tradingValue = ''
         this.reset()
+        
     },
 
     create() {
@@ -412,7 +419,7 @@ export default {
 
   saveOrder(){
 
-    if(this.tradingValue != '')
+    if(this.valueSelectedProduct != '' && this.valueDate != '' && this.valueAmount != null && this.tradingValue != null)
     {
     this.itemSelectedOrder = {}
     this.itemSelectedOrder['amount'] = this.valueAmount
@@ -424,11 +431,25 @@ export default {
     this.totalValue = this.valueAmount * this.tradingValue
     this.itemSelectedOrder['value'] = this.totalValue
     this.itemsSelectedOrder.push(this.itemSelectedOrder)
+    this.total = this.total + this.totalValue
     }else{
       this.showCustom("bg-danger", "Factura fallida", "¡Campos vacios!")
     }
 
     this.resetInput()
+  },
+
+  confirmOrder(){
+    if(Object.entries(this.itemsSelectedOrder).length === 0){
+      this.showCustom("bg-danger", "Compra fallida", "¡Orden vacia!")
+    } else{
+      
+      this.factura = this.factura + 1
+      this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con ecito!")
+      this.resetInput()
+      this.itemsSelectedOrder = []
+      this.total = 0
+    }
   },
 
   showCustom: function(classes, title, text) {
