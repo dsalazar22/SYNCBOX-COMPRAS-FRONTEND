@@ -445,8 +445,18 @@ export default {
     } else{
       
       this.factura = this.factura + 1
-      this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con ecito!")
+     
       this.resetInput()
+      realtime.sendPurchaseOrder(this.itemsSelectedOrder)
+      // realtime.sendPurchaseOrder(this.itemsSelectedOrder).then(data =>{
+      //   console.log(data.status)
+      //   // if(data.status == 202){
+          
+      //   //    this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con ecito!")
+      //   // }else{
+      //   //   this.showCustom("bg-danger", "Compra fallida", "¡No se envio correctamente!")
+      //   // }
+      // })
       this.itemsSelectedOrder = []
       this.total = 0
     }

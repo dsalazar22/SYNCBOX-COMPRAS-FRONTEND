@@ -130,6 +130,15 @@ var realtime = {
     return axios.post(apirealtime + 'sendbatchprint' , batchinfo,axconf)
   },
 
+  sendPurchaseOrder: function(orderInfo){
+    let axconf = {
+      headers:{
+      'Authorization': JSON.parse(localStorage.getItem('syncbox.cloud')).token
+      }
+    }
+    return axios.post(apirealtime + 'sendPurchaseOrder' , orderInfo,axconf)
+  },
+
   infoColorsOEE: function (value) {
     let color = ''
     if (value > 0 && value <= 75) {
