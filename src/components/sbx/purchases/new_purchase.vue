@@ -184,10 +184,14 @@
         <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="itemsSelectedOrder"   :fields="columnsDetails">
               
         </b-table>
-        <h5 class="font-weight-bold py-3 mb-0">Total Compra: {{total}}</h5>
-
-        <b-col class="my-2 text-center"> <b-btn style="text-align-center" size="sm" variant="primary" @click="confirmOrder(); editOrderCreated=false"><i class="icon ion-ios-checkmark"></i>&nbsp; Comfirmar Compra</b-btn></b-col>
-         
+       <b-col class="my-2 text-center"> <b-btn style="text-align-center" size="sm" variant="primary" @click="confirmOrder(); editOrderCreated=false"><i class="icon ion-ios-checkmark"></i>&nbsp; Comfirmar Compra</b-btn></b-col>
+      <b-row>
+        <b-col>
+        <h5>Valor neto: {{totalNeto}}</h5>
+        <h5>IVA 19%: {{iva}}</h5>
+        <h5>Total Compra: {{total}}</h5>
+        </b-col>
+      </b-row>
       </div>
     </div>
 
@@ -262,14 +266,17 @@ export default {
       totalRowsProducts: 0,
       valueSelectedProduct:'',
       valueDate:'',
-      valueAmount:null,
-      tradingValue:null,
+      valueAmount:'',
+      tradingValue:'',
       totalValue:0,
       selectedModule:'',
       product_ppal:{},
       products:[],
       total:0,
+      totalNeto:0,
+      iva:0,
       factura:1,
+      numFactura:'',
 
       columnsDetails:[
           {key:"code", label:"Codigo del Producto"},
@@ -340,7 +347,7 @@ export default {
 
     create() {
       this.show = true
-      this.loadProducts()
+      
     },
 
     close(){
@@ -419,7 +426,7 @@ export default {
 
   saveOrder(){
 
-    if(this.valueSelectedProduct != '' && this.valueDate != '' && this.valueAmount != null && this.tradingValue != null)
+    if(this.valueSelectedProduct != '' && this.valueDate != '' && this.valueAmount != '' && this.tradingValue != '')
     {
     this.itemSelectedOrder = {}
     this.itemSelectedOrder['amount'] = this.valueAmount
@@ -431,36 +438,59 @@ export default {
     this.totalValue = this.valueAmount * this.tradingValue
     this.itemSelectedOrder['value'] = this.totalValue
     this.itemsSelectedOrder.push(this.itemSelectedOrder)
-    this.total = this.total + this.totalValue
+    this.totalNeto= this.totalNeto + this.totalValue
+    this.iva = this.totalNeto * 0.19
+    this.total = this.iva + this.totalNeto
+    this.resetInput()
     }else{
-      this.showCustom("bg-danger", "Factura fallida", "¡Campos vacios!")
+      this.showCustom("bg-danger", "Error", "¡La informacion esta incompleta, por favor valide!")
     }
 
-    this.resetInput()
+    
   },
 
   confirmOrder(){
     if(Object.entries(this.itemsSelectedOrder).length === 0){
       this.showCustom("bg-danger", "Compra fallida", "¡Orden vacia!")
     } else{
-      
-      this.factura = this.factura + 1
-     
-      this.resetInput()
-      realtime.sendPurchaseOrder(this.itemsSelectedOrder)
-      // realtime.sendPurchaseOrder(this.itemsSelectedOrder).then(data =>{
-      //   console.log(data.status)
-      //   // if(data.status == 202){
+
+      this.factura += 1
+
+
+      this.itemSelectedOrder = this.itemsSelectedOrder
+      realtime.sendPurchaseOrder(this.itemSelectedOrder).then(data =>{
+        console.log(data.data)
+        if(data.status == 200){
           
-      //   //    this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con ecito!")
-      //   // }else{
-      //   //   this.showCustom("bg-danger", "Compra fallida", "¡No se envio correctamente!")
-      //   // }
-      // })
-      this.itemsSelectedOrder = []
-      this.total = 0
+           this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con exito!")
+        }else{
+          this.showCustom("bg-danger", "Compra fallida", "¡No se envio correctamente!")
+        }
+      })
+      // this.showCustom("bg-success", "Compra Enviada", "¡Orden facturada correctamente!")
+     this.resetInput()
+     this.itemsSelectedOrder = []
+     this.itemSelectedOrder = {}
+     this.totalNeto = 0
+    this.total = 0
+      this.iva = 0
+      
+      // this.factura()
     }
   },
+
+ 
+
+  // factura(){
+  //   if(this.factura < 10){
+  //       numFactura = '000000' + this.factura
+  //       this.factura ++
+  //   } else if(this.factura < 100)
+  //     {
+  //       this.numFactura = '0000' + this.factura
+  //       this.factura ++
+  //     }
+  // },
 
   showCustom: function(classes, title, text) {
             this.$notify({
