@@ -125,7 +125,7 @@
                   <b-input-group-text  slot="prepend" v-if="!loading">
                       <i class="ion ion-ios-filing"></i>
                   </b-input-group-text>
-                  <input type="text" class="form-control"
+                  <input type="number" class="form-control"
                       placeholder="Ingrese la cantidad"
                       autocomplete="off"
                       v-model="valueAmount"
@@ -155,7 +155,7 @@
                   <b-input-group-text  slot="prepend" v-if="!loading">
                       <i class="ion ion-logo-usd"></i>
                   </b-input-group-text>
-                  <input type="text" class="form-control"
+                  <input type="number" class="form-control"
                       placeholder="Ingrese el Valor "
                       autocomplete="off"
                       v-model="tradingValue"
@@ -172,7 +172,7 @@
             </b-col>
           </b-row>
 
-             <b-col class="text-center my-1" style="margin-top:20px">
+             <b-col class="my-2" style="margin-top:20px; margin-left:130px">
                 <b-btn size="sm" variant="outline-danger" @click="close()"><i class="fas fa-trash-alt"></i>&nbsp;Cancelar Compra</b-btn>
                 <b-btn size="sm" variant="outline-success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
             </b-col>
@@ -186,10 +186,11 @@
         </b-table>
        <b-col class="my-2 text-center"> <b-btn style="text-align-center" size="sm" variant="primary" @click="confirmOrder(); editOrderCreated=false"><i class="icon ion-ios-checkmark"></i>&nbsp; Comfirmar Compra</b-btn></b-col>
       <b-row>
-        <b-col>
+        <b-col v-show="valores">
+        <h5>Total Compra: {{total}}</h5>
         <h5>Valor neto: {{totalNeto}}</h5>
         <h5>IVA 19%: {{iva}}</h5>
-        <h5>Total Compra: {{total}}</h5>
+        
         </b-col>
       </b-row>
       </div>
@@ -276,6 +277,7 @@ export default {
       totalNeto:0,
       iva:0,
       factura:1,
+      valores:false,
       numFactura:'',
 
       columnsDetails:[
@@ -353,6 +355,7 @@ export default {
     close(){
         this.show = false
         this.resetInput()
+        this.valores = false
         this.itemsSelectedOrder = []
     },
      searchSupplier(){
@@ -441,11 +444,12 @@ export default {
     this.totalNeto= this.totalNeto + this.totalValue
     this.iva = this.totalNeto * 0.19
     this.total = this.iva + this.totalNeto
+    this.valores = true
     this.resetInput()
     }else{
       this.showCustom("bg-danger", "Error", "¡La informacion esta incompleta, por favor valide!")
     }
-
+    
     
   },
 
@@ -456,25 +460,26 @@ export default {
 
       this.factura += 1
 
-
-      this.itemSelectedOrder = this.itemsSelectedOrder
-      realtime.sendPurchaseOrder(this.itemSelectedOrder).then(data =>{
-        console.log(data.data)
-        if(data.status == 200){
+      this.showCustom("bg-success", "Compra Realizada", "¡Orden Facturada Correctamente!")
+// AQUI ES DONDE TRATO DE ENVIAR LOS DATOS DE LA COMPRA AL API
+      // this.itemSelectedOrder = this.itemsSelectedOrder
+      // realtime.sendPurchaseOrder(this.itemSelectedOrder).then(data =>{
+      //   console.log(data.data)
+      //   if(data.status == 200){
           
-           this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con exito!")
-        }else{
-          this.showCustom("bg-danger", "Compra fallida", "¡No se envio correctamente!")
-        }
-      })
+      //      this.showCustom("bg-success", "Compra Realizada", "¡La compra se ha enviado con exito!")
+      //   }else{
+      //     this.showCustom("bg-danger", "Compra fallida", "¡No se envio correctamente!")
+      //   }
+      // })
       // this.showCustom("bg-success", "Compra Enviada", "¡Orden facturada correctamente!")
-     this.resetInput()
-     this.itemsSelectedOrder = []
-     this.itemSelectedOrder = {}
-     this.totalNeto = 0
+    this.resetInput()
+    this.itemsSelectedOrder = []
+    this.itemSelectedOrder = {}
+    this.totalNeto = 0
     this.total = 0
-      this.iva = 0
-      
+    this.iva = 0
+    this.valores = false
       // this.factura()
     }
   },
