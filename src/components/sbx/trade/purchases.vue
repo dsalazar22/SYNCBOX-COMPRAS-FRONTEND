@@ -1,7 +1,7 @@
 <template>
 <!-- :fields="columns" -->
     <div>
-        <h4 class="font-weight-bold py-3 mb-0"> Tambor de Compras </h4>
+        <h4 class="font-weight-bold py-3 mb-0"> Tambor de Compras  </h4>
 
         <div class="row">
             <div class="col">
@@ -49,6 +49,145 @@
                             </template> -->
                     </b-table>
                 </div>
+                <div class="my-4">
+                     <b-btn size="sm" variant="outline-primary" @click="openModal()"><i class="fas fa-plus"></i>&nbsp; Cantidad a Recibir</b-btn>
+                </div>
+
+
+            <!-- <b-modal hide-footer v-model="modal" size="xl">
+            <div>
+                <b-row>
+                    <b-col sm="2" class="my-2">
+                        <h5>Cantidad a Recibir:</h5>
+                    </b-col>
+                    <b-col>
+                        <b-input-group >
+                            <b-input-group-text slot="prepend" v-if="loading">
+                                <i class="ion ion-md-sync"></i>
+                        </b-input-group-text>
+
+                        <b-input-group-text  slot="prepend" v-if="!loading">
+                                <i class="ion ion-ios-basket"></i>
+                        </b-input-group-text>
+                        <input type="number" class="form-control"
+                            placeholder="Ingrese la cantidad..."
+                             autocomplete="off"
+                            v-model="t"
+                             @keydown.down="down"
+                             @keydown.up="up"
+                            @keydown.enter="hit"
+                             @keydown.esc="reset"
+                            @blur="reset"
+                         />
+                        <b-input-group-text slot="append" v-if="isDirty || t" @click="resetInput">
+                          <i class="ion ion-md-close" ></i>
+                         </b-input-group-text>
+                     </b-input-group>
+                  </b-col>
+             </b-row>
+
+            <b-row>
+                <b-col sm="2" class="my-2">
+                    <h5>Subir archivo:</h5>
+                </b-col>
+                 <b-col>
+                    <b-input-group >
+
+                     <b-input-group-text  slot="prepend" v-if="!loading">
+                        <i class="ion ion-md-archive"></i>
+                     </b-input-group-text>
+                    <input type="file" accept=".pdf" 
+                         @change="onFileSelected" 
+                         @keydown.enter="hit"
+                         @keydown.esc="reset"
+                         @blur="reset"
+                      />
+                    </b-input-group>
+                 </b-col>
+             </b-row>
+
+             <b-row>
+                 <b-col class="text-center">
+                    <b-btn size="x" variant="danger" @click="close()"><i class="fas fa-trash"></i>&nbsp;Cerrar</b-btn>
+                     <b-btn size="x" variant="success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-save"></i>&nbsp;Guardar</b-btn>
+                </b-col>
+             </b-row>
+         </div>
+        </b-modal> -->
+<b-modal hide-footer v-model="modal" size="xl">
+
+        <div class=" text-center">
+            <h3 class="font-weight-bold py-3 mb-0">Ingrese Los Siguientes Datos:</h3>
+
+            <b-row>
+                    <b-col sm="2" class="my-2">
+                        <h5>Cantidad a Recibir:</h5>
+                    </b-col>
+                    <b-col>
+                        <b-input-group >
+                            <b-input-group-text slot="prepend" v-if="loading">
+                                <i class="ion ion-md-sync"></i>
+                             </b-input-group-text>
+
+                             <b-input-group-text  slot="prepend" v-if="!loading">
+                                <i class="ion ion-ios-basket"></i>
+                             </b-input-group-text>
+                            <b-input type="number" class="form-control"
+                                placeholder="Ingrese la cantidad..."
+                                autocomplete="off"
+                                 v-model="amount"
+                                 @keydown.down="down"
+                                 @keydown.up="up"
+                                 @keydown.enter="hit"
+                                 @keydown.esc="reset"
+                                 @blur="reset"></b-input>
+                            <b-input-group-text slot="append" v-if="isDirty || amount" @click="resetInput">
+                                <i class="ion ion-md-close" ></i>
+                             </b-input-group-text>
+                     </b-input-group>
+                  </b-col>
+             </b-row>
+            
+             <b-row>
+                <b-col sm="2" class="my-2">
+                    <h5>Subir archivo:</h5>
+                </b-col>
+                 <b-col>
+                    <b-input-group >
+
+                     <b-input-group-text  slot="prepend" v-if="!loading">
+                        <i class="ion ion-md-archive"></i>
+                     </b-input-group-text>
+                    <b-form-file
+                    v-model="file1"
+                    accept=".pdf"
+                    placeholder="Seleccione un Archivo..."
+                    drop-placeholder="Coloque el archivo aqui..."
+                     ></b-form-file>
+                    </b-input-group>
+                 </b-col>
+             </b-row>
+
+
+        
+
+           
+                 
+              <b-row>
+                 <b-col class="text-center">
+                    <b-btn size="x" variant="danger" @click="close()"><i class="fas fa-trash"></i>&nbsp;Cerrar</b-btn>
+                     <b-btn size="x" variant="success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-save"></i>&nbsp;Guardar</b-btn>
+                </b-col>
+             </b-row>   
+            </div>
+       
+
+          
+            
+       
+        </b-modal>
+        
+
                 <div class="d-flex justify-content-between">
                     <div>
                         <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
@@ -119,7 +258,9 @@
         </div>
     </div>
 </template>
-        <style src="@/vendor/libs/sweet-modal-vue/sweet-modal-vue.scss" lang="scss"></style>
+<style src="@/vendor/libs/sweet-modal-vue/sweet-modal-vue.scss" lang="scss"></style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css" > </style>
+<style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
 <script>
 import { infotrade } from "@/components/i40/js/trade";
 import VueMarkdown from 'vue-markdown'
@@ -213,9 +354,25 @@ export default {
                 target: '_blank',
                 rel: 'noopener noreferrer nofollow'
             },
+
+            //cantidad a recibir
+            modal: false,
+            amount:''
         }
     },
     methods: {
+        openModal(){
+            this.modal = true;
+        },
+
+        close(){
+            this.modal = false;
+        },
+
+        saveAmount(){
+
+        },
+
          ejecutar_cambio(){
              this.order_active = !this.order_active
             this.loadCommercialsOrders()
