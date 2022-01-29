@@ -3,6 +3,8 @@
     <div>
         <h4 class="font-weight-bold py-3 mb-0"> Tambor de Compras  </h4>
 
+        
+
         <div class="row">
             <div class="col">
                 <!-- OPCIONES DE BUSQUEDA Y BOTONES PARA CREAR NUEVOS REGISTROS -->
@@ -118,6 +120,18 @@
 
         <div class=" text-center">
             <h3 class="font-weight-bold py-3 mb-0">Ingrese Los Siguientes Datos:</h3>
+            <div class="text-center">
+                <b-row>
+                    <b-col sm="8">
+                        <h5 class="font-weight-bold py-3 mb-0"> Producto:  </h5>
+                    </b-col>
+                 </b-row>
+                <b-row>
+                    <b-col sm="8">
+                         <h5 class="font-weight-bold py-3 mb-0"> Proveedor:  </h5>
+                    </b-col>
+                </b-row>
+             </div>
 
             <b-row>
                     <b-col sm="2" class="my-2">
@@ -176,7 +190,7 @@
               <b-row>
                  <b-col class="text-center">
                     <b-btn size="x" variant="danger" @click="close()"><i class="fas fa-trash"></i>&nbsp;Cerrar</b-btn>
-                     <b-btn size="x" variant="success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-save"></i>&nbsp;Guardar</b-btn>
+                     <b-btn size="x" variant="success" @click="saveAmount(); editOrderCreated=false"><i class="fas fa-save"></i>&nbsp;Guardar</b-btn>
                 </b-col>
              </b-row>   
             </div>
@@ -370,7 +384,7 @@ export default {
         },
 
         saveAmount(){
-
+            this.close()
         },
 
          ejecutar_cambio(){
