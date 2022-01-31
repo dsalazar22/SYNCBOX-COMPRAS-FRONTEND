@@ -134,7 +134,7 @@
              </div>
 
             <b-row>
-                    <b-col sm="2" class="my-2">
+                    <b-col sm="0" class="my-2">
                         <h5>Cantidad a Recibir:</h5>
                     </b-col>
                     <b-col>
@@ -144,10 +144,37 @@
                              </b-input-group-text>
 
                              <b-input-group-text  slot="prepend" v-if="!loading">
-                                <i class="ion ion-ios-basket"></i>
+                                <i class="ion ion-md-calculator"></i>
                              </b-input-group-text>
                             <b-input type="number" class="form-control"
                                 placeholder="Ingrese la cantidad..."
+                                autocomplete="off"
+                                 v-model="gaskets"
+                                 @keydown.down="down"
+                                 @keydown.up="up"
+                                 @keydown.enter="hit"
+                                 @keydown.esc="reset"
+                                 @blur="reset"></b-input>
+                            <b-input-group-text slot="append" v-if="isDirty || gaskets" @click="resetInput">
+                                <i class="ion ion-md-close" ></i>
+                             </b-input-group-text>
+                     </b-input-group>
+                  </b-col>
+
+                    <b-col sm="0" class="my-2">
+                        <h5>Numero de empaques:</h5>
+                    </b-col>
+                     <b-col>
+                        <b-input-group >
+                            <b-input-group-text slot="prepend" v-if="loading">
+                                <i class="ion ion-md-sync"></i>
+                             </b-input-group-text>
+
+                             <b-input-group-text  slot="prepend" v-if="!loading">
+                                <i class="ion ion-ios-cube"></i>
+                             </b-input-group-text>
+                            <b-input type="number" class="form-control"
+                                placeholder="Ingrese el numero de empaques..."
                                 autocomplete="off"
                                  v-model="amount"
                                  @keydown.down="down"
@@ -161,16 +188,16 @@
                      </b-input-group>
                   </b-col>
              </b-row>
-            
-             <b-row>
-                <b-col sm="2" class="my-2">
+            <br>
+             <b-row> 
+                <b-col sm="0" class="my-2" style="margin-left:36px">
                     <h5>Subir archivo:</h5>
                 </b-col>
                  <b-col>
                     <b-input-group >
 
                      <b-input-group-text  slot="prepend" v-if="!loading">
-                        <i class="ion ion-md-archive"></i>
+                        <i class="ion ion-md-cloud-upload"></i>
                      </b-input-group-text>
                     <b-form-file
                     v-model="file1"
@@ -181,12 +208,21 @@
                     </b-input-group>
                  </b-col>
              </b-row>
-
-
+                <br>
+            <b-table small tbody-class="h6 font-weight-normal" show-empty hover responsive stacked="sm" :items="itemsS"   :fields="columnsAmountReceived">
+              
+             </b-table>
         
+            <!-- <b-card no-body class="mb-3"  style="width: 300px;">
+                <b-card  tag="h20" class="text-center"  style=" border-color:black; font-color:black" ><h4 class="font-weight-bold py-3 mb-0">Total de lotes:</h4></b-card>
+            </b-card> -->
+            <b-row>
+              <b-col class="my-2" sm="2" >
+                <h5>Total Lotes: {{lotes}}</h5>
+        
+             </b-col>
+            </b-row>
 
-           
-                 
               <b-row>
                  <b-col class="text-center">
                     <b-btn size="x" variant="danger" @click="close()"><i class="fas fa-trash"></i>&nbsp;Cerrar</b-btn>
@@ -371,7 +407,13 @@ export default {
 
             //cantidad a recibir
             modal: false,
-            amount:''
+            gaskets:'',
+            amount:'',
+            columnsAmountReceived:[
+                {key:'lot', label:'Lote'},
+                {key:'date', label:'Fecha'},
+                {key:'amount', label:'Cantidad'}
+            ]
         }
     },
     methods: {
