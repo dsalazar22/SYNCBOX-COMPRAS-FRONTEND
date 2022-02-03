@@ -49,6 +49,11 @@
                         <!-- <template slot="visible_buffer" slot-scope="props">
                                 {{props.item}}
                             </template> -->
+                            <template v-slot:cell(edit)="row">
+                                <div class="text-center">
+                                    <b-btn variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="openModal(row.item)"><i class="ion ion-md-add"></i></b-btn>
+                                </div>
+                            </template>
                     </b-table>
                 </div>
                 <div class="my-4">
@@ -119,16 +124,16 @@
 <b-modal hide-footer v-model="modal" size="xl">
 
         <div class=" text-center">
-            <h3 class="font-weight-bold py-3 mb-0">Ingrese Los Siguientes Datos:</h3>
+            <h3 class="font-weight-bold py-3 mb-0">Ingrese los siguientes datos:</h3>
             <div class="text-center">
-                <b-row>
-                    <b-col sm="8">
-                        <h5 class="font-weight-bold py-3 mb-0"> Producto:  </h5>
+                <b-row class="text-center">
+                    <b-col >
+                        <h5 class="font-weight-bold py-3 mb-0"> Producto: {{itemSelected.product_description}} </h5>
                     </b-col>
                  </b-row>
                 <b-row>
-                    <b-col sm="8">
-                         <h5 class="font-weight-bold py-3 mb-0"> Proveedor:  </h5>
+                    <b-col >
+                         <h5 class="font-weight-bold py-3 mb-0"> Proveedor:  {{itemSelected.supplier_name}}</h5>
                     </b-col>
                 </b-row>
              </div>
@@ -384,6 +389,7 @@ export default {
                     {key:'pending_amount', label:"Pendiente"},
                     {key:'order_created', label:"Ingreso"},
                     {key:'deadline', label:"Fecha Comprometida"},
+                    {key:'edit', label:"Editar"},
                     
                     // {key:'wsplant', label:"Planta"},
                     // {key:'wsgroup', label:"Grupo"},
@@ -413,12 +419,17 @@ export default {
                 {key:'lot', label:'Lote'},
                 {key:'date', label:'Fecha'},
                 {key:'amount', label:'Cantidad'}
-            ]
+            ],
+            itemSelected:[]
         }
     },
     methods: {
-        openModal(){
+        openModal(item){
             this.modal = true;
+
+            this.itemSelected = item
+
+
         },
 
         close(){
