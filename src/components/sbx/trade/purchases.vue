@@ -1,6 +1,8 @@
 <template>
+
 <!-- :fields="columns" -->
     <div>
+        <notifications group="notifications-default" />
         <h4 class="font-weight-bold py-3 mb-0"> Tambor de Compras  </h4>
 
         
@@ -56,9 +58,7 @@
                             </template>
                     </b-table>
                 </div>
-                <div class="my-4">
-                     <b-btn size="sm" variant="outline-primary" @click="openModal()"><i class="fas fa-plus"></i>&nbsp; Cantidad a Recibir</b-btn>
-                </div>
+       
 
 
             <!-- <b-modal hide-footer v-model="modal" size="xl">
@@ -127,12 +127,12 @@
             <h3 class="font-weight-bold py-3 mb-0">Ingrese los siguientes datos:</h3>
             <div class="text-center">
                 <b-row class="text-center">
-                    <b-col >
-                        <h5 class="font-weight-bold py-3 mb-0"> Producto: {{itemSelected.product_description}} </h5>
+                    <b-col style="margin-top:-20px"> 
+                        <h5 class="font-weight-bold py-3 mb-0"> Descripcion: {{itemSelected.product_description}} </h5>
                     </b-col>
                  </b-row>
                 <b-row>
-                    <b-col >
+                    <b-col style="margin-top:-20px">
                          <h5 class="font-weight-bold py-3 mb-0"> Proveedor:  {{itemSelected.supplier_name}}</h5>
                     </b-col>
                 </b-row>
@@ -154,13 +154,13 @@
                             <b-input type="number" class="form-control"
                                 placeholder="Ingrese la cantidad..."
                                 autocomplete="off"
-                                 v-model="gaskets"
+                                 v-model="amount"
                                  @keydown.down="down"
                                  @keydown.up="up"
                                  @keydown.enter="hit"
                                  @keydown.esc="reset"
                                  @blur="reset"></b-input>
-                            <b-input-group-text slot="append" v-if="isDirty || gaskets" @click="resetInput">
+                            <b-input-group-text slot="append" v-if="isDirty || amount" @click="resetInput">
                                 <i class="ion ion-md-close" ></i>
                              </b-input-group-text>
                      </b-input-group>
@@ -181,13 +181,13 @@
                             <b-input type="number" class="form-control"
                                 placeholder="Ingrese el numero de empaques..."
                                 autocomplete="off"
-                                 v-model="amount"
+                                 v-model="gaskets"
                                  @keydown.down="down"
                                  @keydown.up="up"
                                  @keydown.enter="hit"
                                  @keydown.esc="reset"
                                  @blur="reset"></b-input>
-                            <b-input-group-text slot="append" v-if="isDirty || amount" @click="resetInput">
+                            <b-input-group-text slot="append" v-if="isDirty || gaskets" @click="resetInput">
                                 <i class="ion ion-md-close" ></i>
                              </b-input-group-text>
                      </b-input-group>
@@ -205,7 +205,7 @@
                         <i class="ion ion-md-cloud-upload"></i>
                      </b-input-group-text>
                     <b-form-file
-                    v-model="file1"
+                    v-model="file"
                     accept=".pdf"
                     placeholder="Seleccione un Archivo..."
                     drop-placeholder="Coloque el archivo aqui..."
@@ -231,7 +231,7 @@
               <b-row>
                  <b-col class="text-center">
                     <b-btn size="x" variant="danger" @click="close()"><i class="fas fa-trash"></i>&nbsp;Cerrar</b-btn>
-                     <b-btn size="x" variant="success" @click="saveAmount(); editOrderCreated=false"><i class="fas fa-save"></i>&nbsp;Guardar</b-btn>
+                     <b-btn size="x" variant="success" @click="saveData(); editOrderCreated=false"><i class="fas fa-save"></i>&nbsp;Guardar</b-btn>
                 </b-col>
              </b-row>   
             </div>
@@ -316,11 +316,20 @@
 <style src="@/vendor/libs/sweet-modal-vue/sweet-modal-vue.scss" lang="scss"></style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css" > </style>
 <style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
+
 <script>
+
 import { infotrade } from "@/components/i40/js/trade";
 import VueMarkdown from 'vue-markdown'
 import { SweetModal, SweetModalTab } from 'sweet-modal-vue'
 import { ApiWikiHelp } from "@/vendor/sbx/sbx-cloud/cloud_apiwiki";
+import Notifications from "vue-notification";
+import Vue from "vue";
+
+Vue.use(Notifications);
+
+
+
 export default {
     
     metaInfo: {
@@ -415,6 +424,7 @@ export default {
             modal: false,
             gaskets:'',
             amount:'',
+            file:'',
             columnsAmountReceived:[
                 {key:'lot', label:'Lote'},
                 {key:'date', label:'Fecha'},
@@ -434,10 +444,19 @@ export default {
 
         close(){
             this.modal = false;
+            
         },
 
-        saveAmount(){
-            this.close()
+        saveData(){
+            if(this.amount != '' && this.gaskets != '' && this.file != null)
+            {
+                this.showCustom("bg-success", "Correcto", "¡Datos completos!")
+
+            }else{
+                this.showCustom("bg-danger", "Error", "¡La informacion esta incompleta, por favor valide!")
+
+            }
+
         },
 
          ejecutar_cambio(){
@@ -520,13 +539,24 @@ export default {
                 }
 
             },
+            showCustom: function(classes, title, text) {
+            this.$notify({
+                group: 'notifications-default',
+                type: classes,
+                title: title,
+                text: text
+            })
+        }
     },
     created(){
         this.currentPage = 1
         this.loadCommercialsOrders("true")
     },
+    
     beforeCreate(){
         
-    }
+    },
+   
+    
 }
 </script>

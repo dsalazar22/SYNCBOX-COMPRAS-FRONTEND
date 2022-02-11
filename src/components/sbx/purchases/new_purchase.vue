@@ -143,7 +143,7 @@
           </b-row>
 
           <b-row class="my-2">
-            <b-col sm="2" class="my-2">
+            <b-col sm="2" class="my-1">
               <h5>Valor de Negociacion:</h5>
             </b-col>
             <b-col>
@@ -172,7 +172,7 @@
             </b-col>
           </b-row>
 
-             <b-col class="my-2" style="margin-top:20px; margin-left:130px">
+             <b-col class="my-2" style="margin-top:20px; margin-left:90px">
                 <b-btn size="sm" variant="outline-danger" @click="close()"><i class="fas fa-trash-alt"></i>&nbsp;Cancelar Compra</b-btn>
                 <b-btn size="sm" variant="outline-success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
             </b-col>
@@ -187,9 +187,9 @@
        <b-col class="my-2 text-center"> <b-btn style="text-align-center" size="sm" variant="primary" @click="confirmOrder(); editOrderCreated=false"><i class="icon ion-ios-checkmark"></i>&nbsp; Comfirmar Compra</b-btn></b-col>
       <b-row>
         <b-col v-show="valores">
-        <h5>Total Compra: {{total}}</h5>
-        <h5>Valor neto: {{totalNeto}}</h5>
-        <h5>IVA 19%: {{iva}}</h5>
+        <h5>Total Compra: {{total}}$</h5>
+        <h5>Valor neto: {{totalNeto}}$</h5>
+        <h5>IVA 19%: {{iva}}$</h5>
         
         </b-col>
       </b-row>
@@ -223,7 +223,7 @@ import Multiselect from "vue-multiselect";
 import VueTypeahead from 'vue-typeahead'
 import datePicker from 'vue-bootstrap-datetimepicker';
 import "pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css";
-Vue.prototype.$http = Axios
+Vue.prototype.$http = Axios;
 
 Vue.use(Notifications);
 export default {
