@@ -51,9 +51,17 @@
                         <!-- <template slot="visible_buffer" slot-scope="props">
                                 {{props.item}}
                             </template> -->
-                            <template v-slot:cell(edit)="row">
+                            <!-- <template v-slot:cell(edit)="row">
                                 <div class="text-center">
                                     <b-btn variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="openModal(row.item)"><i class="ion ion-md-add"></i></b-btn>
+                                </div>
+                            </template> -->
+                            <template v-slot:cell(edit)="row">
+                                <div class="text-center">
+                                    <b-dropdown variant="default btn-xs icon-btn md-btn-flat hide-arrow" :right="!isRTL">
+                                    <template slot="button-content"><i class="ion ion-ios-settings"></i></template>
+                                    <b-dropdown-item @click="openModal(row.item);showEditContentOrder=true;" > &nbsp;&nbsp;Modificar Compra</b-dropdown-item>
+                                     </b-dropdown>
                                 </div>
                             </template>
                     </b-table>

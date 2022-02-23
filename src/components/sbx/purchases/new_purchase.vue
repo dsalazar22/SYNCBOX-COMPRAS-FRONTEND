@@ -4,7 +4,7 @@
     <h4 class="font-weight-bold py-3 mb-0">Crear Compra</h4>
     <!-- {{tableDataProducts}} -->
 <!-- BUSCADOR  -->
-                                <div class="position-relative mb-3 border rounded">
+                             <!-- <div class="position-relative mb-3 border rounded">
                                     <b-input-group>
                                         <b-input-group-text slot="prepend" v-if="loading">
                                             <i class="ion ion-md-sync"></i>
@@ -38,7 +38,7 @@
                                             <span class="text-muted">{{ item.name }}</span>
                                         </a>
                                     </div>
-                                </div>
+                                </div> -->
     <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr(); loadProducts()"><i class="ion ion-md-add"></i></b-button>
   
 <!-- FIN BUSCADOR-->
@@ -59,10 +59,10 @@
     <div v-show="show" style="background-color:white"> 
       <b-row  >
         <b-col md="8" sm="12" style="margin-left:250px">
-          <h4 class="font-weight-bold py-3 mb-0">Factura Compra</h4>
-          <h5 class="font-weight-bold py-3 mb-0">Factura numero: {{factura}}</h5>
+          <h4 style="margin-left:120px" class="font-weight-bold py-3 mb-0">Factura Compra</h4>
+          <h5 style="margin-left:120px" class="font-weight-bold py-3 mb-0">Factura numero: {{invoice()}}</h5>
           <b-row class="my-2">
-            <b-col sm="2" class="my-2">
+            <b-col style="margin-left:-170px" md="3" class="my-2">
             
               <h5>Productos:</h5>
             </b-col>
@@ -90,30 +90,118 @@
                         <i class="ion ion-md-close" ></i>
                     </b-input-group-text>
               </b-input-group> -->
-              <multiselect
-                        v-model="valueSelectedProduct"
-                        :options="tableDataProducts"
-                        :searchable="true"
-                        :show-labels="false"
-                        label="description"
-                        track-by="description"
-                        placeholder="Seleccione un Producto"
-                    ></multiselect>
+               <div class="position-relative mb-3 border rounded">
+                  <b-input-group>
+                      <b-input-group-text slot="prepend" v-if="loading">
+                         <i class="ion ion-md-sync"></i>
+                      </b-input-group-text>
+
+                      <b-input-group-text  slot="prepend" v-if="!loading">
+                        <i class="ion ion-ios-search"></i>
+                      </b-input-group-text>
+                          <input type="text" class="form-control"
+                              placeholder="Seleccione un proveedor"
+                              autocomplete="off"
+                              v-model="valueSelectedSupplier"
+                              @keydown.down="down"
+                              @keydown.up="up"
+                              @keydown.enter="hit"
+                              @keydown.esc="reset"
+                              @blur="reset"
+                              @input="updateQuerySupplier" />
+                                            
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
+                              <i class="ion ion-md-close" ></i>
+                          </b-input-group-text>
+                          
+                         </b-input-group>
+                           <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                             <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
+                               <span class="name" v-text="item.nit"></span>
+                               <span class="text-muted">{{ item.name }}</span>
+                             </a>
+                            </div>
+                 </div>
             
             </b-col>
            
           </b-row>
           <b-row class="my-2">
-            <b-col sm="2" class="my-2">
+            <b-col style="margin-left:-170px" md="3" class="my-2">
+            
+              <h5>Proveedor:</h5>
+            </b-col>
+            <b-col>
+              <!-- <b-input-group >
+                  <b-input-group-text slot="prepend" v-if="loading">
+                      <i class="ion ion-md-sync"></i>
+                  </b-input-group-text>
+
+                  <b-input-group-text  slot="prepend" v-if="!loading">
+                      <i class="ion ion-ios-search"></i>
+                  </b-input-group-text>
+                   <input type="text" class="form-control"
+                      placeholder="Ingrese la cantidad"
+                      autocomplete="off"
+                      v-model="valueSelectedProduct"
+                      @keydown.down="down"
+                      @keydown.up="up"
+                      @keydown.enter="hit"
+                      @keydown.esc="reset"
+                      @blur="reset"
+                      @input="updateQueryProduct"
+                      />
+                      <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput">
+                        <i class="ion ion-md-close" ></i>
+                    </b-input-group-text>
+              </b-input-group> -->
+               <div class="position-relative mb-3 border rounded">
+                  <b-input-group>
+                      <b-input-group-text slot="prepend" v-if="loading">
+                         <i class="ion ion-md-sync"></i>
+                      </b-input-group-text>
+
+                      <b-input-group-text  slot="prepend" v-if="!loading">
+                        <i class="ion ion-ios-search"></i>
+                      </b-input-group-text>
+                          <input type="text" class="form-control"
+                              placeholder="Seleccione un proveedor"
+                              autocomplete="off"
+                              v-model="valueSelectedSupplier"
+                              @keydown.down="down"
+                              @keydown.up="up"
+                              @keydown.enter="hit"
+                              @keydown.esc="reset"
+                              @blur="reset"
+                              @input="updateQuerySupplier" />
+                                            
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
+                              <i class="ion ion-md-close" ></i>
+                          </b-input-group-text>
+                          
+                         </b-input-group>
+                           <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                             <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
+                               <span class="name" v-text="item.nit"></span>
+                               <span class="text-muted">{{ item.name }}</span>
+                             </a>
+                            </div>
+                 </div>
+            
+            </b-col>
+           
+          </b-row>
+          <b-row class="my-2">
+            <b-col style="margin-left:-170px" sm="3" class="my-2">
               <h5>Fecha:</h5>
             </b-col>
-            <b-col sm="10">
+            <b-col sm="12">
               <b-form-datepicker v-model="valueDate" :config="options" placeholder="Seleccione la Fecha"></b-form-datepicker>
             </b-col>
           </b-row>
 
           <b-row class="my-2">
-            <b-col sm="2" class="my-2">
+            <b-col style="margin-left:-170px" sm="3" class="my-2">
               <h5>Cantidad:</h5>
             </b-col>
             <b-col>
@@ -143,7 +231,7 @@
           </b-row>
 
           <b-row class="my-2">
-            <b-col sm="2" class="my-1">
+            <b-col style="margin-left:-170px" sm="3" class="my-1">
               <h5>Valor de Negociacion:</h5>
             </b-col>
             <b-col>
@@ -172,7 +260,7 @@
             </b-col>
           </b-row>
 
-             <b-col class="my-2" style="margin-top:20px; margin-left:90px">
+             <b-col class="my-2" style="margin-top:20px; margin-left:50px">
                 <b-btn size="sm" variant="outline-danger" @click="close()"><i class="fas fa-trash-alt"></i>&nbsp;Cancelar Compra</b-btn>
                 <b-btn size="sm" variant="outline-success" @click="saveOrder(); editOrderCreated=false"><i class="fas fa-plus"></i>&nbsp; Crear Compra</b-btn>
             </b-col>
@@ -314,6 +402,27 @@ export default {
     isRTL () {
       return false
     },
+
+    invoice(){
+        let res = "";
+            if(this.factura>=1000)
+            {
+                res = "" + this.factura;
+            }
+            if(this.factura>=100)
+            {
+                res = "0" + this.factura;
+             }
+         if(this.factura>=10)
+            {
+                res = "00" + this.factura;
+            }
+        if(this.factura>=1)
+            {
+                res = "000" + this.factura;
+        }
+   return res;
+  },
 
     loadSupplier() {
       infomaster.supplier([], "0","select").then(data => {
@@ -482,6 +591,8 @@ export default {
     this.valores = false
       // this.factura()
     }
+
+    
   },
 
  
@@ -507,6 +618,8 @@ export default {
         },
 
   },
+
+  
 
   
 
