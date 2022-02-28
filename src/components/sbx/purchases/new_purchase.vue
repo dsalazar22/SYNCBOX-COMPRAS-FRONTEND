@@ -39,7 +39,7 @@
                                         </a>
                                     </div>
                                 </div> -->
-    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr(); loadProducts()"><i class="ion ion-md-add"></i></b-button>
+    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr();  datos()"><i class="ion ion-md-add"></i></b-button>
   
 <!-- FIN BUSCADOR-->
 
@@ -60,7 +60,7 @@
       <b-row  >
         <b-col md="8" sm="12" style="margin-left:250px">
           <h4 style="margin-left:120px" class="font-weight-bold py-3 mb-0">Factura Compra</h4>
-          <h5 style="margin-left:120px" class="font-weight-bold py-3 mb-0">Factura numero: {{invoice()}}</h5>
+          <h5 style="margin-left:120px; margin-top:-15px" class="font-weight-bold py-3 mb-0">Factura numero: {{invoice()}}</h5>
           <b-row class="my-2">
             <b-col style="margin-left:-170px" md="3" class="my-2">
             
@@ -100,25 +100,26 @@
                         <i class="ion ion-ios-search"></i>
                       </b-input-group-text>
                           <input type="text" class="form-control"
-                              placeholder="Seleccione un proveedor"
+                              placeholder="Seleccione un producto"
                               autocomplete="off"
-                              v-model="valueSelectedSupplier"
+                              v-model="valueSelectedProduct"
                               @keydown.down="down"
                               @keydown.up="up"
                               @keydown.enter="hit"
                               @keydown.esc="reset"
                               @blur="reset"
-                              @input="updateQuerySupplier" />
+                              @input="updateQueryProduct" 
+                              :readonly="readProduct"/>
                                             
-                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput" >
                               <i class="ion ion-md-close" ></i>
                           </b-input-group-text>
                           
                          </b-input-group>
                            <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
                              <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
-                               <span class="name" v-text="item.nit"></span>
-                               <span class="text-muted">{{ item.name }}</span>
+                              <span class="name" v-text="item.code"></span>
+                               <span class="text-muted">{{ item.description}}</span>
                              </a>
                             </div>
                  </div>
@@ -173,7 +174,8 @@
                               @keydown.enter="hit"
                               @keydown.esc="reset"
                               @blur="reset"
-                              @input="updateQuerySupplier" />
+                              @input="updateQuerySupplier" 
+                              :readonly="readSupplier" />
                                             
                           <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
                               <i class="ion ion-md-close" ></i>
@@ -331,6 +333,7 @@ export default {
 
       valueSelectedSupplier:'',
       itemSelectedSupplier:{},
+      itemSelectedProduct:{},
       itemSupplierProduct:{},
 
       showSupplier: false,
@@ -339,6 +342,9 @@ export default {
         currentPage:1,
         perPage:50,
         filter: null,
+        readSupplier:true,
+        readProduct: false,
+        link: 'productsearch/',
       // fin 
 
       totalRows:0,
@@ -395,7 +401,6 @@ export default {
   },
 
   mounted(){
-    this.loadSupplier();
   },
 
   methods: {
@@ -423,23 +428,29 @@ export default {
         }
    return res;
   },
-
-    loadSupplier() {
-      infomaster.supplier([], "0","select").then(data => {
-          if(data.data != ""){
-            console.log(data.data)
-            this.tableData = data.data
-            this.totalRows= this.tableData.length
-          }else{
-            this.tableData = []
-            this.totalRows= 0
-          }
-      })
+    // PROVEEDORES
+    // loadSupplier() {
+    //   infomaster.supplier([], "0","select").then(data => {
+    //       if(data.data != ""){
+    //         console.log(data.data)
+    //         this.tableData = data.data
+    //         this.totalRows= this.tableData.length
+    //       }else{
+    //         this.tableData = []
+    //         this.totalRows= 0
+    //       }
+    //   })
       
-    },
+    // },
 
     updateQuerySupplier(){
       this.query = this.valueSelectedSupplier
+      console.log(this.query)
+      this.update()
+    },
+
+     updateQueryProduct(){
+      this.query = this.valueSelectedProduct
       console.log(this.query)
       this.update()
     },
@@ -452,6 +463,7 @@ export default {
         this.valueDate = ''
         this.valueAmount = ''
         this.tradingValue = ''
+        this.read = true
         this.reset()
         
     },
@@ -483,20 +495,20 @@ export default {
           }
       })
   },
-   loadProducts(){
-      infomaster.products([],'0',"select").then(data => {
-                if(data.data != ""){
-                  console.log(data.data)
-                    this.tableDataProducts = data.data
-                    this.totalRowsProducts= this.tableDataProducts.length
+  //  loadProducts(){
+  //     infomaster.products([],'0',"select").then(data => {
+  //               if(data.data != ""){
+  //                 console.log(data.data)
+  //                   this.tableDataProducts = data.data
+  //                   this.totalRowsProducts= this.tableDataProducts.length
                     
-                }else{
-                    this.tableDataProducts = []
-                    this.totalRows=0
-                }
-            })
+  //               }else{
+  //                   this.tableDataProducts = []
+  //                   this.totalRows=0
+  //               }
+  //           })
 
-        },
+  //       },
 
     //  updateQueryProducto () {
     //         let uri = encodeURIComponent(this.valueSelectedProduct)
@@ -506,13 +518,39 @@ export default {
 
     
 
-    //  onHit (item) {
-    //    this.product_ppal = {
-    //             product_id: item.product_id,
-    //             description: item.description,
-    //             amount: 0
-    //         }
-    // },
+      onHit (item) {
+       
+        if(this.readProduct === false)
+        {
+          this.itemSelectedProduct=item
+          this.valueSelectedProduct=item.description
+          this.itemSupplierProduct.product_code = item.code
+
+          this.readSupplier = false
+
+          this.link = 'suppliersearch/'
+          this.datos()
+          
+        } 
+         if(this.readSupplier === false){
+
+          this.itemSelectedSupplier=item
+          this.valueSelectedSupplier=item.name
+          this.itemSupplierProduct.supplier_id = item.id
+
+          this.readProduct = true
+          
+          
+        }
+      
+    
+      
+    },
+
+    datos(){
+     this.src = master + this.link
+
+    },
 
     // obtenerProductos: function(){
     //         GetActiveProducts().then(data => {
@@ -624,7 +662,7 @@ export default {
   
 
   created(){
-    this.src = master+'suppliersearch/'
+    //this.src = master+this.src
   },
  
 }
