@@ -39,7 +39,7 @@
                                         </a>
                                     </div>
                                 </div> -->
-    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create(); closeSpplr();  datos()"><i class="ion ion-md-add"></i></b-button>
+    <b-button variant="outline-success icon-btn" class="btn-md" @click.prevent="create();   datos()"><i class="ion ion-md-add"></i></b-button>
   
 <!-- FIN BUSCADOR-->
 
@@ -61,6 +61,7 @@
         <b-col md="8" sm="12" style="margin-left:250px">
           <h4 style="margin-left:120px" class="font-weight-bold py-3 mb-0">Factura Compra</h4>
           <h5 style="margin-left:120px; margin-top:-15px" class="font-weight-bold py-3 mb-0">Factura numero: {{invoice()}}</h5>
+          
           <b-row class="my-2">
             <b-col style="margin-left:-170px" md="3" class="my-2">
             
@@ -91,7 +92,7 @@
                     </b-input-group-text>
               </b-input-group> -->
                <div class="position-relative mb-3 border rounded">
-                  <b-input-group>
+                  <b-input-group >
                       <b-input-group-text slot="prepend" v-if="loading">
                          <i class="ion ion-md-sync"></i>
                       </b-input-group-text>
@@ -111,7 +112,7 @@
                               @input="updateQueryProduct" 
                               :readonly="readProduct"/>
                                             
-                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput" >
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetProduct" >
                               <i class="ion ion-md-close" ></i>
                           </b-input-group-text>
                           
@@ -177,7 +178,7 @@
                               @input="updateQuerySupplier" 
                               :readonly="readSupplier" />
                                             
-                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetSupplier" >
                               <i class="ion ion-md-close" ></i>
                           </b-input-group-text>
                           
@@ -225,7 +226,7 @@
                       @keydown.esc="reset"
                       @blur="reset"
                       />
-                      <b-input-group-text slot="append" v-if="isDirty || valueAmount" @click="resetInput">
+                      <b-input-group-text slot="append" v-if="isDirty || valueAmount" @click="resetAmount">
                         <i class="ion ion-md-close" ></i>
                     </b-input-group-text>
               </b-input-group>
@@ -255,7 +256,7 @@
                       @keydown.esc="reset"
                       @blur="reset"
                       />
-                      <b-input-group-text slot="append" v-if="isDirty || tradingValue" @click="resetInput">
+                      <b-input-group-text slot="append" v-if="isDirty || tradingValue" @click="resetTradingValue">
                         <i class="ion ion-md-close" ></i>
                     </b-input-group-text>
               </b-input-group>
@@ -336,7 +337,7 @@ export default {
       itemSelectedProduct:{},
       itemSupplierProduct:{},
 
-      showSupplier: false,
+     
 
       // BUSCADOR Y PAGINA
         currentPage:1,
@@ -375,8 +376,9 @@ export default {
       numFactura:'',
 
       columnsDetails:[
-          {key:"code", label:"Codigo del Producto"},
-          {key:"description", label:"Descripcion del Producto"},
+          {key:"code", label:"Codigo"},
+          {key:"description", label:"Descripcion"},
+          {key:"name", label:"Proveedor"},
           {key:"date", label:"Fecha"},
           {key:"amount",  label:"Cantidad"},
           {key:"trade_value", label:"Valor de Negociación"},
@@ -455,15 +457,47 @@ export default {
       this.update()
     },
 
-   
+   resetSupplier(){
+     if(this.readSupplier === false || this.readSupplier === true) 
+     {
+       this.valueSelectedSupplier = ''
+       this.readSupplier = false
+       this.readProduct = true
+       this.link = 'suppliersearch/'
+       this.datos()
+     }
+   },
+   resetProduct(){
+    
+       this.valueSelectedProduct = ''
+       this.readProduct = false
+       this.readSupplier = true
+       this.link = 'productsearch/'
+       this.datos()
+     
+   },
+   resetAmount(){
+     
+       this.valueAmount = ''
+     
+   },
+   resetTradingValue(){
+
+     
+       this.tradingValue = ''
+     
+   },
 
     resetInput() {
+
         this.valueSelectedSupplier=''
         this.valueSelectedProduct = ''
         this.valueDate = ''
         this.valueAmount = ''
         this.tradingValue = ''
-        this.read = true
+        this.readSupplier = true
+        this.readProduct = false
+        this.link = 'productsearch/'
         this.reset()
         
     },
@@ -526,20 +560,32 @@ export default {
           this.valueSelectedProduct=item.description
           this.itemSupplierProduct.product_code = item.code
 
-          this.readSupplier = false
+          
+
+          if(this.valueSelectedSupplier.length != 0)
+          {
+            this.readSupplier = true
+            this.readProduct = true
+          } else{
+            this.readSupplier = false
+          }
+          
+          
+        } 
+         if(this.readSupplier === false ){
 
           this.link = 'suppliersearch/'
           this.datos()
-          
-        } 
-         if(this.readSupplier === false){
-
           this.itemSelectedSupplier=item
           this.valueSelectedSupplier=item.name
           this.itemSupplierProduct.supplier_id = item.id
 
           this.readProduct = true
-          
+
+          if(this.valueSelectedSupplier.length != 0)
+          {
+            this.readSupplier = true
+          }
           
         }
       
@@ -565,13 +611,7 @@ export default {
       
     },
 
-    showSpplr(){
-      this.showSupplier = true
-    },
-
-    closeSpplr(){
-    this.showSupplier = false
-  },
+  
 
 
   saveOrder(){
@@ -582,8 +622,9 @@ export default {
     this.itemSelectedOrder['amount'] = this.valueAmount
     this.itemSelectedOrder['date'] = this.valueDate
     this.itemSelectedOrder['trade_value'] = this.tradingValue
-    this.itemSelectedOrder['code'] = this.valueSelectedProduct.code
-    this.itemSelectedOrder['description'] = this.valueSelectedProduct.description
+    this.itemSelectedOrder['code'] = this.itemSelectedProduct.code
+    this.itemSelectedOrder['description'] = this.itemSelectedProduct.description
+    this.itemSelectedOrder['name'] = this.itemSelectedSupplier.name
 
     this.totalValue = this.valueAmount * this.tradingValue
     this.itemSelectedOrder['value'] = this.totalValue

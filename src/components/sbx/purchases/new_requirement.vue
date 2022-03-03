@@ -4,7 +4,7 @@
          <notifications group="notifications-default" />
          <h3 class="font-weight-bold py-3 mb-0"> Nuevo Requerimiento</h3>
          
-        <b-btn  variant="outline-primary" @click.prevent="create(); loadProducts(); loadSupplier()"><i class="fas fa-plus"></i>&nbsp; Crear Requerimiento</b-btn>
+        <b-btn  variant="outline-primary" @click.prevent="create(); datos()"><i class="fas fa-plus"></i>&nbsp; Crear Requerimiento</b-btn>
         </div>
 
         <div v-show="show" style="background-color:white">
@@ -14,38 +14,87 @@
             <h5 class="font-weight-bold py-3 mb-0 text-center">Requisición de compra No: {{this.invoice()}}</h5>
             <br>
             <b-row> 
-                <b-col style="margin-left:65px" md="auto" class="my-2">
+                <b-col style="margin-left:20px" md="auto" class="my-2">
                         <h5>Producto:</h5>
-                    </b-col>
-                    <b-col md="4" style="margin-left:-13px">
-                        <multiselect
-                        v-model="valueSelectedProduct"
-                        :options="tableDataProducts"
-                        :searchable="true"
-                        :show-labels="false"
-                        label="description"
-                        track-by="description"
-                        placeholder="Seleccione un Producto"
-                    ></multiselect>
-                  </b-col>
+                </b-col>
+                <b-col style="margin-left:-5px" md="4">
+              
+               <div class="position-relative mb-3 border rounded">
+                  <b-input-group >
+                      <b-input-group-text slot="prepend" v-if="loading">
+                         <i class="ion ion-md-sync"></i>
+                      </b-input-group-text>
 
-                <b-col style="margin-left:10px" md="auto" class="my-2">
+                      <b-input-group-text  slot="prepend" v-if="!loading">
+                        <i class="ion ion-ios-search"></i>
+                      </b-input-group-text>
+                          <input type="text" class="form-control"
+                              placeholder="Seleccione un producto"
+                              autocomplete="off"
+                              v-model="valueSelectedProduct"
+                              @keydown.down="down"
+                              @keydown.up="up"
+                              @keydown.enter="hit"
+                              @keydown.esc="reset"
+                              @blur="reset"
+                              @input="updateQueryProduct" 
+                              :readonly="readProduct"/>
+                                            
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedProduct" @click="resetInput" >
+                              <i class="ion ion-md-close" ></i>
+                          </b-input-group-text>
+                          
+                         </b-input-group>
+                           <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                             <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
+                              <span class="name" v-text="item.code"></span>
+                               <span class="text-muted">{{ item.description}}</span>
+                             </a>
+                            </div>
+                 </div>
+            
+            </b-col>
+                <b-col style="margin-left:35px" md="auto" class="my-2">
                      <h5>Proveedor:</h5>
                 </b-col>
 
-                <b-col md="4" style="margin-left:-15px"> 
-                    
+               <b-col style="margin-left:-5px" md="4"> 
+              
+               <div class="position-relative mb-3 border rounded">
+                  <b-input-group>
+                      <b-input-group-text slot="prepend" v-if="loading">
+                         <i class="ion ion-md-sync"></i>
+                      </b-input-group-text>
 
-                    <multiselect
-                        v-model="valueSelectedSupplier"
-                        :options="tableDataSupplier"
-                        :searchable="true"
-                        :show-labels="false"
-                        label="name"
-                        track-by="name"
-                        placeholder="Seleccione un Producto"
-                    ></multiselect>
-                  </b-col>
+                      <b-input-group-text  slot="prepend" v-if="!loading">
+                        <i class="ion ion-ios-search"></i>
+                      </b-input-group-text>
+                          <input type="text" class="form-control"
+                              placeholder="Seleccione un proveedor"
+                              autocomplete="off"
+                              v-model="valueSelectedSupplier"
+                              @keydown.down="down"
+                              @keydown.up="up"
+                              @keydown.enter="hit"
+                              @keydown.esc="reset"
+                              @blur="reset"
+                              @input="updateQuerySupplier" 
+                              :readonly="readSupplier" />
+                                            
+                          <b-input-group-text slot="append" v-if="isDirty || valueSelectedSupplier" @click="resetInput" >
+                              <i class="ion ion-md-close" ></i>
+                          </b-input-group-text>
+                          
+                         </b-input-group>
+                           <div class="dropdown-menu" :class="{ 'd-block': hasItems }" :style="{left: isRTL ? 'auto' : 0, right: isRTL ? 0 : 'auto'}">
+                             <a class="dropdown-item" href="javascript:void(0)" v-for="(item, $item) in items" :class="activeClass($item)" @mousedown="hit" @mousemove="setActive($item)">
+                               <span class="name" v-text="item.nit"></span>
+                               <span class="text-muted">{{ item.name }}</span>
+                             </a>
+                            </div>
+                 </div>
+            
+            </b-col>
 
             </b-row>
 <br>
@@ -124,6 +173,7 @@ import Vue from "vue";
 import { realtime } from "@/vendor/sbx/sbx-realtime/realtime";
 import Notifications from "vue-notification";
 import Multiselect from "vue-multiselect";
+import VueTypeahead from 'vue-typeahead'
 import datePicker from 'vue-bootstrap-datetimepicker';
 import "pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css";
 Vue.prototype.$http = Axios;
@@ -143,6 +193,14 @@ export default {
   },
   data() {
     return {
+    //BUSCADOR
+    readProduct:false,
+    readSupplier:true,
+    itemSelectedSupplier:{},
+    itemSelectedProduct:{},
+    itemSupplierProduct:{},
+    link: 'productsearch/',
+
         //div formulario
       show:false,
 
@@ -160,8 +218,8 @@ export default {
         factura:1,
       //tabla
       columnsRequirements:[
-          {key:"code", label:"Codigo del Producto"},
-          {key:"description", label:"Descripcion del Producto"},
+          {key:"code", label:"Codigo"},
+          {key:"description", label:"Descripcion"},
           {key:"supplier", label:"proveedor"},
           {key:"amount", label:"Cantidad"},
           {key:"dateSuggested", label:"Fecha sugerida"},
@@ -175,6 +233,9 @@ export default {
   },
 
   methods: {
+       isRTL () {
+      return false
+    },
     create(){
         this.show = true
     },
@@ -183,34 +244,34 @@ export default {
         this.show = false
     },
 
-       loadProducts(){
-      infomaster.products([],'0',"select").then(data => {
-                if(data.data != ""){
-                  console.log(data.data)
-                    this.tableDataProducts = data.data
-                    this.totalRowsProducts= this.tableDataProducts.length
+    //    loadProducts(){
+    //   infomaster.products([],'0',"select").then(data => {
+    //             if(data.data != ""){
+    //               console.log(data.data)
+    //                 this.tableDataProducts = data.data
+    //                 this.totalRowsProducts= this.tableDataProducts.length
                     
-                }else{
-                    this.tableDataProducts = []
-                    this.totalRows=0
-                }
-            })
+    //             }else{
+    //                 this.tableDataProducts = []
+    //                 this.totalRows=0
+    //             }
+    //         })
 
-        },
+    //     },
 
-        loadSupplier() {
-      infomaster.supplier([], "0","select").then(data => {
-          if(data.data != ""){
-            console.log(data.data)
-            this.tableDataSupplier = data.data
-            this.totalRowsSupplier= this.tableDataSupplier.length
-          }else{
-            this.tableDataSupplier = []
-            this.totalRowsSupplier= 0
-          }
-      })
+    //     loadSupplier() {
+    //   infomaster.supplier([], "0","select").then(data => {
+    //       if(data.data != ""){
+    //         console.log(data.data)
+    //         this.tableDataSupplier = data.data
+    //         this.totalRowsSupplier= this.tableDataSupplier.length
+    //       }else{
+    //         this.tableDataSupplier = []
+    //         this.totalRowsSupplier= 0
+    //       }
+    //   })
       
-    },
+    // },
     showCustom: function(classes, title, text) {
             this.$notify({
                 group: 'notifications-default',
@@ -240,7 +301,62 @@ export default {
         }
    return res;
   },
+      updateQuerySupplier(){
+      this.query = this.valueSelectedSupplier
+      console.log(this.query)
+      this.update()
+    },
 
+     updateQueryProduct(){
+      this.query = this.valueSelectedProduct
+      console.log(this.query)
+      this.update()
+    },
+    
+    onHit (item) {
+       
+        if(this.readProduct === false)
+        {
+          this.itemSelectedProduct=item
+          this.valueSelectedProduct=item.description
+          this.itemSupplierProduct.product_code = item.code
+
+          this.readSupplier = false
+
+          this.link = 'suppliersearch/'
+          this.datos()
+          
+        } 
+         if(this.readSupplier === false){
+
+          this.itemSelectedSupplier=item
+          this.valueSelectedSupplier=item.name
+          this.itemSupplierProduct.supplier_id = item.id
+
+          this.readProduct = true
+          
+          
+        }
+      
+    
+      
+    },
+
+    datos(){
+     this.src = master + this.link
+
+    },
+
+    onFiltered(filteredItems){
+      this.totalRows = filteredItems.length
+      this.currentPage = 1
+      
+    },
+
+  },
+
+   created(){
+    //this.src = master+this.link
   },
 
   
