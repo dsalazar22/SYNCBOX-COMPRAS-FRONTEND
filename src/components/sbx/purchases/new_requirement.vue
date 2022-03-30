@@ -121,28 +121,32 @@
                     <h5>Cantidad:</h5>
                 </b-col>
                 <b-col md="7" style="margin-left:-10px">
-                        <b-input-group >
-                            
+                  <b-input-group >
+                    <b-input-group-text slot="prepend" v-if="loading">
+                        <i class="ion ion-md-sync"></i>
+                    </b-input-group-text>
 
-                             <b-input-group-text  slot="prepend" v-if="!loading">
-                                <i class="ion ion-md-briefcase"></i>
-                             </b-input-group-text>
-                            <b-input type="number" class="form-control"
-                                placeholder="Ingrese la cantidad..."
-                                autocomplete="off"
-                                 v-model="amount"
-                                 @keydown.down="down"
-                                 @keydown.up="up"
-                                 @keydown.enter="hit"
-                                 @keydown.esc="reset"
-                                 @blur="reset"></b-input>
-                            <b-input-group-text slot="append" v-if="isDirty || amount" @click="resetInput">
-                                <i class="ion ion-md-close" ></i>
-                             </b-input-group-text>
-                     </b-input-group>
-                  </b-col>
+                   <b-input-group-text  slot="prepend" v-if="!loading">
+                      <i class="ion ion-ios-filing"></i>
+                    </b-input-group-text>
+                    <input type="number" class="form-control"
+                      placeholder="Ingrese la cantidad"
+                      autocomplete="off"
+                      v-model="valueAmount"
+                      @keydown.down="down"
+                      @keydown.up="up"
+                      @keydown.enter="hit"
+                      @keydown.esc="reset"
+                      @blur="reset"
+                      />
+                      <b-input-group-text slot="append" v-if="isDirty || valueAmount" @click="resetInput">
+                        <i class="ion ion-md-close" ></i>
+                    </b-input-group-text>
+              </b-input-group>
+            </b-col>
 
             </b-row>
+            
         </div>
                <br>
         <b-row>
@@ -242,6 +246,10 @@ export default {
 
     close(){
         this.show = false
+    },
+
+    resetInput(){
+
     },
 
     //    loadProducts(){
