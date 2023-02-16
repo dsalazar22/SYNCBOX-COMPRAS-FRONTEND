@@ -96,8 +96,8 @@ const router = new Router({
     },
     // COMPRAS
     {
-      path: 'purch/new_purchase',
-      component: () => import('@/components/sbx/purchases/new_purchase')
+      path: 'purch/purchase_order',
+      component: () => import('@/components/sbx/purchases/purchase_order')
     },
     {
       path: 'purch/list_requirements',

@@ -98,9 +98,9 @@
 
      <sidenav-menu icon="fas fa-shopping-cart" :active="isMenuActive('/purch')" :open="isMenuOpen('/purch')">
       <template slot="link-text">Compras</template> 
-      <sidenav-router-link class="ml-0"   to="/purch/new_purchase" :exact="true">Nueva Compra</sidenav-router-link>
       <sidenav-router-link class="ml-0"   to="/purch/new_requirement" :exact="true">Nuevo Requerimiento</sidenav-router-link>
-      <sidenav-router-link class="ml-0"   to="/purch/list_requirements" :exact="true">Lista de Requerimientos</sidenav-router-link>
+      <sidenav-router-link class="ml-0"   to="/purch/purchase_order" :exact="true">Orden de Compra</sidenav-router-link>
+      <sidenav-router-link class="ml-0"   to="/purch/list_requirements" :exact="true">Recepcion de Compra</sidenav-router-link>
       <sidenav-router-link class="ml-0"   to="/purch/drum_purchases" :exact="true">Tambor de Compras</sidenav-router-link>
       <sidenav-router-link class="ml-0"   to="/purch/pending_payments" :exact="true">Pagos Pendientes</sidenav-router-link>
       </sidenav-menu>

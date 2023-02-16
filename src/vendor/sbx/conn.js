@@ -14,7 +14,10 @@ var InfoConfig = {
         // let hst = "10.1.1.11"
         // let hst = "172.16.25.5"
         //  let hst = "192.168.115.85"
-        let hst = "192.168.115.115"
+        //let hst = "192.168.115.141"
+
+         let hst = "192.168.115.136"
+        //let hst = "190.249.251.238"
         // let hst = "192.168.25.51"
         // let hst = "192.168.1.208"
         // let hst = "192.168.80.53"
@@ -45,7 +48,9 @@ var InfoConfig = {
         // return protocolo+`://`+"10.1.1.11"+`/datacontrollerloginx/`
         // return protocolo+`://`+"172.16.25.5"+`/datacontrollerloginx/`
         //  return protocolo+`://`+"192.168.115.85"+`/datacontrollerloginx/`
-        return protocolo+`://`+"192.168.115.115"+`/datacontrollerloginx/`
+        //return protocolo+`://`+"192.168.115.141"+`/datacontrollerloginx/`
+        
+        return protocolo+`://`+"192.168.115.136"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.25.51"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.1.208"+`/datacontrollerloginx/`
         // return protocolo+`://`+"192.168.80.53"+`/datacontrollerloginx/`

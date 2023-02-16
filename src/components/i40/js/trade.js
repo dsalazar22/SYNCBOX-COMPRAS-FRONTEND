@@ -13,6 +13,11 @@ var infotrade = {
     return axios.post(trade + 'commercialsorders/' + actions, info, axiosConfig)
   },
 
+  //añadir requerimiento
+  // addrequirements: function (info, actions){
+  //   return axios.post(trade + 'requirementscontroller/' + actions, info, axiosConfig)
+  // },
+
   addheadorders: function (info, actions) {
     return axios.post(trade + 'comercialordercontroller/' + actions, info, axiosConfig)
   },
@@ -44,8 +49,44 @@ var infotrade = {
   globalordersreport: function () {
     return axios.get(trade + 'globalordersreport', axiosConfig)
   },
+
   quotcontroller: function (info, actions) {
     return axios.post(trade + 'quotcontroller/' + actions, info, axiosConfig)
+  },
+  
+  //Requerimientos
+  // requirementscontroller: function(info, actions){
+  //   return axios.post(trade + 'requirementscontroller/' + actions, info, axiosConfig)
+  // },
+
+  getrequirements: function () {
+    return axios.get(trade + 'requirements', axiosConfig)
+  },
+
+  addrequirements: function (info){
+    return axios.post(trade + 'addrequirements', info, axiosConfig)
+
+  },
+
+  deleterequirement: function (info) {
+    return axios.post(trade + 'deleterequirements', info, axiosConfig)
+  },
+
+  editrequirement: function (info){
+    return axios.post(trade + 'editrequirements', info, axiosConfig)
+  },
+
+//ORDEN DE COMPRA
+  getpurchaseorders: function () {
+    return axios.get(trade + 'getpurchaseorders', axiosConfig)
+  },
+
+  getrequirementsforpurchaseorders: function (){
+    return axios.get(trade + 'getrequirementsforpurchaseorders', axiosConfig)
+  },
+
+  addpurchaseorder: function (info){
+    return axios.post(trade + 'addpurchaseorder',info, axiosConfig)
   },
 
   printOrders: function(info){

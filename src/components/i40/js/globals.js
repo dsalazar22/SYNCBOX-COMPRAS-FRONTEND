@@ -32,7 +32,8 @@ let host = InfoConfig.host()
 // let inventory = 'http://127.0.0.1:7200/'
 // let traza = 'http://127.0.0.1:7300/'
 // let mainten = 'http://127.0.0.1:7820/'
-// let trade = 'http://127.0.0.1:3300/'
+let trade = 'http://127.0.0.1:3300/'
+//let trade = 'http//192.168.115.115:3300/'
 
 
 // let xrundb = 'http://127.0.0.1:2150/'
@@ -51,7 +52,7 @@ let planning = protocolo+'://'+host+'/planning'
 let inventory = protocolo+'://'+host+'/apiinventory'
 let traza =  protocolo+'://'+host+'/traza'
 let mainten = protocolo+'://'+host+'/mainten'
-let trade = protocolo+'://'+host+'/trade'
+// let trade = protocolo+'://'+host+'/trade'
 let pdfconn = protocolo+'://'+host+'/pdfconn'
 
 let notify = protocolo+'://'+host+'/notify'
