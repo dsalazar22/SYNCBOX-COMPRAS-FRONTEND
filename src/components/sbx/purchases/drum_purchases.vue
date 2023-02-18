@@ -221,7 +221,7 @@
 
                 <template #modal-footer>
                     <button class="btn btn-danger" @click="closeModalCompletePurchaseOrder()">
-                        Cerrar
+                        Volver
                     </button>
                     <button class="btn btn-primary" @click="completePurchaseOrder()">
                         Confirmar
@@ -468,6 +468,14 @@ export default {
         Multiselect
     },
 
+    watch: {
+        'showChangeDeliveryDate': function (item) {
+            item = this.purchaseSelected
+            console.log("ITEM", item)
+            this.newDeliveryDate = item.requested_date
+        }
+    },
+
     data() {
         return {
             windowHeight: 0,
@@ -482,7 +490,7 @@ export default {
 
             //MODIFICAR FECHA DE ENTREGA
             showChangeDeliveryDate: false,
-            newDeliveryDate:"",
+            newDeliveryDate: "",
 
             //TERMINAR ORDEN DE COMPRA
             showCompletePurchaseOrderInterface: false,
@@ -593,21 +601,33 @@ export default {
             this.showDrumPurchases = true
         },
 
-        async changeDeliveryDate(){
+        async changeDeliveryDate() {
             let info = {}
+            if (this.newDeliveryDate != "") {
 
-            if(this.newDeliveryDate != ""){
-                info.purchases_id = this.purchaseSelected.purchases_id
-                info.new_delivery_date = this.newDeliveryDate
-                await infotrade.purchases(info,"change-delivery-date").then(data => {
-                    if(data.status != 200){
-                        this.showCustom('bg-danger text-white', "Error", "¡Error al modificar la fecha de compromiso!")
-                    } else {
+                if (this.newDeliveryDate == this.purchaseSelected.requested_date) {
 
-                    }
-                })
+                    this.showCustom('bg-danger text-white', "Error", "¡Elija una nueva fecha de compromiso!")
+
+                } else {
+
+                    info.purchases_id = this.purchaseSelected.purchases_id
+                    info.new_delivery_date = this.newDeliveryDate
+                    await infotrade.purchases(info, "change-delivery-date").then(data => {
+                        if (data.status != 200) {
+                            this.showCustom('bg-danger text-white', "Error", "¡Error al modificar la fecha de compromiso!")
+                        } else {
+                            this.showCustom('bg-success text-white', "EXITO", "¡La fecha de compromiso se modificó!")
+                            this.purchaseSelected.requested_date = info.new_delivery_date
+                        }
+                    })
+
+                }
+
             } else {
+
                 this.showCustom('bg-danger text-white', "Error", "¡Por favor elija la nueva fecha de compromiso!")
+
             }
 
 
@@ -673,6 +693,7 @@ export default {
         //FIN TERMINAR ORDEN DE COMPRA DESDE LA TABLA DE TAMBOR DE COMPRAS
         //-------------------------------------------------------------------------------------
 
+
         //-------------------------------------------------------------------------------------
         //INICIO REPORTE NUEVA ENTREGA
         showNewDelivery(item) {
@@ -684,8 +705,6 @@ export default {
             this.showDrumPurchases = false
 
             this.purchaseSelected = item
-
-
         },
 
         hideNewDelivery() {
@@ -693,12 +712,12 @@ export default {
             this.showNewDeliveryInterface = false
             this.showDrumPurchases = true
 
-
-            this.showModalCompletePurchaseOrder = false
-
+            //actualizar ordenes de compra
             this.getPurchasesOrders()
+
             //reset inputs
             this.resetInputsNewDelivery()
+
             //reiniciar orden seleccionada
             this.purchaseSelected = ""
         },

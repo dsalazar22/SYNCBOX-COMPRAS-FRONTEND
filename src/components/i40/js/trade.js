@@ -59,6 +59,10 @@ var infotrade = {
   //   return axios.post(trade + 'requirementscontroller/' + actions, info, axiosConfig)
   // },
 
+  requirements: function (info, actions) {
+    return axios.post(trade + 'requirementscontroller/' + actions, info, axiosConfig)
+  },
+
   getrequirements: function () {
     return axios.get(trade + 'requirements', axiosConfig)
   },

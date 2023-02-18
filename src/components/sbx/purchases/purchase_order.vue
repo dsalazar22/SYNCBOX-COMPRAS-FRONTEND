@@ -239,7 +239,7 @@
 
       <div slot="modal-footer">
         <b-button class="btn btn-danger" @click.prevent="closeModalWarningAmounts()">Cancelar</b-button>
-        <b-button class="btn btn-primary" @click.prevent="openModalWarningDate()">Continuar</b-button>
+        <b-button class="btn btn-primary" @click.prevent="openModalWarningDate()">Confirmar</b-button>
       </div>
 
     </b-modal>
@@ -337,7 +337,9 @@ export default {
       this.tradingValue = item.price_list
       this.valueDateAgreed = item.delivery_date
       this.valueQuantityAgreed = item.quantity
-    }
+      this.tradingValue = item.price_list
+    },
+    
   },
   data() {
     return {

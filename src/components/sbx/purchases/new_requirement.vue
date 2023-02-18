@@ -146,7 +146,7 @@
 
     <div id="Table" v-show="showTable2">
 
-      <h4 class="text-center mt-3 font-weight-bold py-3 mb-0">Requerimientos Activoss</h4>
+      <h4 class="text-center mt-3 font-weight-bold py-3 mb-0">Requerimientos Activos</h4>
       <b-table small tbody-class="h6 font-weight-normal " style="font-size:15px" show-empty hover responsive
         stacked="sm" :items="requirement" :fields="columnsDetails">
         <template v-slot:cell(edit)="row">
@@ -280,11 +280,12 @@
               option.text
             }}</b-dropdown-item>
           </b-dropdown>
-          <h5 class="ml-2">Opción Seleccionada:</h5> 
+          <h5 class="ml-2">Opción Seleccionada:</h5>
           <span class="ml-2">{{ editStatus }}</span>
         </div>
         <br>
-        <span class="ml-4 font-weight-bold" style="color:red">¡Advertencia, si cambias el estado a "Inactivo" el requerimiento sera eliminado de la lista de disponibles!</span>
+        <span class="ml-4 font-weight-bold" style="color:red">¡Advertencia, si cambias el estado a "Inactivo" el
+          requerimiento sera eliminado de la lista de disponibles!</span>
 
       </div>
 
@@ -395,10 +396,10 @@ export default {
       requirementToEdit: "",
       editDeliveryDate: "",
       editQuantity: "",
-      editStatus:"Activo",
+      editStatus: "Activo",
       optionsStaus: [
-        {text: "Inactivo", value:1},
-        {text: "Activo", value:2}, 
+        { text: "Inactivo", value: 1 },
+        { text: "Activo", value: 2 },
       ],
 
       //MODAL ELIMINAR REQUERIMIENTO
@@ -597,14 +598,14 @@ export default {
     showModalEditRequirement(item) {
       //console.log("Editar Requerimiento ", item)
 
-        this.modalEditRequirement = true
+      this.modalEditRequirement = true
 
-        this.requirementToEdit = item
+      this.requirementToEdit = item
 
-        this.editQuantity = this.requirementToEdit.quantity
+      this.editQuantity = this.requirementToEdit.quantity
 
-        this.editDeliveryDate = this.requirementToEdit.delivery_date
-      
+      this.editDeliveryDate = this.requirementToEdit.delivery_date
+
 
 
     },
@@ -626,12 +627,12 @@ export default {
 
       infor.requirement_id = this.requirementToEdit.requirement_id
 
-      if(this.editStatus == "Inactivo"){
+      if (this.editStatus == "Inactivo") {
         infor.delivery_date = delivery_date
         infor.quantity = quantity
         infor.is_active = false
         flag = true
-      }else if (
+      } else if (
         (this.editDeliveryDate == "" && this.editQuantity == "") ||
         (this.editDeliveryDate == delivery_date && this.editQuantity == quantity) ||
         (this.editDeliveryDate == "" && this.editQuantity == quantity) ||
@@ -767,14 +768,10 @@ export default {
 
       infotrade.getrequirements().then(datosr => {
 
-        // console.log(datosr)
+        console.log(datosr.data)
 
         if (datosr.data != "") {
-          for (let i = 0; i < datosr.data.length; i++) {
-            if (datosr.data[i].is_active == true && datosr.data[i].deleted == false) {
-              this.requirement.push(datosr.data[i])
-            }
-          }
+          this.requirement = datosr.data
 
           this.requirement.sort(function (a, b) {
             return a.requirement_id - b.requirement_id;
@@ -785,15 +782,14 @@ export default {
 
           for (let i = 0; i < this.requirement.length; i++) {
             this.requirement[i].created = this.requirement[i].created.toString().substr(0, 10)
-            if (this.requirement[i].is_active == true) {
-              this.requirement[i].is_active = "Activo"
-            } else {
-              this.requirement[i].is_active = "Inactivo"
-            }
+            this.requirement[i].is_active = "Activo"
           }
-
-          this.factura = this.requirement[this.requirement.length - 1].requirement_id + 1
-          //this.numberRequirement = this.factura
+          
+          infotrade.requirements([], "get-number-requirement").then(data => {
+            //console.log(data.data)
+            this.factura = data.data[0].requirement_number
+          })
+        
           this.totalRows = this.requirement.length
           // console.log(this.factura)
         } else {
@@ -809,7 +805,7 @@ export default {
 
     },
 
-  
+
   },
 
   created() {
